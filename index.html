@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-persona="lojista">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vibe Cell — Telas para Lojistas e Revendedores | Encontre um Distribuidor</title>
+<meta name="description" content="Abasteça sua loja com telas e frontais Vibe. Conheça nossas linhas, encontre distribuidores e tenha opções para diferentes perfis de cliente.">
+<meta name="theme-color" content="#ffffff">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Vibe Cell — Telas para Lojistas e Revendedores">
+<meta property="og:description" content="Conheça as linhas Vibe, encontre um distribuidor e fale direto pelo WhatsApp.">
+<meta property="og:locale" content="pt_BR">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='0'><stop offset='0' stop-color='%2359A6E7'/><stop offset='.45' stop-color='%235B80D9'/><stop offset='1' stop-color='%238330A8'/></linearGradient></defs><rect width='100' height='100' rx='22' fill='%23050609'/><g fill='url(%23g)'><rect x='18' y='24' width='64' height='14' rx='1.5'/><rect x='18' y='43' width='64' height='14' rx='1.5'/><rect x='18' y='62' width='64' height='14' rx='1.5'/></g></svg>">
+</head>
+<body>
+
+<div id="progresso" aria-hidden="true"></div>
+
+<!-- ============ ÍCONES + DEGRADÊ DA MARCA (sprite SVG) ============ -->
+<svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true">
+  <defs>
+    <!-- Degradê oficial VIBE, extraído da logo -->
+    <linearGradient id="g-vibe" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0"    stop-color="#59A6E7"/>
+      <stop offset=".45"  stop-color="#5B80D9"/>
+      <stop offset=".75"  stop-color="#6F4AC4"/>
+      <stop offset="1"    stop-color="#8330A8"/>
+    </linearGradient>
+  </defs>
+
+  <!-- ============================================================
+       LOGO VIBE — traçada a partir das medidas do arquivo original.
+       Altura de caixa alta = 100. V=108 · I=30 · B=162 · E=164,
+       vãos de 6/6/4. Barras: 26 de altura, 11 de vão.
+       As letras usam currentColor (troca com o tema); as barras,
+       o degradê da marca.
+       ============================================================ -->
+  <symbol id="logo-vibe" viewBox="0 0 480 100">
+    <!-- V -->
+    <path fill="currentColor" d="M0 0H32L54 56L76 0H108L68.5 100H39.5Z"/>
+    <!-- I -->
+    <rect fill="currentColor" x="114" width="30" height="100"/>
+    <!-- B: cantos arredondados à direita + dois vazados em pílula -->
+    <path fill="currentColor" fill-rule="evenodd" d="M150 0H284A28 28 0 0 1 312 28V72A28 28 0 0 1 284 100H150ZM185 24H280.5A7.5 7.5 0 0 1 280.5 39H185A7.5 7.5 0 0 1 185 24ZM185 59H280.5A7.5 7.5 0 0 1 280.5 74H185A7.5 7.5 0 0 1 185 59Z"/>
+    <!-- E: as três barras -->
+    <g fill="url(#g-vibe)">
+      <rect x="316" y="0"  width="164" height="26" rx="2"/>
+      <rect x="316" y="37" width="164" height="26" rx="2"/>
+      <rect x="316" y="74" width="164" height="26" rx="2"/>
+    </g>
+  </symbol>
+
+  <!-- As 3 barras sozinhas, para usar como símbolo da marca -->
+  <symbol id="barras" viewBox="0 0 164 100">
+    <rect y="0"  width="164" height="26" rx="2" fill="url(#g-vibe)"/>
+    <rect y="37" width="164" height="26" rx="2" fill="url(#g-vibe)"/>
+    <rect y="74" width="164" height="26" rx="2" fill="url(#g-vibe)"/>
+  </symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></symbol>
+  <symbol id="i-camadas" viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5z"/><path d="m3 13 9 5 9-5"/></symbol>
+  <symbol id="i-tag" viewBox="0 0 24 24"><path d="M20.6 13.4 12 22l-9-9V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="7.5" cy="7.5" r="1.5"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-11.6 7.1L3 21l1.9-6.4A8 8 0 1 1 21 12z"/></symbol>
+  <symbol id="i-box" viewBox="0 0 24 24"><path d="M21 8 12 3 3 8v8l9 5 9-5z"/><path d="m3 8 9 5 9-5M12 13v8"/></symbol>
+  <symbol id="i-globo" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a15 15 0 0 1 0 18a15 15 0 0 1 0-18z"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="i-display" viewBox="0 0 24 24"><rect x="6" y="2" width="12" height="20" rx="2.5"/><path d="M11 18.5h2"/></symbol>
+  <symbol id="i-brilho" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9 17 7M7 17l-2.1 2.1"/></symbol>
+  <symbol id="i-ferramenta" viewBox="0 0 24 24"><path d="M14.5 5.5a4 4 0 0 0 5.2 5.2L21 9.5 14.5 3 13.3 4.3a4 4 0 0 0 1.2 1.2z"/><path d="m13 9-9 9 2 2 9-9"/></symbol>
+  <symbol id="i-loja" viewBox="0 0 24 24"><path d="M4 9h16v11H4z"/><path d="M3 9l1.5-5h15L21 9"/><path d="M9 20v-6h6v6"/></symbol>
+  <symbol id="i-whats" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12.04 2A9.9 9.9 0 0 0 2.1 11.9c0 1.75.46 3.45 1.32 4.95L2 22l5.3-1.38a9.9 9.9 0 0 0 4.74 1.2h.01a9.9 9.9 0 0 0 9.94-9.9A9.9 9.9 0 0 0 12.04 2zm5.8 14.06c-.24.68-1.4 1.3-1.94 1.34-.5.05-.98.23-3.3-.7-2.78-1.1-4.54-3.95-4.68-4.14-.13-.19-1.12-1.5-1.12-2.85s.7-2.02.95-2.3c.25-.27.55-.34.73-.34l.52.01c.17 0 .4-.06.62.48l.85 2.07c.07.15.12.32.02.5l-.3.5c-.1.13-.21.28-.09.5.12.21.54.9 1.17 1.45.8.72 1.48.94 1.69 1.05.21.1.34.09.46-.06l.66-.77c.15-.19.3-.15.5-.09l1.98.94c.21.1.36.15.42.24.06.09.06.53-.18 1.2z"/></symbol>
+  <symbol id="i-rota" viewBox="0 0 24 24"><path d="M9 20 3 17V4l6 3 6-3 6 3v13l-6 3-6-3z"/><path d="M9 7v13M15 4v13"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></symbol>
+  <symbol id="i-busca" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+  <symbol id="i-seta" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 3 2.6 5.6 6 .8-4.4 4.2 1.1 6L12 16.8 6.7 19.6l1.1-6L3.4 9.4l6-.8z"/></symbol>
+</svg>
+
+<a href="#conteudo" class="skip-link">Ir para o conteúdo</a>
+
+<!-- ============ HEADER ============ -->
+<header id="hdr">
+  <div class="hdr-in">
+    <a href="#topo" class="brand" aria-label="Vibe Cell, página inicial">
+      <svg class="wm" aria-hidden="true"><use href="#logo-vibe"/></svg>
+    </a>
+
+    <!-- SELETOR DE VISÃO -->
+    <div class="pill" role="group" aria-label="Escolha sua experiência">
+      <span class="pill-glider" aria-hidden="true"></span>
+      <button type="button" class="pill-btn is-on" data-persona-btn="lojista" aria-pressed="true"
+              title="Quero abastecer minha loja, revender e encontrar distribuidores.">
+        <svg class="ico"><use href="#i-loja"/></svg><span>Sou Lojista</span>
+      </button>
+      <button type="button" class="pill-btn" data-persona-btn="tecnico" aria-pressed="false"
+              title="Quero encontrar telas Vibe para meus reparos.">
+        <svg class="ico"><use href="#i-ferramenta"/></svg><span>Sou Técnico</span>
+      </button>
+    </div>
+
+    <nav class="nav" id="nav" aria-label="Navegação principal">
+      <a href="#solucao">Diferenciais</a>
+      <a href="#produtos">Produtos</a>
+      <a href="#como">Como funciona</a>
+      <a href="#distribuidores">Distribuidores</a>
+      <a href="#faq">Dúvidas</a>
+      <a href="#distribuidores" class="btn btn-sm btn-primary">Encontrar distribuidor</a>
+    </nav>
+
+    <button class="menu-btn" id="menuBtn" aria-label="Abrir menu" aria-expanded="false" aria-controls="nav">
+      <svg class="ico"><use href="#i-menu"/></svg>
+    </button>
+  </div>
+</header>
+
+<main id="conteudo">
+
+  <!-- ============ HERO ============ -->
+  <section class="hero" id="topo">
+    <div class="hero-bg" aria-hidden="true"><span class="orb orb-1"></span><span class="orb orb-2"></span><span class="grid-fx"></span></div>
+    <div class="wrap hero-in">
+      <div class="hero-copy">
+        <p class="eyebrow" data-c="hero.eyebrow"></p>
+        <h1 class="h1" data-c="hero.titulo" data-html></h1>
+        <p class="lead" data-c="hero.texto"></p>
+        <p class="lead lead-2" data-c="hero.texto2"></p>
+        <div class="hero-cta">
+          <a href="#distribuidores" class="btn btn-primary btn-lg" data-c="hero.ctaPrimario"></a>
+          <a href="#produtos" class="btn btn-ghost btn-lg" data-c="hero.ctaSecundario"></a>
+        </div>
+        <ul class="selos" id="heroSelos"></ul>
+      </div>
+
+      <div class="hero-art" aria-hidden="true">
+        <div class="art-card art-main">
+          <div class="art-phone">
+            <span class="art-notch"></span>
+            <span class="art-screen">
+              <svg viewBox="0 0 164 100"><use href="#barras"/></svg>
+            </span>
+          </div>
+        </div>
+        <div class="art-card art-float art-f1">
+          <svg class="ico"><use href="#i-brilho"/></svg>
+          <div><strong>Premium Vibe</strong><small>experiência superior</small></div>
+        </div>
+        <div class="art-card art-float art-f2">
+          <svg class="ico"><use href="#i-pin"/></svg>
+          <div><strong>Distribuição</strong><small>nacional</small></div>
+        </div>
+        <div class="art-card art-float art-f3">
+          <svg class="ico"><use href="#i-display"/></svg>
+          <div><strong>Telas e frontais</strong><small>para reparação mobile</small></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FAIXA DE AUTORIDADE ============ -->
+  <section class="autoridade-band">
+    <div class="wrap"><ul class="autoridade" id="autoridade"></ul></div>
+  </section>
+
+  <!-- ============ O PROBLEMA ============ -->
+  <section class="sec" id="dores">
+    <div class="wrap">
+      <header class="sec-hd">
+        <span class="kicker" data-c="dores.kicker"></span>
+        <h2 class="h2" data-c="dores.titulo"></h2>
+        <p class="sub" data-c="dores.texto"></p>
+      </header>
+      <div class="dores-grid" id="doresGrid"></div>
+    </div>
+  </section>
+
+  <!-- ============ A SOLUÇÃO ============ -->
+  <section class="sec sec-alt" id="solucao">
+    <div class="wrap">
+      <header class="sec-hd">
+        <span class="kicker" data-c="beneficios.kicker"></span>
+        <h2 class="h2" data-c="beneficios.titulo"></h2>
+        <p class="sub" data-c="beneficios.texto"></p>
+      </header>
+      <div class="cards" id="benefGrid"></div>
+    </div>
+  </section>
+
+  <!-- ============ PORTFÓLIO ============ -->
+  <section class="sec" id="produtos">
+    <div class="wrap">
+      <header class="sec-hd">
+        <span class="kicker" data-c="portfolio.kicker"></span>
+        <h2 class="h2" data-c="portfolio.titulo"></h2>
+        <p class="sub" data-c="portfolio.texto"></p>
+      </header>
+      <div class="linhas" id="linhas"></div>
+    </div>
+  </section>
+
+  <!-- ============ DESTAQUE / PREMIUM VIBE ============ -->
+  <section class="sec sec-alt" id="premium">
+    <div class="wrap prog-in">
+      <div class="prog-copy">
+        <span class="kicker" data-c="destaque.kicker"></span>
+        <h2 class="h2" data-c="destaque.titulo"></h2>
+        <p class="sub" data-c="destaque.texto"></p>
+        <ul class="tick-list" id="progList"></ul>
+        <a href="#" class="btn btn-primary" data-wa-marca data-c="destaque.cta"></a>
+      </div>
+      <div class="prog-art">
+        <div class="prog-badge">
+          <svg viewBox="0 0 164 100" aria-hidden="true"><use href="#barras"/></svg>
+        </div>
+        <div class="prog-ring" aria-hidden="true"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ COMO FUNCIONA ============ -->
+  <section class="sec" id="como">
+    <div class="wrap">
+      <header class="sec-hd">
+        <span class="kicker" data-c="passos.kicker"></span>
+        <h2 class="h2" data-c="passos.titulo"></h2>
+        <p class="sub" data-c="passos.texto"></p>
+      </header>
+      <ol class="steps" id="steps"></ol>
+    </div>
+  </section>
+
+  <!-- ============ PROVA SOCIAL (só aparece com depoimentos reais) ============ -->
+  <section class="sec sec-alt" id="secProva" hidden>
+    <div class="wrap">
+      <header class="sec-hd">
+        <span class="kicker" data-c="prova.kicker"></span>
+        <h2 class="h2" data-c="prova.titulo"></h2>
+      </header>
+      <div class="depo-grid" id="depoGrid"></div>
+    </div>
+  </section>
+
+  <!-- ============ DISTRIBUIDORES (GATE + MAPA) ============ -->
+  <section class="sec" id="distribuidores">
+    <div class="wrap">
+      <header class="sec-hd">
+        <span class="kicker" data-c="mapa.kicker"></span>
+        <h2 class="h2" data-c="mapa.titulo"></h2>
+        <p class="sub" data-c="mapa.texto"></p>
+      </header>
+
+      <!-- Estado bloqueado -->
+      <div class="gate" id="gate">
+        <div class="gate-preview" aria-hidden="true">
+          <span class="gate-dot" style="--x:38%;--y:62%"></span>
+          <span class="gate-dot" style="--x:52%;--y:44%"></span>
+          <span class="gate-dot" style="--x:63%;--y:70%"></span>
+          <span class="gate-dot" style="--x:44%;--y:28%"></span>
+          <span class="gate-dot" style="--x:71%;--y:35%"></span>
+          <span class="gate-dot" style="--x:29%;--y:48%"></span>
+        </div>
+        <div class="gate-card">
+          <span class="gate-ico"><svg class="ico"><use href="#i-pin"/></svg></span>
+          <h3 data-c="gate.titulo"></h3>
+          <p data-c="gate.texto"></p>
+          <button type="button" class="btn btn-primary btn-lg" id="gateBtn">
+            <svg class="ico"><use href="#i-pin"/></svg> <span data-c="gate.botao"></span>
+          </button>
+          <small class="gate-note" data-c="gate.micro"></small>
+        </div>
+      </div>
+
+      <!-- Estado liberado -->
+      <div class="mapzone" id="mapzone" hidden>
+        <div class="mapzone-bar">
+          <p class="olamsg" id="olaMsg"></p>
+          <div class="filtros">
+            <label class="campo-busca">
+              <svg class="ico"><use href="#i-busca"/></svg>
+              <input type="search" id="buscaDist" placeholder="Buscar por cidade, estado ou distribuidor" aria-label="Buscar distribuidor">
+            </label>
+            <select id="filtroRegiao" aria-label="Filtrar por região">
+              <option value="">Todas as regiões</option>
+              <option>Norte</option><option>Nordeste</option><option>Centro-Oeste</option><option>Sudeste</option><option>Sul</option>
+            </select>
+            <button type="button" class="btn btn-ghost btn-sm" id="btnPerto">
+              <svg class="ico"><use href="#i-pin"/></svg> Perto de mim
+            </button>
+          </div>
+        </div>
+
+        <div class="mapzone-grid">
+          <div class="lista" id="listaDist" aria-live="polite"></div>
+          <div class="mapa-box">
+            <div id="mapa" role="application" aria-label="Mapa dos distribuidores Vibe"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FAQ ============ -->
+  <section class="sec sec-alt" id="faq">
+    <div class="wrap wrap-sm">
+      <header class="sec-hd">
+        <span class="kicker" data-c="faq.kicker"></span>
+        <h2 class="h2" data-c="faq.titulo"></h2>
+      </header>
+      <div class="faq" id="faqList"></div>
+    </div>
+  </section>
+
+  <!-- ============ CTA FINAL ============ -->
+  <section class="cta-final">
+    <div class="wrap cta-in">
+      <h2 class="h2" data-c="ctaFinal.titulo"></h2>
+      <p class="sub" data-c="ctaFinal.texto"></p>
+      <ul class="cta-linhas" id="ctaLinhas"></ul>
+      <div class="hero-cta">
+        <a href="#distribuidores" class="btn btn-primary btn-lg" data-c="ctaFinal.botao"></a>
+        <a href="#" class="btn btn-ghost btn-lg" data-wa-marca>
+          <svg class="ico"><use href="#i-whats"/></svg> <span data-c="ctaFinal.botao2"></span>
+        </a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ============ RODAPÉ ============ -->
+<footer class="rodape">
+  <div class="wrap rodape-in">
+    <div class="rodape-brand">
+      <a href="#topo" class="brand" aria-label="Vibe Cell, topo da página">
+        <svg class="wm wm-lg" aria-hidden="true"><use href="#logo-vibe"/></svg>
+      </a>
+      <p class="rodape-nome">VIBE CELL</p>
+      <p>Telas e frontais para smartphones com distribuição voltada ao mercado de assistência técnica, lojistas e revendedores.</p>
+    </div>
+    <nav class="rodape-nav" aria-label="Rodapé">
+      <div>
+        <h4>Site</h4>
+        <a href="#solucao">Diferenciais</a>
+        <a href="#produtos">Produtos</a>
+        <a href="#como">Como funciona</a>
+        <a href="#distribuidores">Distribuidores</a>
+        <a href="#faq">Dúvidas</a>
+      </div>
+      <div>
+        <h4>Contato</h4>
+        <a href="#" data-wa-marca>WhatsApp comercial</a>
+        <a href="#" data-instagram target="_blank" rel="noopener">Instagram</a>
+        <a href="#" data-site target="_blank" rel="noopener">Site oficial</a>
+      </div>
+    </nav>
+  </div>
+  <div class="wrap rodape-fim">
+    <small>© <span id="ano"></span> Vibe Cell. Todos os direitos reservados.</small>
+    <small>Mapa: <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">© OpenStreetMap</a> · Site por <a href="https://vsexperience.com.br" target="_blank" rel="noopener">VS Experience</a></small>
+  </div>
+</footer>
+
+<!-- ============ BOTÃO FLUTUANTE WHATSAPP ============ -->
+<a href="#" class="fab" data-wa-marca aria-label="Falar no WhatsApp">
+  <svg class="ico"><use href="#i-whats"/></svg>
+  <span>Fale com a Vibe</span>
+</a>
+
+<!-- ============ MINI POPUP DE CAPTURA ============ -->
+<div class="modal" id="modal" hidden>
+  <div class="modal-bd" data-fechar></div>
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTit" aria-describedby="modalDesc">
+    <button type="button" class="modal-x" data-fechar aria-label="Fechar">
+      <svg class="ico"><use href="#i-x"/></svg>
+    </button>
+
+    <span class="modal-ico"><svg class="ico"><use href="#i-pin"/></svg></span>
+    <h3 id="modalTit" data-c="modal.titulo"></h3>
+    <p id="modalDesc" class="modal-sub" data-c="modal.texto"></p>
+
+    <form id="formLead" novalidate>
+      <div class="campo">
+        <label for="ln">Seu nome</label>
+        <input type="text" id="ln" name="nome" autocomplete="name" placeholder="Ex.: Carlos Silva" required>
+        <span class="erro" data-erro="nome"></span>
+      </div>
+      <div class="campo">
+        <label for="lw">Seu WhatsApp</label>
+        <input type="tel" id="lw" name="whatsapp" inputmode="numeric" autocomplete="tel" placeholder="(11) 91234-5678" required>
+        <span class="erro" data-erro="whatsapp"></span>
+      </div>
+
+      <div class="campo-perfil">
+        <span class="campo-perfil-lbl">Você é:</span>
+        <div class="mini-pill" role="group" aria-label="Escolha sua experiência">
+          <button type="button" class="mini-btn is-on" data-persona-btn="lojista" aria-pressed="true">Lojista</button>
+          <button type="button" class="mini-btn" data-persona-btn="tecnico" aria-pressed="false">Técnico</button>
+        </div>
+      </div>
+
+      <label class="check">
+        <input type="checkbox" id="lc" required>
+        <span>Autorizo a Vibe a entrar em contato pelo WhatsApp informado para atendimento comercial.</span>
+      </label>
+      <span class="erro" data-erro="consent"></span>
+
+      <button type="submit" class="btn btn-primary btn-lg btn-full" id="btnEnviar">
+        Liberar mapa de distribuidores
+      </button>
+      <small class="modal-note">
+        <svg class="ico"><use href="#i-lock"/></svg>
+        Seus dados serão utilizados somente para facilitar seu atendimento com a Vibe.
+      </small>
+    </form>
+  </div>
+</div>
+
+<noscript>
+  <p style="padding:2rem;text-align:center">
+    Este site precisa de JavaScript para exibir o mapa de distribuidores.
+    Fale com a gente pelo WhatsApp.
+  </p>
+</noscript>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>
