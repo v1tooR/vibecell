@@ -117,7 +117,7 @@ html[data-tema="escuro"] {
 
 /* ================= 2. RESET ================= */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;scroll-padding-top:calc(var(--hdr-h) + 16px);-webkit-text-size-adjust:100%}
+html{scroll-behavior:smooth;scroll-padding-top:calc(var(--hdr-h) + 16px);-webkit-text-size-adjust:100%;overflow-x:clip}
 body{
   font-family:var(--ff-txt);
   letter-spacing:-.015em;
@@ -282,9 +282,39 @@ html[data-tema="escuro"] .btn-primary:is(:hover,:focus-visible){
 .btn-sm{padding:.6rem 1.05rem;font-size:.85rem}
 .btn-full{width:100%}
 
-/* Revelação ao rolar */
-[data-reveal]{opacity:0;transform:translateY(22px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
-[data-reveal].vis{opacity:1;transform:none}
+/* Revelação ao rolar — cada família de elemento recebe uma trajetória própria.
+   O atraso é calculado por grupo no JS, evitando sequências repetitivas. */
+[data-reveal]{
+  --reveal-x:0px;--reveal-y:28px;--reveal-scale:.975;--reveal-rotate:0deg;--reveal-blur:5px;
+  opacity:0;
+  transform:translate3d(var(--reveal-x),var(--reveal-y),0) scale(var(--reveal-scale)) rotate(var(--reveal-rotate));
+  filter:blur(var(--reveal-blur));
+  transition:
+    opacity .72s var(--ease) var(--reveal-delay,0ms),
+    transform .9s cubic-bezier(.16,1,.3,1) var(--reveal-delay,0ms),
+    filter .72s var(--ease) var(--reveal-delay,0ms);
+}
+[data-reveal="hero"]{
+  --reveal-blur:0px;
+  transition:none;
+}
+[data-reveal="hero"].vis{
+  animation:heroReveal .78s cubic-bezier(.16,1,.3,1) var(--reveal-delay,0ms) both;
+}
+@keyframes heroReveal{
+  from{opacity:0;transform:translate3d(0,22px,0) scale(.99)}
+  to{opacity:1;transform:translate3d(0,0,0) scale(1)}
+}
+[data-reveal="heading"]{--reveal-y:24px;--reveal-scale:.985;--reveal-blur:4px}
+[data-reveal="card"]{
+  --reveal-x:var(--reveal-offset,18px);--reveal-y:30px;
+  --reveal-scale:.955;--reveal-rotate:var(--reveal-tilt,.55deg);--reveal-blur:4px;
+}
+[data-reveal="left"]{--reveal-x:-42px;--reveal-y:10px;--reveal-scale:.98;--reveal-blur:5px}
+[data-reveal="right"]{--reveal-x:42px;--reveal-y:10px;--reveal-scale:.97;--reveal-blur:5px}
+[data-reveal="slide"]{--reveal-x:24px;--reveal-y:0px;--reveal-scale:.99;--reveal-blur:3px}
+[data-reveal="zoom"]{--reveal-y:18px;--reveal-scale:.92;--reveal-blur:6px}
+[data-reveal].vis{opacity:1;transform:translate3d(0,0,0) scale(1) rotate(0);filter:blur(0)}
 
 /* Transição ao trocar de visão */
 .swap{animation:swapIn .45s var(--ease)}
@@ -293,7 +323,7 @@ html[data-tema="escuro"] .btn-primary:is(:hover,:focus-visible){
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.001ms !important;transition-duration:.001ms !important}
   html{scroll-behavior:auto}
-  [data-reveal]{opacity:1;transform:none}
+  [data-reveal]{opacity:1;transform:none;filter:none}
 }
 
 /* ================= 4. HEADER + MARCA + PÍLULA ================= */
@@ -561,6 +591,20 @@ html[data-persona="tecnico"] .pill-glider{transform:translateX(100%)}
 .sec-hd{text-align:center;margin-bottom:3rem}
 .sec-hd .h2{margin-bottom:.85rem;max-width:22ch;margin-inline:auto}
 
+/* Faixa "bento" dos benefícios — acompanha o tema da pílula como o resto
+   do site: fundo branco no Lojista (claro), escuro no Técnico (escuro). */
+.sec-bento{
+  position:relative;overflow:hidden;
+  background:var(--bg);border-block:1px solid var(--border);
+}
+.sec-bento::before{
+  content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(560px circle at 8% -5%,rgba(91,128,217,.24),transparent 60%),
+    radial-gradient(520px circle at 96% 105%,rgba(131,48,168,.22),transparent 60%);
+}
+.sec-bento .wrap{position:relative;z-index:1}
+
 /* Dores */
 .dores-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.1rem}
 .dor{
@@ -573,12 +617,15 @@ html[data-persona="tecnico"] .pill-glider{transform:translateX(100%)}
 .dor h3{font-family:var(--ff-tit);font-size:1.02rem;font-weight:700;margin-bottom:.5rem;letter-spacing:-.015em}
 .dor p{font-size:.92rem;color:var(--text-2)}
 
-/* Benefícios */
-.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.1rem}
+/* Benefícios — grade "bento": tamanhos variados + uma mini-animação
+   diferente por posição (ver BENEF_MOCKUPS em app.js). Empilha em 1
+   coluna no celular, 2 no tablet, e o recorte bento completo no desktop. */
+.cards{display:grid;grid-template-columns:1fr;gap:1.1rem}
 .card{
-  position:relative;padding:1.9rem 1.6rem;border-radius:var(--r-lg);
+  position:relative;padding:1.35rem;border-radius:var(--r-lg);
   background:var(--panel);border:1px solid var(--border);overflow:hidden;
   box-shadow:var(--shadow-sm);
+  display:flex;flex-direction:column;min-height:15rem;
   transition:border-color .3s,transform .3s var(--ease);
 }
 .card::after{
@@ -588,22 +635,142 @@ html[data-persona="tecnico"] .pill-glider{transform:translateX(100%)}
 }
 .card:hover{border-color:var(--acc-glow);transform:translateY(-4px)}
 .card:hover::after{opacity:1}
-.card-ico{
-  width:44px;height:44px;display:grid;place-items:center;border-radius:12px;
-  color:var(--acc);
-  background:color-mix(in srgb, currentColor 13%, transparent);
-  border:1px solid color-mix(in srgb, currentColor 32%, transparent);
-  margin-bottom:1.1rem;
+.card h3{font-family:var(--ff-tit);font-size:1.04rem;font-weight:700;margin-bottom:.4rem;letter-spacing:-.015em;position:relative;flex:none}
+.card p{font-size:.85rem;line-height:1.45;color:var(--text-2);position:relative;flex:none}
+
+@media (min-width:760px){ .cards{grid-template-columns:repeat(2,1fr)} }
+@media (min-width:1024px){
+  .cards{grid-template-columns:repeat(6,1fr);grid-auto-rows:11.5rem}
+  .card{min-height:0}
+  .card .mock{min-height:0}
+  .cards .card:nth-child(1){grid-column:span 2;grid-row:span 2}
+  .cards .card:nth-child(2){grid-column:span 2}
+  .cards .card:nth-child(3){grid-column:span 2;grid-row:span 2}
+  .cards .card:nth-child(4){grid-column:span 2}
+  .cards .card:nth-child(5){grid-column:span 3;grid-row:span 2}
+  .cards .card:nth-child(6){grid-column:span 3;grid-row:span 2}
+
+  /* Nos cards altos, o mockup deixa de consumir todo o espaço livre. O bloco
+     visual e o texto passam a funcionar como uma composição centralizada. */
+  .cards .card:nth-child(1),
+  .cards .card:nth-child(3),
+  .cards .card:nth-child(5){justify-content:center;padding:1.6rem}
+  .cards .card:nth-child(1) .mock{flex:0 0 8rem;height:8rem;margin-bottom:.9rem}
+  .cards .card:nth-child(3) .mock{flex:0 0 6rem;height:6rem;margin-bottom:.9rem}
+  .cards .card:nth-child(5) .mock{flex:0 0 7rem;height:7rem;margin-bottom:1rem}
 }
-/* A rampa da marca distribuída pela grade: do ciano ao violeta */
-.cards .card:nth-child(1) .card-ico{color:var(--r1)}
-.cards .card:nth-child(2) .card-ico{color:var(--r2)}
-.cards .card:nth-child(3) .card-ico{color:var(--r3)}
-.cards .card:nth-child(4) .card-ico{color:var(--r4)}
-.cards .card:nth-child(5) .card-ico{color:var(--r5)}
-.cards .card:nth-child(6) .card-ico{color:var(--r6)}
-.card h3{font-family:var(--ff-tit);font-size:1.06rem;font-weight:700;margin-bottom:.55rem;letter-spacing:-.015em}
-.card p{font-size:.92rem;color:var(--text-2)}
+
+/* -------- mockups animados -------- */
+.mock{position:relative;flex:1;display:grid;place-items:center;min-height:5rem;margin-bottom:.75rem}
+
+@keyframes mockPing{0%{transform:scale(1);opacity:.65}100%{transform:scale(2.5);opacity:0}}
+
+.mock-ping .mock-core,.mock-radar .mock-core{border-radius:50%;padding:.55rem}
+.mock-ping .mock-core{width:2.5rem;height:2.5rem;background:var(--acc);color:#06070c}
+.mock-ping .mock-ring{
+  position:absolute;width:2.5rem;height:2.5rem;border-radius:50%;
+  border:1.5px solid var(--acc);animation:mockPing 2.6s ease-out infinite;
+}
+.mock-ping .mock-ring:nth-child(2){animation-delay:.65s}
+.mock-ping .mock-ring:nth-child(3){animation-delay:1.3s}
+
+.mock-tiers{display:flex;flex-direction:column;justify-content:center;gap:.5rem;width:75%}
+.mock-tiers span{height:.5rem;border-radius:100px;background:var(--surface-2);position:relative;overflow:hidden}
+.mock-tiers span:nth-child(1){width:55%}
+.mock-tiers span:nth-child(2){width:80%}
+.mock-tiers span:nth-child(3){width:100%}
+.mock-tiers span::after{
+  content:"";position:absolute;inset:0;border-radius:inherit;
+  background:linear-gradient(90deg,var(--c-ciano),var(--c-azul),var(--c-roxo));
+  transform:scaleX(0);transform-origin:left;animation:mockTier 3.6s ease-in-out infinite;
+}
+.mock-tiers span:nth-child(1)::after{animation-delay:0s}
+.mock-tiers span:nth-child(2)::after{animation-delay:.35s}
+.mock-tiers span:nth-child(3)::after{animation-delay:.7s}
+@keyframes mockTier{0%,12%{transform:scaleX(0)}35%,75%{transform:scaleX(1)}96%,100%{transform:scaleX(0)}}
+
+.mock-shields{
+  position:relative;display:block;width:10rem;height:6rem;margin-inline:auto;
+  isolation:isolate;
+}
+.mock-shields::before,
+.mock-shields::after{
+  content:"";position:absolute;left:50%;top:50%;border-radius:50%;pointer-events:none;
+  translate:-50% -50%;border:1px solid color-mix(in srgb,var(--acc) 24%,transparent);
+}
+.mock-shields::before{width:5.7rem;height:5.7rem;animation:shieldHalo 3.2s ease-out infinite}
+.mock-shields::after{width:4.45rem;height:4.45rem;opacity:.55}
+.mock-shield{
+  position:absolute;z-index:2;display:block;padding:.55rem;border-radius:.9rem;
+  background:var(--panel);color:var(--acc);border:1px solid var(--border);
+  box-shadow:0 10px 24px -14px var(--acc),inset 0 0 0 1px var(--surface-2);
+}
+.mock-shield:nth-child(2){
+  z-index:3;left:50%;top:50%;width:4rem;height:4rem;padding:.95rem;
+  translate:-50% -50%;background:var(--acc-soft);border-color:color-mix(in srgb,var(--acc) 38%,var(--border));
+  animation:shieldCore 3.2s ease-in-out infinite;
+}
+.mock-shield:nth-child(1),.mock-shield:nth-child(3){
+  width:2.35rem;height:2.35rem;color:var(--muted);background:var(--surface-2);
+}
+.mock-shield:nth-child(1){left:.25rem;top:.3rem;animation:shieldSatelliteLeft 4.2s ease-in-out infinite}
+.mock-shield:nth-child(3){right:.25rem;bottom:.3rem;animation:shieldSatelliteRight 4.2s ease-in-out -.9s infinite}
+@keyframes shieldCore{
+  0%,100%{transform:translateY(0) scale(1);box-shadow:0 12px 28px -14px var(--acc)}
+  50%{transform:translateY(-4px) scale(1.055);box-shadow:0 18px 34px -12px var(--acc)}
+}
+@keyframes shieldSatelliteLeft{
+  0%,100%{transform:translate(0,7px) rotate(-10deg);color:var(--muted)}
+  50%{transform:translate(14px,-5px) rotate(5deg);color:var(--acc)}
+}
+@keyframes shieldSatelliteRight{
+  0%,100%{transform:translate(0,-6px) rotate(10deg);color:var(--muted)}
+  50%{transform:translate(-14px,5px) rotate(-5deg);color:var(--acc)}
+}
+@keyframes shieldHalo{
+  0%{opacity:.65;transform:scale(.78)}
+  75%,100%{opacity:0;transform:scale(1.28)}
+}
+
+.mock-swatches{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,1fr);place-items:stretch;gap:.4rem;width:5.6rem;height:3.4rem}
+.mock-swatches span{border-radius:.35rem;background:var(--border-2);animation:mockSwatch 4.8s ease-in-out infinite}
+.mock-swatches span:nth-child(1){animation-delay:0s}
+.mock-swatches span:nth-child(2){animation-delay:.25s}
+.mock-swatches span:nth-child(3){animation-delay:.5s}
+.mock-swatches span:nth-child(4){animation-delay:.75s}
+.mock-swatches span:nth-child(5){animation-delay:1s}
+.mock-swatches span:nth-child(6){animation-delay:1.25s}
+@keyframes mockSwatch{0%,10%,100%{background:var(--border-2);transform:scale(1)}5%{background:var(--acc);transform:scale(1.15)}}
+
+.mock-bubble{
+  position:relative;display:inline-flex;align-items:center;gap:.55rem;
+  padding:.75rem 1.05rem;border-radius:1.1rem 1.1rem 1.1rem .3rem;
+  background:var(--surface-2);border:1px solid var(--border-2);
+}
+.mock-chat-ico{width:1.25em;height:1.25em;color:var(--acc)}
+.mock-dots{display:flex;gap:.28rem}
+.mock-dots i{width:.4rem;height:.4rem;border-radius:50%;background:var(--acc);display:block;animation:mockDot 1.2s ease-in-out infinite}
+.mock-dots i:nth-child(2){animation-delay:.18s}
+.mock-dots i:nth-child(3){animation-delay:.36s}
+@keyframes mockDot{0%,60%,100%{opacity:.25;transform:translateY(0)}30%{opacity:1;transform:translateY(-3px)}}
+
+.mock-radar .mock-core{width:2.1rem;height:2.1rem;background:#fff;color:#06070c}
+.mock-radar .mock-ring{
+  position:absolute;width:2.1rem;height:2.1rem;border-radius:50%;
+  border:1.5px solid rgba(255,255,255,.85);animation:mockPing 2.6s ease-out infinite;
+}
+.mock-radar .mock-ring:nth-child(2){animation-delay:.9s}
+
+/* card com foto (posição 6): imagem real + véu escuro para o texto */
+.card-photo{
+  background-image:linear-gradient(180deg,rgba(6,7,12,.1) 0%,rgba(6,7,12,.4) 55%,rgba(6,7,12,.96) 100%),
+    url("../img/mix-mercado.png");
+  background-size:cover;background-position:center 38%;
+  border-color:rgba(255,255,255,.16);
+}
+.card-photo .mock{position:absolute;top:1rem;right:1rem;flex:none;margin:0;min-height:0;width:2.6rem;height:2.6rem}
+.card-photo h3{margin-top:auto;color:#fff}
+.card-photo p{color:rgba(255,255,255,.72)}
 
 /* ================= LINHAS DE PRODUTO ================= */
 .linhas{display:grid;grid-template-columns:repeat(2,1fr);gap:1.5rem;align-items:start}
@@ -654,15 +821,27 @@ html[data-persona="tecnico"] .pill-glider{transform:translateX(100%)}
 .prog-in{display:grid;grid-template-columns:1.2fr .8fr;gap:3rem;align-items:center}
 .prog-copy .sub{margin-inline:0}
 .prog-copy .tick-list{margin:1.6rem 0 2rem}
-.prog-art{position:relative;display:grid;place-items:center;min-height:280px}
-.prog-badge{
-  width:158px;height:158px;display:grid;place-items:center;border-radius:40px;
-  background:var(--chip);border:1px solid var(--border-2);
-  box-shadow:0 24px 60px -20px var(--acc-glow);
+.prog-art{position:relative;display:grid;place-items:center;min-height:430px;isolation:isolate}
+.prog-image-wrap{
+  position:relative;z-index:2;width:min(420px,100%);
+  animation:premiumFloat 6.5s ease-in-out infinite;
 }
-.prog-badge svg{width:56%;filter:drop-shadow(0 4px 18px rgba(131,48,168,.5))}
+.prog-image-wrap::before{
+  content:"";position:absolute;z-index:-1;inset:12% 2% 4%;border-radius:42%;
+  background:radial-gradient(circle,var(--acc-glow),transparent 68%);
+  filter:blur(28px);opacity:.72;
+}
+.prog-image{
+  display:block;width:100%;height:auto;
+  filter:drop-shadow(0 28px 36px rgba(23,19,55,.28));
+}
+html[data-tema="escuro"] .prog-image{filter:drop-shadow(0 30px 44px rgba(0,0,0,.62))}
+@keyframes premiumFloat{
+  0%,100%{transform:translateY(0) rotate(-.35deg)}
+  50%{transform:translateY(-10px) rotate(.35deg)}
+}
 .prog-ring{
-  position:absolute;width:250px;height:250px;border-radius:50%;
+  position:absolute;z-index:0;width:390px;height:390px;border-radius:50%;
   border:1px dashed var(--border-2);animation:spin 30s linear infinite;
 }
 .prog-ring::before,.prog-ring::after{
@@ -672,16 +851,56 @@ html[data-persona="tecnico"] .pill-glider{transform:translateX(100%)}
 .prog-ring::after{bottom:-5px;left:50%;margin-left:-5px;opacity:.4}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-/* ================= PASSOS ================= */
-.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem}
-.step{position:relative;padding:1.8rem 1.5rem;border-radius:var(--r-lg);background:var(--surface);border:1px solid var(--border)}
+/* ================= PASSOS — linha do tempo ================= */
+.steps{position:relative;display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem}
+.step{
+  position:relative;padding:1.8rem 1.5rem;border-radius:var(--r-lg);
+  background:var(--surface);border:1px solid var(--border);
+  transition:background .3s,border-color .3s;
+}
 .step-n{
-  display:inline-block;margin-bottom:.9rem;
-  font-family:var(--ff-tit);font-weight:900;font-size:1.5rem;letter-spacing:-.04em;
-  background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;
+  display:inline-flex;align-items:center;justify-content:center;
+  width:2.3rem;height:2.3rem;margin-bottom:1rem;border-radius:50%;
+  font-family:var(--ff-tit);font-weight:800;font-size:.92rem;
+  background:var(--acc-soft);border:1.5px solid var(--acc-glow);color:var(--acc);
 }
 .step h3{font-family:var(--ff-tit);font-size:1.02rem;font-weight:700;margin-bottom:.5rem;letter-spacing:-.015em}
 .step p{font-size:.9rem;color:var(--text-2)}
+
+/* último passo: a chegada — marcador cheio, ícone de check e brilho pulsante */
+.step-last{background:var(--acc-soft);border-color:var(--acc-glow)}
+.step-last .step-n{
+  position:relative;width:2.6rem;height:2.6rem;
+  background:var(--grad);border-color:transparent;color:#fff;
+}
+.step-last .step-n-ico{width:1.15em;height:1.15em}
+.step-last .step-n::after{
+  content:"";position:absolute;inset:-5px;border-radius:50%;
+  border:1.5px solid var(--acc);animation:stepPing 2.2s ease-out infinite;
+}
+@keyframes stepPing{0%{transform:scale(.85);opacity:.7}100%{transform:scale(1.55);opacity:0}}
+
+/* Desktop (grade de 4 colunas): os marcadores sobem para uma linha comum,
+   que se desenha da esquerda para a direita e acende cada nó ao alcançá-lo. */
+@media (min-width:1025px){
+  .steps{margin-top:1.7rem}
+  .steps::before{
+    content:"";position:absolute;top:-1.7rem;left:12.5%;right:12.5%;height:2px;
+    background:linear-gradient(90deg,var(--c-ciano),var(--c-azul),var(--c-roxo),var(--c-violeta));
+    opacity:.55;transform-origin:left center;transform:scaleX(0);
+  }
+  .steps.in-view::before{animation:stepsLine 1.3s cubic-bezier(.65,0,.35,1) forwards}
+  @keyframes stepsLine{to{transform:scaleX(1)}}
+
+  .step-last .step-n{position:absolute}
+  .step-n{
+    position:absolute;top:-1.7rem;left:50%;translate:-50% -50%;margin:0;
+    box-shadow:0 0 0 4px var(--bg);
+    opacity:0;scale:.4;
+    transition:opacity .4s var(--ease) var(--node-delay,0s),scale .4s cubic-bezier(.3,1.6,.4,1) var(--node-delay,0s);
+  }
+  .steps.in-view .step-n{opacity:1;scale:1}
+}
 
 /* ================= DEPOIMENTOS ================= */
 .depo-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.1rem}
@@ -842,17 +1061,57 @@ html[data-persona="tecnico"] .pill-glider{transform:translateX(100%)}
 /* ================= CTA FINAL ================= */
 .cta-final{position:relative;padding:5rem 0;text-align:center;overflow:hidden;background:var(--bg)}
 .cta-final::before{
-  content:"";position:absolute;inset:0;
+  content:"";position:absolute;inset:0;pointer-events:none;
   background:radial-gradient(ellipse 60% 80% at 50% 100%,var(--acc-soft),transparent 70%);
 }
 .cta-in{position:relative}
-.cta-in .h2{margin-bottom:.9rem;max-width:24ch;margin-inline:auto}
-.cta-linhas{
-  display:flex;flex-wrap:wrap;justify-content:center;gap:.6rem 1.5rem;margin-top:1.8rem;
-  font-family:var(--ff-tit);font-weight:700;font-size:1rem;letter-spacing:-.015em;
+.cta-in .h2{margin-bottom:.9rem;max-width:26ch;margin-inline:auto}
+.cta-in .sub{margin-top:.5rem}
+
+/* vídeo emoldurado pelo título/subtítulo, com os 3 benefícios flutuando ao
+   redor em cards (mesma linguagem visual dos .art-float do hero) —
+   composição estática, sem nenhum efeito ligado ao scroll. */
+.cta-frame-mid{display:flex;justify-content:center;margin:3rem auto 2.5rem}
+.cta-frame-video-wrap{position:relative;width:min(84vw,24rem)}
+.cta-frame-video{
+  /* 716×838 = proporção real do arquivo (vibevideo.mp4) */
+  width:100%;aspect-ratio:716/838;overflow:hidden;
+  border-radius:var(--r-lg);border:1px solid var(--border);box-shadow:var(--shadow-sm);background:var(--panel);
 }
-.cta-linhas li{display:flex;align-items:center;gap:.6rem}
-.cta-linhas li::before{content:"";width:14px;height:8px;border-radius:2px;background:var(--grad)}
+.cta-frame-video video{width:100%;height:100%;object-fit:cover;display:block}
+
+.cta-linhas{list-style:none}
+.cta-float{
+  position:absolute;z-index:2;display:flex;align-items:center;gap:.65rem;
+  max-width:11.5rem;padding:.65rem .9rem;border-radius:var(--r-lg);
+  background:var(--panel);border:1px solid var(--border-2);
+  box-shadow:var(--shadow-sm),0 14px 32px -14px var(--float-glow,var(--acc-glow));
+  backdrop-filter:blur(8px);text-align:left;
+  font-family:var(--ff-tit);font-weight:700;font-size:.82rem;letter-spacing:-.01em;line-height:1.25;
+  animation:floatIn .75s var(--ease) both,flt 5.5s ease-in-out infinite;
+}
+.cta-float-ico{
+  flex:none;display:grid;place-items:center;width:2rem;height:2rem;border-radius:.7rem;
+  background:linear-gradient(155deg,var(--float-glow) 0%,transparent 120%);
+  box-shadow:inset 0 0 0 1px var(--float-glow);
+}
+.cta-float .ico{width:1.05em;height:1.05em;color:var(--acc);filter:drop-shadow(0 0 6px currentColor)}
+
+.cta-float-1{--float-glow:rgba(89,166,231,.55);top:4%;left:-9%;animation-delay:.15s,0s}
+.cta-float-2{--float-glow:rgba(111,74,196,.55);top:42%;right:-13%;animation-delay:.3s,-1.8s}
+.cta-float-3{--float-glow:rgba(131,48,168,.55);bottom:5%;left:-7%;animation-delay:.45s,-3.4s}
+
+@media (min-width:761px){
+  .cta-frame-video-wrap{width:28rem}
+}
+@media (max-width:620px){
+  .cta-frame-video-wrap{width:min(78vw,19rem)}
+  .cta-float{max-width:9.5rem;padding:.55rem .7rem;font-size:.76rem;gap:.5rem}
+  .cta-float-ico{width:1.7rem;height:1.7rem;border-radius:.6rem}
+  .cta-float-1{left:-4%}
+  .cta-float-2{right:-6%}
+  .cta-float-3{left:-2%}
+}
 
 /* ================= 9. RODAPÉ ================= */
 .rodape{background:var(--bg-2);border-top:1px solid var(--border);padding-top:3.5rem}
@@ -991,6 +1250,9 @@ html[data-persona="tecnico"] .pill-glider{transform:translateX(100%)}
   .art-float strong{font-size:.78rem;white-space:normal}
   .art-float small{font-size:.68rem;white-space:normal}
   .art-float-ico{width:2.1rem;height:2.1rem;border-radius:.7rem}
+  .prog-art{min-height:370px}
+  .prog-image-wrap{width:min(340px,100%)}
+  .prog-ring{width:300px;height:300px}
   .fab span{display:none}
   .fab{padding:1rem;border-radius:50%}
   .selos{gap:.85rem}

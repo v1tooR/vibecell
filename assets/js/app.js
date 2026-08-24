@@ -71,6 +71,38 @@
     return 'https://wa.me/' + numero + '?text=' + encodeURIComponent(texto);
   }
 
+  /* Mini-animações da grade "bento" de benefícios — uma por posição,
+     só CSS/keyframes (sem estado em JS, sem dependências externas). */
+  var BENEF_MOCKUPS = [
+    function () { // 1. Qualidade previsível — selo pulsando
+      return '<div class="mock mock-ping">' +
+        '<span class="mock-ring"></span><span class="mock-ring"></span><span class="mock-ring"></span>' +
+        icone('check', 'mock-core') + '</div>';
+    },
+    function () { // 2. Produtos para diferentes perfis — níveis acendendo
+      return '<div class="mock mock-tiers"><span></span><span></span><span></span></div>';
+    },
+    function () { // 3. Mais segurança no pós-venda — escudos em sequência
+      return '<div class="mock mock-shields">' +
+        icone('shield', 'mock-shield') + icone('shield', 'mock-shield') + icone('shield', 'mock-shield') +
+        '</div>';
+    },
+    function () { // 4. Mix pensado para o mercado — grade de opções
+      return '<div class="mock mock-swatches">' +
+        '<span></span><span></span><span></span><span></span><span></span><span></span></div>';
+    },
+    function () { // 5. Atendimento especializado — chat digitando
+      return '<div class="mock mock-chat"><span class="mock-bubble">' +
+        icone('chat', 'mock-chat-ico') +
+        '<span class="mock-dots"><i></i><i></i><i></i></span></span></div>';
+    },
+    function () { // 6. Distribuição estratégica — foto + pino pulsando
+      return '<div class="mock mock-radar">' +
+        '<span class="mock-ring"></span><span class="mock-ring"></span>' +
+        icone('pin', 'mock-core') + '</div>';
+    }
+  ];
+
   /* Estrutura interna usada pelo brilho dos CTAs principais. Mantém ícones,
      textos dinâmicos e links acessíveis sem exigir markup repetido no HTML. */
   function aprimorarCtas() {
@@ -119,9 +151,11 @@
       return '<article class="dor"><h3>' + esc(d.t) + '</h3><p>' + esc(d.d) + '</p></article>';
     }).join('');
 
-    /* benefícios */
-    $('#benefGrid').innerHTML = p.beneficios.itens.map(function (b) {
-      return '<article class="card"><div class="card-ico">' + icone(b.i) + '</div>' +
+    /* benefícios — grade "bento", cada posição tem sua própria mini-animação */
+    $('#benefGrid').innerHTML = p.beneficios.itens.map(function (b, idx) {
+      var mock = BENEF_MOCKUPS[idx] ? BENEF_MOCKUPS[idx]() : '';
+      var foto = idx === 5 ? ' card-photo' : '';
+      return '<article class="card' + foto + '">' + mock +
              '<h3>' + esc(b.t) + '</h3><p>' + esc(b.d) + '</p></article>';
     }).join('');
 
@@ -148,18 +182,28 @@
       return '<li>' + icone('check', 'tick-ico') + '<span>' + esc(i) + '</span></li>';
     }).join('');
 
-    /* passos */
+    /* passos — linha do tempo: os marcadores acendem em sincronia com a
+       linha se desenhando (ver ligarLinhaPassos); o último é a chegada. */
+    var totalPassos = p.passos.itens.length;
     $('#steps').innerHTML = p.passos.itens.map(function (s, i) {
-      return '<li class="step"><div class="step-n">' + ('0' + (i + 1)).slice(-2) + '</div>' +
+      var ultimo = i === totalPassos - 1;
+      var atraso = (i / Math.max(totalPassos - 1, 1) * 1.3).toFixed(2) + 's';
+      var marcador = ultimo ? icone('check', 'step-n-ico') : ('0' + (i + 1)).slice(-2);
+      return '<li class="step' + (ultimo ? ' step-last' : '') + '" style="--node-delay:' + atraso + '">' +
+             '<span class="step-n">' + marcador + '</span>' +
              '<h3>' + esc(s.t) + '</h3><p>' + esc(s.d) + '</p></li>';
     }).join('');
+    ligarLinhaPassos();
 
     /* prova social — só aparece com depoimentos reais cadastrados */
     renderDepoimentos();
 
-    /* linhas do CTA final */
-    $('#ctaLinhas').innerHTML = (p.ctaFinal.linhas || []).map(function (l) {
-      return '<li>' + esc(l) + '</li>';
+    /* linhas do CTA final — cards flutuando ao redor do vídeo */
+    var CTA_ICONES = ['camadas', 'shield', 'star'];
+    $('#ctaLinhas').innerHTML = (p.ctaFinal.linhas || []).map(function (l, i) {
+      return '<li class="cta-float cta-float-' + (i + 1) + '">' +
+             '<span class="cta-float-ico">' + icone(CTA_ICONES[i % CTA_ICONES.length]) + '</span>' +
+             '<span>' + esc(l) + '</span></li>';
     }).join('');
 
     /* FAQ */
@@ -267,7 +311,7 @@
   }
 
   function prepararReveal() {
-    var alvos = $$('.sec-hd, .dor, .card, .linha, .step, .depo, .faq-item, .gate, .prog-copy, .prog-art, .hero-copy, .cta-in, .autoridade li');
+    var alvos = $$('.hero-copy > *, .sec-hd > *, .dor, .card, .linha, .step, .depo, .faq-item, .gate, .prog-copy > *, .prog-art, .cta-in > *, .autoridade li');
 
     /* rede de segurança: sem IntersectionObserver (ou se ele não disparar),
        o conteúdo aparece assim mesmo */
@@ -278,16 +322,69 @@
 
     var io = new IntersectionObserver(function (entradas) {
       entradas.forEach(function (en) {
-        if (en.isIntersecting) { disparou = true; en.target.classList.add('vis'); io.unobserve(en.target); }
+        if (en.isIntersecting) {
+          disparou = true;
+          en.target.classList.add('vis');
+          io.unobserve(en.target);
+          setTimeout(function () {
+            en.target.removeAttribute('data-reveal');
+            en.target.style.removeProperty('--reveal-delay');
+            en.target.style.removeProperty('--reveal-offset');
+            en.target.style.removeProperty('--reveal-tilt');
+          }, 1450);
+        }
       });
-    }, { threshold: 0.12, rootMargin: '0px 0px -40px' });
+    }, { threshold: 0.1, rootMargin: '0px 0px -32px' });
 
-    alvos.forEach(function (el, i) {
+    var contadores = new Map();
+    var pendentes = [];
+    alvos.forEach(function (el) {
       if (el.classList.contains('vis')) return;
-      el.setAttribute('data-reveal', '');
-      el.style.transitionDelay = (i % 4) * 70 + 'ms';
-      io.observe(el);
+
+      var pai = el.parentElement;
+      var indice = contadores.get(pai) || 0;
+      contadores.set(pai, indice + 1);
+
+      var tipo = 'card';
+      if (pai.classList.contains('hero-copy')) tipo = 'hero';
+      else if (pai.classList.contains('sec-hd')) tipo = 'heading';
+      else if (pai.classList.contains('prog-copy')) tipo = 'left';
+      else if (el.classList.contains('prog-art')) tipo = 'right';
+      else if (el.classList.contains('faq-item')) tipo = 'slide';
+      else if (el.classList.contains('gate') || pai.classList.contains('cta-in')) tipo = 'zoom';
+
+      el.setAttribute('data-reveal', tipo);
+      var passo = tipo === 'hero' ? 55 : 90;
+      var limite = tipo === 'hero' ? 220 : 360;
+      el.style.setProperty('--reveal-delay', Math.min(indice * passo, limite) + 'ms');
+      el.style.setProperty('--reveal-offset', (indice % 2 ? -18 : 18) + 'px');
+      el.style.setProperty('--reveal-tilt', (indice % 2 ? -.55 : .55) + 'deg');
+      pendentes.push(el);
     });
+
+    /* Dois frames garantem que o navegador pinte o estado inicial antes de o
+       IntersectionObserver liberar a transição. Evita saltos no hero inicial. */
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
+        pendentes.forEach(function (el) { io.observe(el); });
+      });
+    });
+  }
+
+  /* Dispara a animação da linha do tempo (seção "Como funciona") uma única
+     vez, quando ela entra na tela — os marcadores usam --node-delay (setado
+     no render) para acender junto com a linha se desenhando até eles. */
+  function ligarLinhaPassos() {
+    var steps = $('#steps');
+    if (!steps || steps.dataset.linhaPronta) return;
+    steps.dataset.linhaPronta = '1';
+    if (!('IntersectionObserver' in window)) { steps.classList.add('in-view'); return; }
+    var io = new IntersectionObserver(function (entradas) {
+      entradas.forEach(function (en) {
+        if (en.isIntersecting) { en.target.classList.add('in-view'); io.unobserve(en.target); }
+      });
+    }, { threshold: .3 });
+    io.observe(steps);
   }
 
   function ligarFaq() {
