@@ -14,7 +14,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Michroma&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/style.css">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='0'><stop offset='0' stop-color='%2359A6E7'/><stop offset='.45' stop-color='%235B80D9'/><stop offset='1' stop-color='%238330A8'/></linearGradient></defs><rect width='100' height='100' rx='22' fill='%23050609'/><g fill='url(%23g)'><rect x='18' y='24' width='64' height='14' rx='1.5'/><rect x='18' y='43' width='64' height='14' rx='1.5'/><rect x='18' y='62' width='64' height='14' rx='1.5'/></g></svg>">
 </head>
@@ -126,7 +126,7 @@
 
   <!-- ============ HERO ============ -->
   <section class="hero" id="topo">
-    <div class="hero-bg" aria-hidden="true"><span class="orb orb-1"></span><span class="orb orb-2"></span><span class="grid-fx"></span></div>
+    <div class="hero-bg" aria-hidden="true"><canvas class="hero-shader" id="heroShader"></canvas><span class="grid-fx"></span><span class="hero-scrim"></span></div>
     <div class="wrap hero-in">
       <div class="hero-copy">
         <p class="eyebrow" data-c="hero.eyebrow"></p>
@@ -141,25 +141,24 @@
       </div>
 
       <div class="hero-art" aria-hidden="true">
-        <div class="art-card art-main">
-          <div class="art-phone">
-            <span class="art-notch"></span>
-            <span class="art-screen">
-              <svg viewBox="0 0 164 100"><use href="#barras"/></svg>
-            </span>
-          </div>
+        <span class="art-glow"></span>
+        <span class="art-ring"></span>
+        <span class="art-spark art-spark-1"></span>
+        <span class="art-spark art-spark-2"></span>
+        <div class="art-mascote-wrap">
+          <img class="art-mascote" src="assets/img/mascote-vibecell.png" alt="" width="1180" height="1333" loading="eager" fetchpriority="high">
         </div>
         <div class="art-card art-float art-f1">
-          <svg class="ico"><use href="#i-brilho"/></svg>
-          <div><strong>Premium Vibe</strong><small>experiência superior</small></div>
+          <span class="art-float-ico"><svg class="ico"><use href="#i-brilho"/></svg></span>
+          <span class="art-float-txt"><strong>Premium Vibe</strong><small>Experiência superior</small></span>
         </div>
         <div class="art-card art-float art-f2">
-          <svg class="ico"><use href="#i-pin"/></svg>
-          <div><strong>Distribuição</strong><small>nacional</small></div>
+          <span class="art-float-ico"><svg class="ico"><use href="#i-pin"/></svg></span>
+          <span class="art-float-txt"><strong>Distribuição nacional</strong><small>Chega até você</small></span>
         </div>
         <div class="art-card art-float art-f3">
-          <svg class="ico"><use href="#i-display"/></svg>
-          <div><strong>Telas e frontais</strong><small>para reparação mobile</small></div>
+          <span class="art-float-ico"><svg class="ico"><use href="#i-display"/></svg></span>
+          <span class="art-float-txt"><strong>Telas e frontais</strong><small>Reparo mobile</small></span>
         </div>
       </div>
     </div>
@@ -429,6 +428,7 @@
   </p>
 </noscript>
 
+<script src="assets/js/shader-bg.js"></script>
 <script src="assets/js/data.js"></script>
 <script src="assets/js/app.js"></script>
 </body>

@@ -71,6 +71,18 @@
     return 'https://wa.me/' + numero + '?text=' + encodeURIComponent(texto);
   }
 
+  /* Estrutura interna usada pelo brilho dos CTAs principais. Mantém ícones,
+     textos dinâmicos e links acessíveis sem exigir markup repetido no HTML. */
+  function aprimorarCtas() {
+    $$('.btn-primary').forEach(function (btn) {
+      if (btn.querySelector(':scope > .btn-shiny-content')) return;
+      var conteudo = document.createElement('span');
+      conteudo.className = 'btn-shiny-content';
+      while (btn.firstChild) conteudo.appendChild(btn.firstChild);
+      btn.appendChild(conteudo);
+    });
+  }
+
   /* ============================================================
      2. RENDER DE CONTEÚDO
      ============================================================ */
@@ -170,6 +182,8 @@
       b.setAttribute('aria-pressed', on ? 'true' : 'false');
     });
 
+    aprimorarCtas();
+
     ligarFaq();
     ligarBrilhoCards();
     prepararReveal();
@@ -226,7 +240,7 @@
     var hdr = $('#hdr'), nav = $('#nav'), btn = $('#menuBtn'), barra = $('#progresso');
 
     var aoRolar = function () {
-      hdr.classList.toggle('scrolled', window.scrollY > 12);
+      hdr.classList.toggle('scrolled', window.scrollY > 48);
       var total = document.documentElement.scrollHeight - window.innerHeight;
       barra.style.width = (total > 0 ? (window.scrollY / total) * 100 : 0) + '%';
     };
@@ -235,11 +249,13 @@
 
     btn.addEventListener('click', function () {
       var aberto = nav.classList.toggle('aberto');
+      hdr.classList.toggle('menu-open', aberto);
       btn.setAttribute('aria-expanded', aberto ? 'true' : 'false');
     });
     $$('#nav a').forEach(function (a) {
       a.addEventListener('click', function () {
         nav.classList.remove('aberto');
+        hdr.classList.remove('menu-open');
         btn.setAttribute('aria-expanded', 'false');
       });
     });
