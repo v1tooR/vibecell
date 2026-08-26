@@ -70,6 +70,7 @@ html[data-tema="claro"] {
   --hdr-bg:  rgba(255,255,255,.72);
   --hdr-bg-2:rgba(255,255,255,.95);
   --dor-borda: #e11d48;
+  --dor-glow: rgba(225,29,72,.10);
   --tile-filtro: none;
 
   /* rampa aplicada às grades de ícone (versão legível sobre branco) */
@@ -105,6 +106,7 @@ html[data-tema="escuro"] {
   --hdr-bg:  rgba(5,6,9,.62);
   --hdr-bg-2:rgba(5,6,9,.94);
   --dor-borda: #f43f5e;
+  --dor-glow: rgba(244,63,94,.16);
   --tile-filtro: brightness(.78) saturate(.85) contrast(1.05);
 
   --r1:#59a6e7; --r2:#5b93e0; --r3:#5b80d9; --r4:#6863ce; --r5:#6f4ac4; --r6:#8330a8;
@@ -605,17 +607,80 @@ html[data-persona="tecnico"] .pill-glider{transform:translateX(100%)}
 }
 .sec-bento .wrap{position:relative;z-index:1}
 
-/* Dores */
-.dores-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.1rem}
+/* Dores — "cascata de consequências": nada de quatro cards iguais.
+   A gravidade cresce a cada item (friso mais grosso, barra de peso maior),
+   setas encadeiam um problema no próximo e o último — o desfecho — ganha
+   destaque, ecoando o texto: pequenas inconsistências viram grandes custos. */
+.dores-cascata{display:grid;grid-template-columns:repeat(4,1fr);gap:1.1rem;position:relative}
 .dor{
-  padding:1.6rem;border-radius:var(--r-lg);
-  background:var(--surface);border:1px solid var(--border);
-  border-left:3px solid var(--dor-borda);
-  transition:background .25s,transform .25s var(--ease);
+  --tiltx:0deg;--tilty:0deg;--lift:0px;
+  position:relative;padding:1.7rem 1.6rem 1.6rem;border-radius:var(--r-lg);
+  background:var(--surface);border:1px solid var(--border);border-left:2px solid var(--dor-borda);
+  overflow:hidden;isolation:isolate;
+  transform:translateY(var(--lift)) perspective(700px) rotateX(var(--tilty)) rotateY(var(--tiltx));
+  transition:background .3s,border-color .35s,transform .25s var(--ease),box-shadow .35s;
+  will-change:transform;
 }
-.dor:hover{background:var(--surface-2);transform:translateY(-3px)}
+.dor:nth-child(2){border-left-width:4px}
+.dor:nth-child(3){border-left-width:6px}
+.dor:nth-child(4){border-left-width:8px}
+.dor:hover{--lift:-4px;background:var(--surface-2);box-shadow:var(--shadow-sm)}
+
+/* brilho que segue o ponteiro — mesma técnica do .card, tom de alerta */
+.dor::after{
+  content:"";position:absolute;inset:0;z-index:-1;opacity:0;pointer-events:none;border-radius:inherit;
+  background:radial-gradient(360px circle at var(--mx,50%) var(--my,0%),var(--dor-glow),transparent 62%);
+  transition:opacity .4s var(--ease);
+}
+.dor:hover::after{opacity:1}
+
+.dor-idx{display:block;font-family:var(--ff-tit);font-weight:800;font-size:.76rem;letter-spacing:.08em;color:var(--muted);margin-bottom:.85rem}
 .dor h3{font-family:var(--ff-tit);font-size:1.02rem;font-weight:700;margin-bottom:.5rem;letter-spacing:-.015em}
 .dor p{font-size:.92rem;color:var(--text-2)}
+
+/* barra de "peso" — cresce a cada consequência; só anima quando a fileira
+   inteira entra na tela (.in-view, ligado por ligarCascataDores em app.js) */
+.dor-peso{display:block;margin-top:1.3rem;height:4px;border-radius:100px;background:var(--surface-2);overflow:hidden}
+.dor-peso-fill{display:block;height:100%;width:0;border-radius:inherit;background:linear-gradient(90deg,var(--c-ciano),var(--dor-borda));transition:width 1s cubic-bezier(.22,.7,.2,1)}
+.dores-cascata.in-view .dor-peso-fill{width:var(--sev)}
+.dor:nth-child(2) .dor-peso-fill{transition-delay:.12s}
+.dor:nth-child(3) .dor-peso-fill{transition-delay:.24s}
+.dor:nth-child(4) .dor-peso-fill{transition-delay:.36s}
+
+/* seta conectora — só faz sentido alinhada, na fileira única do desktop */
+.dor-seta{display:none}
+
+/* último item: o desfecho — mesma linguagem do "step-last" da seção Como
+   Funciona, só que em tom de alerta em vez de conclusão */
+.dor-critico{background:var(--dor-glow);border-color:var(--dor-borda)}
+.dor-critico:hover{background:var(--dor-glow)}
+.dor-critico h3{color:var(--dor-borda)}
+.dor-critico::before{
+  content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  border:1.5px solid var(--dor-borda);opacity:.55;
+  animation:dorPulso 2.6s ease-out .6s infinite;
+}
+@keyframes dorPulso{to{opacity:0;scale:1.045}}
+
+@media (min-width:1025px){
+  .dor-seta{
+    display:flex;align-items:center;justify-content:center;
+    position:absolute;top:50%;right:-1.3rem;translate:0 -50%;z-index:2;
+    width:1.5rem;height:1.5rem;border-radius:50%;
+    background:var(--bg);border:1px solid var(--border-2);color:var(--text-2);
+    box-shadow:var(--shadow-sm);
+    opacity:0;scale:.4;
+    transition:opacity .4s var(--ease),scale .4s cubic-bezier(.3,1.6,.4,1),border-color .3s,color .3s;
+  }
+  .dor-seta .ico{width:.8em;height:.8em}
+  .dor:hover .dor-seta{border-color:var(--dor-borda);color:var(--dor-borda)}
+  .dores-cascata.in-view .dor:nth-child(1) .dor-seta{opacity:1;scale:1;transition-delay:.2s}
+  .dores-cascata.in-view .dor:nth-child(2) .dor-seta{opacity:1;scale:1;transition-delay:.32s}
+  .dores-cascata.in-view .dor:nth-child(3) .dor-seta{opacity:1;scale:1;transition-delay:.44s}
+}
+@media (pointer:coarse){
+  .dor{transform:translateY(var(--lift))}
+}
 
 /* Benefícios — grade "bento": tamanhos variados + uma mini-animação
    diferente por posição (ver BENEF_MOCKUPS em app.js). Empilha em 1
@@ -1218,6 +1283,7 @@ html[data-tema="escuro"] .prog-image{filter:drop-shadow(0 30px 44px rgba(0,0,0,.
   .prog-in{grid-template-columns:1fr}
   .prog-art{order:-1}
   .steps{grid-template-columns:repeat(2,1fr)}
+  .dores-cascata{grid-template-columns:repeat(2,1fr)}
 }
 @media (max-width:860px){
   .hdr-in{width:calc(100% - 2rem)}
@@ -1260,6 +1326,7 @@ html[data-tema="escuro"] .prog-image{filter:drop-shadow(0 30px 44px rgba(0,0,0,.
   .autoridade li{border-left:0;padding:1.6rem 0}
   .autoridade li:nth-child(n+2){border-top:1px solid var(--border)}
   .steps{grid-template-columns:1fr}
+  .dores-cascata{grid-template-columns:1fr}
   .linha{padding:1.8rem 1.4rem}
   .selo-linha{position:static;margin-bottom:1rem;align-self:flex-start}
   .gate-card{padding:2rem 1.35rem}

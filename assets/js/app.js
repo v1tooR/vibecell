@@ -146,9 +146,18 @@
              '<h3>' + esc(a.t) + '</h3><p>' + esc(a.d) + '</p></li>';
     }).join('');
 
-    /* dores */
-    $('#doresGrid').innerHTML = p.dores.itens.map(function (d) {
-      return '<article class="dor"><h3>' + esc(d.t) + '</h3><p>' + esc(d.d) + '</p></article>';
+    /* dores — cascata de consequências: a gravidade cresce a cada item, do
+       sintoma inicial ao desfecho, sem depender de nenhum número — só o
+       índice, o friso e a barra de peso ficam mais intensos a cada passo. */
+    var DOR_PESO = ['34%', '58%', '80%', '100%'];
+    $('#doresGrid').innerHTML = p.dores.itens.map(function (d, i) {
+      var ultimo = i === p.dores.itens.length - 1;
+      return '<article class="dor' + (ultimo ? ' dor-critico' : '') + '" style="--sev:' + (DOR_PESO[i] || '100%') + '">' +
+        '<span class="dor-idx">' + ('0' + (i + 1)).slice(-2) + '</span>' +
+        '<h3>' + esc(d.t) + '</h3><p>' + esc(d.d) + '</p>' +
+        '<span class="dor-peso" aria-hidden="true"><span class="dor-peso-fill"></span></span>' +
+        (ultimo ? '' : '<span class="dor-seta" aria-hidden="true">' + icone('seta') + '</span>') +
+      '</article>';
     }).join('');
 
     /* benefícios — grade "bento", cada posição tem sua própria mini-animação */
@@ -230,6 +239,8 @@
 
     ligarFaq();
     ligarBrilhoCards();
+    ligarTiltDores();
+    ligarCascataDores();
     prepararReveal();
 
     if (animar) {
@@ -406,13 +417,52 @@
   }
 
   function ligarBrilhoCards() {
-    $$('.card').forEach(function (c) {
+    $$('.card, .dor').forEach(function (c) {
       c.addEventListener('pointermove', function (e) {
         var r = c.getBoundingClientRect();
         c.style.setProperty('--mx', (e.clientX - r.left) + 'px');
         c.style.setProperty('--my', (e.clientY - r.top) + 'px');
       });
     });
+  }
+
+  /* Leve inclinação 3D nos cards de "dores", só com ponteiro fino e sem
+     prefers-reduced-motion — reforça o clima de instabilidade do tema (tela
+     rachada) sem exigir nada além de custom properties CSS. Como os cards
+     são recriados a cada renderTudo(), a função é chamada de novo sempre. */
+  function ligarTiltDores() {
+    var fino = window.matchMedia && matchMedia('(pointer:fine)').matches;
+    var reduz = window.matchMedia && matchMedia('(prefers-reduced-motion:reduce)').matches;
+    if (!fino || reduz) return;
+    $$('.dor').forEach(function (c) {
+      c.addEventListener('pointermove', function (e) {
+        var r = c.getBoundingClientRect();
+        var px = (e.clientX - r.left) / r.width;
+        var py = (e.clientY - r.top) / r.height;
+        c.style.setProperty('--tiltx', ((px - .5) * 5).toFixed(2) + 'deg');
+        c.style.setProperty('--tilty', ((.5 - py) * 5).toFixed(2) + 'deg');
+      });
+      c.addEventListener('pointerleave', function () {
+        c.style.setProperty('--tiltx', '0deg');
+        c.style.setProperty('--tilty', '0deg');
+      });
+    });
+  }
+
+  /* Liga a cascata de "dores" (barras de peso + setas) uma única vez, quando
+     a fileira inteira entra na tela — mesma lógica de ligarLinhaPassos,
+     aplicada às consequências em vez dos passos. */
+  function ligarCascataDores() {
+    var wrap = $('#doresGrid');
+    if (!wrap || wrap.dataset.cascataPronta) return;
+    wrap.dataset.cascataPronta = '1';
+    if (!('IntersectionObserver' in window)) { wrap.classList.add('in-view'); return; }
+    var io = new IntersectionObserver(function (entradas) {
+      entradas.forEach(function (en) {
+        if (en.isIntersecting) { en.target.classList.add('in-view'); io.unobserve(en.target); }
+      });
+    }, { threshold: .3 });
+    io.observe(wrap);
   }
 
   /* ============================================================
