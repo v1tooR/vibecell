@@ -72,6 +72,17 @@ html[data-tema="claro"] {
   --dor-borda: #e11d48;
   --dor-glow: rgba(225,29,72,.10);
   --tile-filtro: none;
+  --stream-bg:#ffffff;
+  --stream-text:#0b0f18;
+  --stream-muted:rgba(11,15,24,.62);
+  --stream-border:rgba(11,15,24,.10);
+  --stream-card-border:rgba(11,15,24,.18);
+  --stream-card-shadow:rgba(18,29,48,.24);
+  --stream-edge:rgba(255,255,255,.38);
+  --stream-core:rgba(255,255,255,.97);
+  --stream-core-soft:rgba(255,255,255,.82);
+  --stream-sign-bg:rgba(255,255,255,.74);
+  --stream-sign-text:rgba(11,15,24,.55);
 
   /* rampa aplicada às grades de ícone (versão legível sobre branco) */
   --r1:#2f86c8; --r2:#3a72cc; --r3:#4560cc; --r4:#5a4fc4; --r5:#6a3fb2; --r6:#7c319e;
@@ -108,6 +119,17 @@ html[data-tema="escuro"] {
   --dor-borda: #f43f5e;
   --dor-glow: rgba(244,63,94,.16);
   --tile-filtro: brightness(.78) saturate(.85) contrast(1.05);
+  --stream-bg:#050609;
+  --stream-text:#ffffff;
+  --stream-muted:rgba(255,255,255,.67);
+  --stream-border:rgba(255,255,255,.08);
+  --stream-card-border:rgba(255,255,255,.20);
+  --stream-card-shadow:rgba(0,0,0,.55);
+  --stream-edge:rgba(5,6,9,.18);
+  --stream-core:rgba(5,6,9,.95);
+  --stream-core-soft:rgba(5,6,9,.76);
+  --stream-sign-bg:rgba(5,6,9,.48);
+  --stream-sign-text:rgba(255,255,255,.58);
 
   --r1:#59a6e7; --r2:#5b93e0; --r3:#5b80d9; --r4:#6863ce; --r5:#6f4ac4; --r6:#8330a8;
 }
@@ -607,6 +629,62 @@ html[data-persona="tecnico"] .pill-glider{transform:translateX(100%)}
 }
 .sec-bento .wrap{position:relative;z-index:1}
 
+/* Corredor visual — transforma as fotos em narrativa, não em galeria avulsa.
+   As duas trilhas partem do centro e avançam em perspectiva ao redor da copy. */
+.sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+.brand-stream{
+  position:relative;min-height:clamp(34rem,58vw,46rem);display:grid;place-items:center;
+  overflow:hidden;isolation:isolate;background:var(--stream-bg);color:var(--stream-text);border-block:1px solid var(--stream-border);
+  container-type:inline-size;
+}
+.brand-stream::before{
+  content:"";position:absolute;inset:0;z-index:-2;
+  background:
+    radial-gradient(48% 58% at 50% 48%,rgba(91,128,217,.20),transparent 68%),
+    radial-gradient(42% 52% at 50% 58%,rgba(131,48,168,.14),transparent 72%),var(--stream-bg);
+}
+.brand-stream-stage{position:absolute;inset:0;perspective:30cqw;perspective-origin:50% 54%;pointer-events:none}
+.brand-stream-rail{position:absolute;inset:0;transform-style:preserve-3d}
+.brand-stream-card{
+  position:absolute;left:50%;top:54%;width:18cqw;height:25cqw;margin-left:-9cqw;margin-top:-12.5cqw;
+  overflow:hidden;border-radius:.8cqw;border:1px solid var(--stream-card-border);
+  box-shadow:0 22px 60px var(--stream-card-shadow);backface-visibility:hidden;will-change:transform,opacity;
+  animation-duration:18s;animation-timing-function:linear;animation-iteration-count:infinite;
+}
+.brand-stream-card img{width:100%;height:100%;display:block;object-fit:cover;filter:saturate(.9) contrast(1.04)}
+.brand-stream-card.is-wide img{object-position:center}
+.brand-stream-rail-left .brand-stream-card{animation-name:brandRailLeft}
+.brand-stream-rail-right .brand-stream-card{animation-name:brandRailRight}
+@keyframes brandRailLeft{
+  0%{opacity:0;transform:translate3d(8cqw,0,-28cqw) rotateY(6deg)}
+  8%{opacity:.8}
+  44%{opacity:1;transform:translate3d(-18cqw,0,-8cqw) rotateY(15deg)}
+  82%{opacity:1}
+  100%{opacity:0;transform:translate3d(-53cqw,0,8cqw) rotateY(28deg)}
+}
+@keyframes brandRailRight{
+  0%{opacity:0;transform:translate3d(-8cqw,0,-28cqw) rotateY(-6deg)}
+  8%{opacity:.8}
+  44%{opacity:1;transform:translate3d(18cqw,0,-8cqw) rotateY(-15deg)}
+  82%{opacity:1}
+  100%{opacity:0;transform:translate3d(53cqw,0,8cqw) rotateY(-28deg)}
+}
+.brand-stream-shade{
+  position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:
+    linear-gradient(90deg,var(--stream-edge),transparent 24%,transparent 76%,var(--stream-edge)),
+    radial-gradient(ellipse 34% 48% at 50% 54%,var(--stream-core) 0%,var(--stream-core-soft) 42%,transparent 78%),
+    linear-gradient(180deg,var(--stream-bg) 0%,transparent 16%,transparent 82%,var(--stream-bg) 100%);
+}
+.brand-stream-content{position:relative;z-index:2;text-align:center;display:flex;flex-direction:column;align-items:center;padding-block:5rem;pointer-events:none}
+.brand-stream-content .kicker{color:var(--acc)}
+.brand-stream-content .h2{max-width:18ch;margin:.85rem auto 1.1rem;color:var(--stream-text);text-wrap:balance}
+.brand-stream-content>p{max-width:46ch;color:var(--stream-muted);font-size:clamp(.95rem,1.5vw,1.08rem)}
+.brand-stream-signature{display:flex;align-items:center;gap:.8rem;margin-top:2rem;padding:.7rem 1rem;border:1px solid var(--stream-border);border-radius:100px;background:var(--stream-sign-bg);backdrop-filter:blur(10px)}
+.brand-stream-signature svg{width:2rem;height:1.2rem}
+.brand-stream-signature span{font-size:.62rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--stream-sign-text)}
+@media (prefers-reduced-motion:reduce){.brand-stream-card{animation-duration:18s!important;animation-play-state:paused!important}}
+
 /* Dores — "cascata de consequências": nada de quatro cards iguais.
    A gravidade cresce a cada item (friso mais grosso, barra de peso maior),
    setas encadeiam um problema no próximo e o último — o desfecho — ganha
@@ -739,20 +817,38 @@ html[data-persona="tecnico"] .pill-glider{transform:translateX(100%)}
 .mock-ping .mock-ring:nth-child(2){animation-delay:.65s}
 .mock-ping .mock-ring:nth-child(3){animation-delay:1.3s}
 
-.mock-tiers{display:flex;flex-direction:column;justify-content:center;gap:.5rem;width:75%}
-.mock-tiers span{height:.5rem;border-radius:100px;background:var(--surface-2);position:relative;overflow:hidden}
-.mock-tiers span:nth-child(1){width:55%}
-.mock-tiers span:nth-child(2){width:80%}
-.mock-tiers span:nth-child(3){width:100%}
-.mock-tiers span::after{
-  content:"";position:absolute;inset:0;border-radius:inherit;
-  background:linear-gradient(90deg,var(--c-ciano),var(--c-azul),var(--c-roxo));
-  transform:scaleX(0);transform-origin:left;animation:mockTier 3.6s ease-in-out infinite;
+.mock-profiles{width:8rem;height:4.8rem;flex:0 0 4.8rem;display:block;margin:.05rem auto .55rem;overflow:visible}
+.mock-vibe-box{
+  position:absolute;z-index:3;left:50%;top:.05rem;translate:-50% 0;
+  width:2.65rem;height:1.75rem;display:grid;place-items:center;padding:.38rem .52rem;
+  border-radius:.38rem;background:var(--panel);border:1px solid var(--border-2);
+  box-shadow:0 8px 18px -12px var(--acc);animation:profileBox 3.8s var(--ease) infinite;
 }
-.mock-tiers span:nth-child(1)::after{animation-delay:0s}
-.mock-tiers span:nth-child(2)::after{animation-delay:.35s}
-.mock-tiers span:nth-child(3)::after{animation-delay:.7s}
-@keyframes mockTier{0%,12%{transform:scaleX(0)}35%,75%{transform:scaleX(1)}96%,100%{transform:scaleX(0)}}
+.mock-vibe-box::before{content:"";position:absolute;left:.28rem;right:.28rem;top:-.2rem;height:.3rem;border:1px solid var(--border-2);border-bottom:0;border-radius:.25rem .25rem 0 0;background:var(--panel)}
+.mock-vibe-box svg{width:1.35rem;height:.8rem}
+.mock-branch{position:absolute;z-index:1;left:50%;top:1.7rem;width:5.1rem;height:1.65rem;translate:-50% 0}
+.mock-branch i{position:absolute;display:block;background:var(--border-2);overflow:hidden}
+.mock-branch i::after{content:"";position:absolute;inset:0;background:var(--grad);transform-origin:top left;animation:profileFlow 3.8s ease-in-out infinite}
+.mock-branch i:nth-child(1){left:50%;top:0;width:1px;height:.62rem}
+.mock-branch i:nth-child(2){left:1.05rem;right:50%;top:.61rem;height:1px}
+.mock-branch i:nth-child(3){left:50%;right:1.05rem;top:.61rem;height:1px}
+.mock-branch i:nth-child(4){left:1.05rem;top:.61rem;width:1px;height:.78rem}
+.mock-branch i:nth-child(5){right:1.05rem;top:.61rem;width:1px;height:.78rem}
+.mock-branch i:nth-child(2)::after{transform-origin:right center}
+.mock-branch i:nth-child(3)::after{transform-origin:left center}
+.mock-branch i:nth-child(4)::after,.mock-branch i:nth-child(5)::after{animation-delay:.12s}
+.mock-user{
+  position:absolute;z-index:2;bottom:.05rem;width:1.75rem;height:1.75rem;border-radius:50%;
+  display:grid;place-items:center;background:var(--panel);border:1px solid var(--border-2);
+  box-shadow:0 7px 17px -13px var(--acc);animation:profileUser 3.8s cubic-bezier(.3,1.5,.4,1) infinite;
+}
+.mock-user-a{left:.65rem}.mock-user-b{right:.65rem;animation-delay:.14s}
+.mock-user i{position:relative;width:.7rem;height:.72rem}
+.mock-user i::before{content:"";position:absolute;left:50%;top:0;translate:-50% 0;width:.34rem;height:.34rem;border-radius:50%;background:var(--acc)}
+.mock-user i::after{content:"";position:absolute;left:50%;bottom:0;translate:-50% 0;width:.7rem;height:.35rem;border-radius:.5rem .5rem .2rem .2rem;background:var(--acc)}
+@keyframes profileBox{0%,18%,100%{transform:translateY(0);border-color:var(--border-2)}35%,72%{transform:translateY(-2px);border-color:var(--acc-glow);box-shadow:0 10px 22px -10px var(--acc)}}
+@keyframes profileFlow{0%,20%{transform:scale(0)}42%,76%{transform:scale(1)}94%,100%{transform:scale(0)}}
+@keyframes profileUser{0%,35%,100%{scale:.86;opacity:.48}52%,82%{scale:1;opacity:1;border-color:var(--acc-glow)}}
 
 .mock-shields{
   position:relative;display:block;width:10rem;height:6rem;margin-inline:auto;
@@ -1325,6 +1421,11 @@ html[data-tema="escuro"] .prog-image{filter:drop-shadow(0 30px 44px rgba(0,0,0,.
   .autoridade{grid-template-columns:1fr}
   .autoridade li{border-left:0;padding:1.6rem 0}
   .autoridade li:nth-child(n+2){border-top:1px solid var(--border)}
+  .brand-stream{min-height:38rem}
+  .brand-stream-card{width:34cqw;height:47cqw;margin-left:-17cqw;margin-top:-23.5cqw}
+  .brand-stream-shade{background:radial-gradient(ellipse 58% 48% at 50% 54%,var(--stream-core) 0%,var(--stream-core-soft) 48%,transparent 86%),linear-gradient(180deg,var(--stream-bg) 0%,transparent 18%,transparent 80%,var(--stream-bg) 100%)}
+  .brand-stream-content{padding-inline:1.5rem}
+  .brand-stream-signature span{font-size:.56rem;letter-spacing:.1em}
   .steps{grid-template-columns:1fr}
   .dores-cascata{grid-template-columns:1fr}
   .linha{padding:1.8rem 1.4rem}

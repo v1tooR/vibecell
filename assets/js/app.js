@@ -79,8 +79,13 @@
         '<span class="mock-ring"></span><span class="mock-ring"></span><span class="mock-ring"></span>' +
         icone('check', 'mock-core') + '</div>';
     },
-    function () { // 2. Produtos para diferentes perfis — níveis acendendo
-      return '<div class="mock mock-tiers"><span></span><span></span><span></span></div>';
+    function () { // 2. Uma embalagem Vibe conectando dois perfis de usuário
+      return '<div class="mock mock-profiles" aria-hidden="true">' +
+        '<span class="mock-vibe-box"><svg viewBox="0 0 164 100"><use href="#barras"/></svg></span>' +
+        '<span class="mock-branch"><i></i><i></i><i></i><i></i><i></i></span>' +
+        '<span class="mock-user mock-user-a"><i></i></span>' +
+        '<span class="mock-user mock-user-b"><i></i></span>' +
+      '</div>';
     },
     function () { // 3. Mais segurança no pós-venda — escudos em sequência
       return '<div class="mock mock-shields">' +
@@ -322,7 +327,7 @@
   }
 
   function prepararReveal() {
-    var alvos = $$('.hero-copy > *, .sec-hd > *, .dor, .card, .linha, .step, .depo, .faq-item, .gate, .prog-copy > *, .prog-art, .cta-in > *, .autoridade li');
+    var alvos = $$('.hero-copy > *, .sec-hd > *, .dor, .card, .linha, .step, .depo, .faq-item, .gate, .prog-copy > *, .prog-art, .brand-stream-content > *, .cta-in > *, .autoridade li');
 
     /* rede de segurança: sem IntersectionObserver (ou se ele não disparar),
        o conteúdo aparece assim mesmo */
@@ -463,6 +468,34 @@
       });
     }, { threshold: .3 });
     io.observe(wrap);
+  }
+
+  /* Corredor visual inspirado no componente anexado, reconstruído em HTML/CSS
+     nativo para preservar a arquitetura do site e evitar novas dependências. */
+  function montarBrandStream() {
+    var palco = $('#brandStream');
+    if (!palco || palco.dataset.pronto) return;
+    palco.dataset.pronto = '1';
+    var imagens = [
+      ['assets/img/vibe-em-maos.webp', false],
+      ['assets/img/vibe-unboxing.webp', false],
+      ['assets/img/vibe-duas-linhas.webp', false],
+      ['assets/img/vibe-brand-pose.webp', false],
+      ['assets/img/vibe-tela-detalhe.webp', false],
+      ['assets/img/vibe-packaging-grid.webp', true],
+      ['assets/img/vibe-brand-proposal.webp', true],
+      ['assets/img/vibe-packaging-line.webp', true]
+    ];
+    function trilha(lado, deslocamento) {
+      var cards = imagens.map(function (img, i) {
+        var atual = imagens[(i + deslocamento) % imagens.length];
+        var atraso = -((i * 18) / imagens.length).toFixed(2);
+        return '<figure class="brand-stream-card' + (atual[1] ? ' is-wide' : '') + '" style="animation-delay:' + atraso + 's">' +
+          '<img src="' + atual[0] + '" alt="" loading="lazy" decoding="async" draggable="false"></figure>';
+      }).join('');
+      return '<div class="brand-stream-rail brand-stream-rail-' + lado + '">' + cards + '</div>';
+    }
+    palco.innerHTML = trilha('left', 0) + trilha('right', 4);
   }
 
   /* ============================================================
@@ -795,6 +828,7 @@
     ligarHeader();
     ligarModal();
     ligarFiltros();
+    montarBrandStream();
 
     /* visitante que já preencheu antes: mapa liberado direto */
     if (estado.lead) liberarMapa(false);
