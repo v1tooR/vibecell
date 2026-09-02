@@ -1,14 +1,17 @@
 # Vibe Cell — site institucional + mapa de distribuidores
 
-Site one page em **HTML, CSS e JavaScript puro** (sem build, sem framework, sem WordPress).
+Duas páginas em **HTML, CSS e JavaScript puro** (sem build, sem framework, sem WordPress),
+compartilhando o mesmo motor: `index.html` é a visão **Lojista** e `tecnico.html` é a visão
+**Técnico** — cada uma travada na sua audiência, mas lendo os mesmos `data.js`/`app.js`/`style.css`.
+Mudar um texto, cor ou comportamento é uma edição só, que vale pras duas.
 A única dependência externa é o **Leaflet + OpenStreetMap**, carregado por CDN **somente quando o
 mapa é liberado** — nenhuma chave de API, nenhum custo recorrente.
 
 ## Fluxo do usuário
 
-1. O site abre na visão **Lojista, com tema claro** (padrão). A pílula do topo troca para
-   **Técnico, com tema escuro** — muda o fundo, o conteúdo inteiro, a mensagem do WhatsApp,
-   os tiles do mapa e quais distribuidores aparecem. O degradê da marca é o mesmo nos dois temas.
+1. `index.html` abre travado na visão **Lojista, tema claro**; `tecnico.html` abre travado na
+   visão **Técnico, tema escuro**. A pílula no topo de cada página leva pra outra (é navegação de
+   página mesmo, não troca de conteúdo por JS). O degradê da marca é o mesmo nos dois temas.
 2. O visitante percorre a estrutura comercial: problema → solução → linhas de produto →
    Premium Vibe → como funciona → prova social → distribuidores.
 3. Ao chegar em **"Onde encontrar"**, o mapa aparece bloqueado e um **mini popup** pede nome e
@@ -21,19 +24,27 @@ O lead fica salvo no navegador: quem já preencheu não vê o popup de novo.
 ## Estrutura
 
 ```
-index.html                 estrutura e ícones (sprite SVG)
+index.html                 visão Lojista (trava a página em PAGINA_PERSONA.fixa = 'lojista')
+tecnico.html                visão Técnico (trava em 'tecnico') — mesmo HTML, mesmos ícones (sprite SVG)
 assets/css/style.css       tokens dos dois temas, layout e responsivo
 assets/js/data.js          >>> TODO O CONTEÚDO EDITÁVEL <<<
 assets/js/app.js           visão/tema, popup de captura, mapa e filtros
+assets/php/salvar-lead.php grava os leads em CSV (ver "Receber os leads")
 assets/img/vibe-logo.png   logo original, só como referência (a página não carrega)
 ```
+
+`index.html` e `tecnico.html` têm o mesmo corpo — os dois carregam a estrutura completa (gate do
+mapa, formulário de distribuidor, seções condicionais das duas personas), só que cada arquivo
+define `window.PAGINA_PERSONA` (script inline, logo antes de `data.js`) travando qual visão
+aparece. Pra criar uma terceira variante, é copiar um dos dois e trocar esse valor.
 
 ## O que editar (tudo em `assets/js/data.js`)
 
 | Quero mudar | Onde |
 | --- | --- |
 | WhatsApp, Instagram e site oficial | `CONFIG` |
-| Visão que abre por padrão | `CONFIG.personaPadrao` (`'lojista'` = claro, `'tecnico'` = escuro) |
+| Qual página é qual visão | `window.PAGINA_PERSONA` (script inline no fim de `index.html`/`tecnico.html`) |
+| Visão padrão se `PAGINA_PERSONA` não existir | `CONFIG.personaPadrao` (`'lojista'` = claro, `'tecnico'` = escuro) |
 | Textos da visão Lojista | `PERSONAS.lojista` |
 | Textos da visão Técnico | `PERSONAS.tecnico` |
 | Linhas de produto (Comum / Premium) | `PERSONAS.<visão>.portfolio.linhas` |
@@ -77,15 +88,27 @@ Copie um bloco de `DISTRIBUIDORAS` e ajuste. As coordenadas saem do Google Maps
 
 ### Receber os leads
 
-Por padrão o lead é gravado no navegador e impresso no console. Para enviar a um CRM,
-planilha ou automação (Zapier, Make, n8n, Apps Script), preencha:
+Por padrão (`leadWebhook` / `leadWebhookDistribuidor` apontando para
+`assets/php/salvar-lead.php`), cada envio dos dois formulários — o popup do
+Técnico e o "Seja um distribuidor" do Lojista — vira uma linha num CSV local,
+gravado em `assets/php/leads/` (uma pasta bloqueada por `.htaccess`, ninguém
+baixa o arquivo pela URL). **Só funciona em hospedagem com PHP** (Hostinger,
+cPanel...). Rodando localmente com `npx serve` o PHP não executa — pra testar
+de verdade é preciso subir os arquivos pra hospedagem real.
 
-```js
-leadWebhook: 'https://sua-url-de-webhook'
-```
+Se o site for publicado num host só de arquivo estático (GitHub Pages, Vercel,
+Netlify), troque `leadWebhook`/`leadWebhookDistribuidor` por uma URL de
+webhook (Zapier, Make, n8n, Google Apps Script, CRM...) ou deixe em branco
+pra gravar só no navegador de quem preencheu.
 
-O envio é um `POST` JSON com `{ nome, whatsapp, whatsappFmt, perfil, origem, data }`.
-Se existir `window.dataLayer` (GTM), também é disparado o evento `lead_distribuidor`.
+O envio é um `POST` com corpo JSON — `{ nome, whatsapp, whatsappFmt, perfil, origem, data }`
+no popup do Técnico, `{ nome, telefone, telefoneFmt, email, cep, cidadeUf, faixaCompra, perfil, origem, data }`
+no "Seja um distribuidor". Se existir `window.dataLayer` (GTM), também é
+disparado o evento `lead_distribuidor` (Técnico) ou `lead_distribuidor_form`
+(Lojista).
+
+Os CSVs guardam dado pessoal de cliente — por isso `assets/php/leads/*.csv`
+está no `.gitignore` e nunca deve ir pro controle de versão.
 
 ## Identidade visual
 
@@ -126,12 +149,15 @@ Extraída da logo (`assets/img/vibe-logo.png`).
 npx serve -l 4173 .
 ```
 
-Abra `http://localhost:4173`. Para forçar uma visão: `?perfil=lojista` ou `?perfil=tecnico`.
+Abra `http://localhost:4173` (Lojista) ou `http://localhost:4173/tecnico.html` (Técnico).
+`?perfil=lojista` / `?perfil=tecnico` na URL só tem efeito se `window.PAGINA_PERSONA` não
+estiver definido no arquivo — nos dois HTMLs publicados, a visão vem travada por ele.
 
 ## Publicar
 
 São arquivos estáticos — sobem em qualquer hospedagem (Hostinger, Vercel, Netlify,
-GitHub Pages, cPanel). Basta enviar `index.html` e a pasta `assets/` para a raiz do domínio.
+GitHub Pages, cPanel). Basta enviar `index.html`, `tecnico.html` e a pasta `assets/` para a
+raiz do domínio.
 
 ## Detalhes técnicos
 

@@ -16,12 +16,36 @@ const CONFIG = {
 
   /* WhatsApp comercial da marca (formato internacional, só números) */
   whatsappComercial: '5511999999999',
-  instagram: 'https://instagram.com/',
+  instagram: 'https://instagram.com/vibecell.oficial',
   siteOficial: 'https://vibecell.com.br',
 
-  /* Opcional: URL que recebe os leads via POST JSON (Zapier, Make,
-     n8n, Apps Script, CRM...). Vazio = grava só no navegador.      */
-  leadWebhook: '',
+  /* Episódio em destaque do Vibecast (ID do vídeo no YouTube) — usado na
+     seção de card único (lojista). */
+  vibecastVideoId: 'UTCaBXgikc4',
+
+  /* Vitrine "Conheça o nosso canal" (técnico) — 4 episódios lado a lado,
+     um por convidado. Só o ID do vídeo (o trecho depois de "v=" na URL). */
+  vibecastCanalIds: ['UTCaBXgikc4', 'zEHEOCB0szo', '2AGfSr5vDAg', '_asVEGjyMXE'],
+
+  /* Chave gratuita da CARTO pros tiles do mapa de distribuidores (claro/
+     escuro). Sem ela, o mapa funciona só que com a marca d'água "API KEY
+     REQUIRED". É de graça, não precisa criar conta e chega por e-mail em
+     minutos: preencha o formulário em https://carto.com/basemaps/apikey/
+     (com o domínio onde o site vai rodar) e cole a chave aqui. */
+  cartoApiKey: 'cb1_2t4i_1_e17f495072781ec031d0316a',
+
+  /* Endpoint que grava cada envio dos formulários numa linha de CSV, no
+     próprio servidor (assets/php/salvar-lead.php + assets/php/leads/) —
+     precisa de hospedagem com PHP (Hostinger, cPanel...). Se o site estiver
+     numa hospedagem só de arquivo estático (GitHub Pages, Vercel, Netlify),
+     troque essa URL por outro destino (ex.: Google Apps Script) ou deixe em
+     branco pra gravar só no navegador de quem preencheu.               */
+  leadWebhook: 'assets/php/salvar-lead.php',
+  leadWebhookDistribuidor: 'assets/php/salvar-lead.php',
+
+  /* Termo de garantia (botão "Baixar o termo de garantia" na seção
+     Premium). Link direto de download do Google Drive.             */
+  garantiaPdf: 'https://drive.google.com/uc?export=download&id=1rjcVtme7MYZnHIisDwvJYg26h1f0iqND',
 
   /* Visão que abre por padrão: 'lojista' (tema claro) ou 'tecnico' (escuro) */
   personaPadrao: 'lojista'
@@ -41,10 +65,10 @@ const PERSONAS = {
     tema: 'claro',
 
     hero: {
-      eyebrow: 'Para lojistas e revendedores',
-      titulo: 'Telas que giram.<br>Qualidade que faz o cliente voltar.',
-      texto: 'Abasteça sua loja com telas e frontais selecionados para quem precisa vender com confiança, manter um estoque competitivo e reduzir problemas no pós-venda.',
-      texto2: 'Da linha de maior giro à Premium Vibe, encontre soluções para diferentes perfis de cliente e tenha uma marca preparada para acompanhar sua operação.',
+      eyebrow: 'Fornecedor de tela para atacado',
+      titulo: 'Entre na Vibe e abasteça sua operação<br>com a tela que não volta.',
+      texto: 'Todos os modelos, atendimento com gente de verdade do outro lado, 1 ano de garantia e entrega personalizada pra todo o Brasil.',
+      texto2: 'A Vibe é a 01 do mercado.',
       ctaPrimario: 'Encontrar distribuidor',
       ctaSecundario: 'Conhecer as linhas',
       selos: ['Atendimento para lojistas', 'Distribuição nacional', 'Importação direta']
@@ -58,52 +82,42 @@ const PERSONAS = {
     ],
 
     dores: {
-      kicker: 'O problema',
-      titulo: 'Uma tela ruim custa muito mais do que o valor da peça.',
-      texto: 'Quando o produto volta para o balcão, o problema não termina na troca. Sua equipe perde tempo, sua margem diminui e a confiança que o cliente tem na sua loja também pode ser afetada. Para quem trabalha com volume, pequenas inconsistências se transformam rapidamente em grandes custos.',
+      kicker: 'Por que comprar da Vibe',
+      titulo: 'Quem revende tela sabe onde dói.',
       itens: [
-        { t: 'Estoque parado', d: 'Produto que não transmite confiança demora mais para girar e ocupa espaço no seu estoque.' },
-        { t: 'Retrabalho no pós-venda', d: 'Trocas, reclamações e retornos consomem o tempo que sua equipe deveria usar para vender.' },
-        { t: 'Margem comprometida', d: 'Uma venda problemática pode custar mais do que o lucro gerado por diversas vendas bem-sucedidas.' },
-        { t: 'Cliente que não volta', d: 'O técnico precisa confiar no produto que compra. Quando ele encontra consistência, tende a manter o fornecedor.' }
+        { t: 'Você fala com gente', d: 'Pedido, prazo e problema resolvidos com quem atende de verdade. Você não fica esperando resposta pra saber se a carga saiu.', foto: 'assets/img/dist-ceo-cliente.webp' },
+        { t: 'Garantia que chega na ponta', d: '1 ano de garantia, com processo que funciona quando você precisa acionar. Prometer garantia é fácil, difícil é honrar.', foto: 'assets/img/dist-equipe.webp' },
+        { t: 'Todos os modelos', d: 'Do aparelho de entrada ao topo de linha, iPhone e Android, pra você não perder venda por falta de peça.', foto: 'assets/img/dist-comparando-telas.webp' },
+        { t: 'Entrega personalizada pra todo o Brasil', d: 'A logística se ajusta ao seu volume e à sua região.', foto: 'assets/img/dist-estoque.webp' }
       ]
     },
 
     beneficios: {
-      kicker: 'A solução',
-      titulo: 'Um fornecedor pensado para quem precisa vender todos os dias.',
-      texto: 'A Vibe une variedade, qualidade e atendimento especializado para ajudar lojistas e revendedores a construir um estoque mais competitivo e vender com mais segurança.',
+      kicker: 'Por que comprar da Vibe',
+      titulo: 'Quem revende tela sabe onde dói.',
       itens: [
-        { i: 'check',   t: 'Qualidade previsível',            d: 'Mais consistência entre os produtos para trazer segurança à sua operação e ao cliente que compra de você.' },
-        { i: 'camadas', t: 'Produtos para diferentes perfis', d: 'Atenda desde o cliente que procura custo-benefício até quem exige uma experiência superior.' },
-        { i: 'shield',  t: 'Mais segurança no pós-venda',     d: 'Produtos mais confiáveis ajudam a reduzir situações que consomem tempo, margem e relacionamento.' },
-        { i: 'box',     t: 'Mix pensado para o mercado',      d: 'Tenha opções alinhadas às demandas de assistências técnicas e profissionais de reparação mobile.' },
-        { i: 'chat',    t: 'Atendimento especializado',       d: 'Conte com suporte comercial para encontrar produtos adequados ao perfil da sua loja.' },
-        { i: 'pin',     t: 'Distribuição estratégica',        d: 'Encontre uma distribuidora Vibe e facilite o abastecimento da sua operação.' }
+        { i: 'chat',  t: 'Você fala com gente',                        d: 'Pedido, prazo e problema resolvidos com quem atende de verdade. Você não fica esperando resposta pra saber se a carga saiu.' },
+        { i: 'shield', t: 'Garantia que chega na ponta',                d: '1 ano de garantia, com processo que funciona quando você precisa acionar. Prometer garantia é fácil, difícil é honrar.' },
+        { i: 'box',   t: 'Todos os modelos',                            d: 'Do aparelho de entrada ao topo de linha, iPhone e Android, pra você não perder venda por falta de peça.' },
+        { i: 'pin',   t: 'Entrega personalizada pra todo o Brasil',     d: 'A logística se ajusta ao seu volume e à sua região.', mapa: true }
       ]
     },
 
     portfolio: {
-      kicker: 'Portfólio',
-      titulo: 'Opções para cada venda. Uma marca para o seu estoque.',
-      texto: 'Do cliente que busca custo-benefício ao profissional que exige uma experiência superior, tenha alternativas para diferentes necessidades de compra.',
+      kicker: 'Tela China e tela Vibe',
+      titulo: 'Tem cliente que compra por preço e tem cliente que compra por qualidade. A Vibe atende os dois.',
+      fechamento: 'Você monta a prateleira com as duas e atende o balcão inteiro sem mandar cliente pro concorrente.',
       linhas: [
         {
-          nome: 'Tela Comum',
-          tagline: 'Custo-benefício para o giro do dia a dia.',
-          texto: 'Uma opção pensada para atender clientes que procuram equilíbrio entre preço, funcionalidade e disponibilidade. Ideal para compor um estoque competitivo e atender demandas recorrentes do mercado.',
-          rotuloLista: 'Indicada para',
-          itens: ['modelos de alto giro', 'clientes sensíveis a preço', 'vendas orientadas a custo-benefício', 'ampliação do mix da loja'],
-          cta: 'Consultar disponibilidade'
+          nome: 'Tela China (Incell)',
+          texto: 'A opção de preço. Pro cliente que precisa do aparelho funcionando de novo e decide pelo orçamento.',
+          foto: 'assets/img/dist-tela-china.webp'
         },
         {
-          nome: 'Premium Vibe',
+          nome: 'Linha Vibe',
           destaque: true,
-          tagline: 'Mais qualidade para quem exige mais da tela.',
-          texto: 'A linha Premium Vibe foi desenvolvida para clientes que valorizam uma experiência superior de uso. Mais um argumento para sua equipe vender valor, e não apenas preço.',
-          rotuloLista: 'Destaques',
-          itens: ['brilho mais intenso', 'toque responsivo', 'acabamento superior', 'maior percepção de qualidade'],
-          cta: 'Conhecer a Premium Vibe'
+          texto: 'A opção de qualidade. Pro cliente que quer o aparelho igual ao que ele comprou, e pro lojista que quer parar de receber tela de volta.',
+          foto: 'assets/img/dist-tela-vibe.webp'
         }
       ]
     },
@@ -118,7 +132,10 @@ const PERSONAS = {
         'Maior percepção de valor na venda',
         'Ideal para clientes mais exigentes'
       ],
-      cta: 'Quero vender Premium Vibe'
+      cta: 'Quero vender Premium Vibe',
+      garantiaTitulo: '1 ano de garantia que funciona',
+      garantiaTexto: 'Todo mundo no mercado fala em garantia. A diferença aparece na hora que você precisa acionar. Na Vibe o processo está escrito, o prazo está escrito e quem atende é o mesmo time que te vendeu.',
+      garantiaCta: 'Baixar o termo de garantia'
     },
 
     passos: {
@@ -139,9 +156,10 @@ const PERSONAS = {
     },
 
     mapa: {
-      kicker: 'Onde encontrar',
-      titulo: 'Encontre uma distribuidora Vibe perto da sua loja.',
-      texto: 'Consulte nossa rede de distribuição, encontre o ponto mais próximo e fale diretamente com quem pode atender sua região.'
+      kicker: 'Seja um distribuidor',
+      titulo: 'Vibe é a 01 do mercado. Seja o distribuidor na sua região',
+      texto: 'Preencha os dados e o comercial retorna com a condição pro seu volume de compra.',
+      formulario: true
     },
 
     gate: {
@@ -154,6 +172,15 @@ const PERSONAS = {
     modal: {
       titulo: 'Falta pouco para encontrar sua Vibe.',
       texto: 'Informe seus dados para liberar o mapa de distribuidores e encontrar o ponto de atendimento mais adequado para sua região.'
+    },
+
+    distGate: {
+      titulo: 'Seja um distribuidor Vibe',
+      texto: 'Preencha seus dados e o comercial retorna com a condição pro seu volume de compra.',
+      botao: 'Quero ser distribuidor',
+      micro: 'Leva poucos segundos · Sem compromisso · Seus dados são usados somente para atendimento comercial',
+      modalTitulo: 'Seja um distribuidor Vibe',
+      modalTexto: 'Preencha os dados abaixo para receber a condição comercial pro seu volume de compra.'
     },
 
     faq: {
@@ -171,11 +198,11 @@ const PERSONAS = {
     },
 
     ctaFinal: {
-      titulo: 'O próximo produto que seu cliente procura pode estar no seu estoque.',
-      texto: 'Encontre uma distribuidora Vibe, consulte as linhas disponíveis e construa um mix preparado para diferentes perfis de cliente.',
+      titulo: 'Entre na Vibe.',
+      texto: 'A 01 do mercado em tela para assistência técnica.',
       linhas: ['Mais variedade para vender.', 'Mais segurança para o seu negócio.', 'Mais motivos para o cliente voltar.'],
-      botao: 'Encontrar distribuidor',
-      botao2: 'Falar com a Vibe'
+      botao: 'Quero ser distribuidor',
+      faixaMarca: true
     },
 
     msgWhatsapp: 'Olá! Tenho uma loja e quero conhecer as linhas de tela da Vibe.',
@@ -190,57 +217,38 @@ const PERSONAS = {
     tema: 'escuro',
 
     hero: {
-      eyebrow: 'Para técnicos e assistências técnicas',
-      titulo: 'A tela certa para entregar<br>o reparo com segurança.',
-      texto: 'Telas e frontais selecionados para quem trabalha com o aparelho aberto na bancada e precisa de consistência entre uma peça e outra.',
-      texto2: 'Da linha de maior giro à Premium Vibe, escolha o produto conforme o que o seu cliente espera do reparo — e veja onde comprar perto de você.',
-      ctaPrimario: 'Encontrar distribuidor',
-      ctaSecundario: 'Conhecer as linhas',
+      eyebrow: 'Pra quem tá na bancada',
+      titulo: 'Tela de qualidade na sua bancada<br>faz o cliente parar de voltar.',
+      texto: 'Com tela Vibe você entrega o aparelho e dá a sua garantia sem medo.',
+      texto2: 'A Vibe é a 01 do mercado e a mais conhecida entre quem conserta celular.',
+      ctaPrimario: 'Ver quem vende Vibe perto de mim',
+      ctaSecundario: 'Ver os modelos',
       selos: ['Foco em reparação mobile', 'Distribuição nacional', 'Importação direta']
     },
 
     autoridade: [
-      { i: 'box',   t: 'Linhas para cada reparo', d: 'Opções para o serviço econômico e para o cliente exigente.' },
-      { i: 'globo', t: 'Importação direta',       d: 'Mais controle sobre seleção e fornecimento.' },
-      { i: 'rota',  t: 'Logística nacional',      d: 'Encontre um ponto de atendimento para a sua região.' },
-      { i: 'chat',  t: 'Suporte comercial',       d: 'Atendimento para tirar dúvidas antes de fechar o pedido.' }
+      { i: 'box',   t: 'Linhas pra cada reparo', d: 'Do serviço mais econômico ao que exige mais da tela.' },
+      { i: 'globo', t: 'Importação direta',      d: 'Mais controle do início ao fim, sem depender de intermediário.' },
+      { i: 'rota',  t: 'Logística nacional',     d: 'A Vibe chega até a sua bancada, em qualquer região.' },
+      { i: 'chat',  t: 'Suporte comercial',      d: 'Time pronto pra tirar sua dúvida antes de fechar o pedido.' }
     ],
 
-    dores: {
-      kicker: 'O problema',
-      titulo: 'A peça errada aparece depois — e sempre na sua bancada.',
-      texto: 'Quando a tela volta, o prejuízo não é só a peça. É o tempo de reabrir o aparelho, a conversa com o cliente e a confiança que você levou anos para construir. Para quem faz volume, pequenas inconsistências viram retrabalho constante.',
-      itens: [
-        { t: 'Retrabalho na bancada', d: 'Reabrir um aparelho já entregue consome o tempo que deveria ir para o próximo serviço.' },
-        { t: 'Peça sem consistência', d: 'Quando cada unidade se comporta de um jeito, fica difícil prometer resultado para o cliente.' },
-        { t: 'Conversa difícil no balcão', d: 'Explicar um retorno desgasta o relacionamento, mesmo quando o serviço foi bem feito.' },
-        { t: 'Fornecedor que muda toda hora', d: 'Trocar de origem a cada compra transforma cada reparo em teste.' }
-      ]
-    },
-
     beneficios: {
-      kicker: 'A solução',
-      titulo: 'Um fornecedor pensado para quem entrega reparo todos os dias.',
-      texto: 'A Vibe une variedade, qualidade e atendimento especializado para que você escolha a tela certa para cada serviço e trabalhe com mais previsibilidade.',
-      itens: [
-        { i: 'check',   t: 'Qualidade previsível',       d: 'Mais consistência entre as peças para você prometer o resultado com segurança.' },
-        { i: 'camadas', t: 'Linhas para cada serviço',   d: 'Atenda desde o reparo orientado a preço até o cliente que exige experiência superior.' },
-        { i: 'shield',  t: 'Menos retorno no balcão',    d: 'Produtos mais confiáveis ajudam a reduzir situações que custam tempo e relacionamento.' },
-        { i: 'box',     t: 'Mix pensado para reparação', d: 'Opções alinhadas às demandas de assistências técnicas e profissionais de reparação mobile.' },
-        { i: 'chat',    t: 'Atendimento especializado',  d: 'Suporte comercial para ajudar a escolher a linha adequada ao seu serviço.' },
-        { i: 'pin',     t: 'Distribuição estratégica',   d: 'Encontre uma distribuidora Vibe e facilite a reposição do seu estoque de bancada.' }
-      ]
+      kicker: 'Por que trocar com tela Vibe',
+      titulo: 'Tela que volta é serviço refeito de graça.',
+      texto: 'Você já sabe como é: o cliente volta duas semanas depois, você abre o aparelho de novo, gasta seu tempo e não fatura nada. Com peça boa esse retorno cai, e aí você consegue dar garantia sem apertar a margem.',
+      texto2: 'A Vibe é a marca que o mercado conhece. Quando você diz pro cliente que colocou tela Vibe, isso vale alguma coisa no orçamento.'
     },
 
     portfolio: {
       kicker: 'Portfólio',
       titulo: 'Uma linha para cada tipo de reparo.',
-      texto: 'Do serviço orientado a custo ao cliente que percebe cada detalhe da tela, escolha a opção adequada para cada atendimento.',
+      texto: 'Do serviço que preza pelo custo ao cliente que percebe cada detalhe da tela — escolha a linha certa pra cada atendimento.',
       linhas: [
         {
           nome: 'Tela Comum',
           tagline: 'Custo-benefício para o serviço do dia a dia.',
-          texto: 'Uma opção pensada para reparos em que o cliente procura equilíbrio entre preço, funcionalidade e disponibilidade. Ideal para modelos de alta procura e demandas recorrentes da bancada.',
+          texto: 'Feita pra quando o cliente busca equilíbrio entre preço, funcionalidade e disponibilidade. Ideal pros modelos de alta procura e pra reposição frequente da bancada.',
           rotuloLista: 'Indicada para',
           itens: ['modelos de alto giro', 'clientes sensíveis a preço', 'reparos orientados a custo-benefício', 'reposição frequente de estoque'],
           cta: 'Consultar disponibilidade'
@@ -249,7 +257,7 @@ const PERSONAS = {
           nome: 'Premium Vibe',
           destaque: true,
           tagline: 'Mais qualidade para quem exige mais da tela.',
-          texto: 'A linha Premium Vibe foi desenvolvida para clientes que valorizam uma experiência superior de uso. Um argumento a mais para você cobrar pelo serviço bem entregue.',
+          texto: 'Pensada pra quem valoriza uma experiência de uso superior — e um argumento a mais na hora de cobrar pelo serviço bem entregue.',
           rotuloLista: 'Destaques',
           itens: ['brilho mais intenso', 'toque responsivo', 'acabamento superior', 'maior percepção de qualidade'],
           cta: 'Conhecer a Premium Vibe'
@@ -267,7 +275,10 @@ const PERSONAS = {
         'Maior percepção de valor no seu serviço',
         'Ideal para clientes mais exigentes'
       ],
-      cta: 'Quero trabalhar com a Premium Vibe'
+      cta: 'Quero trabalhar com a Premium Vibe',
+      garantiaTitulo: '1 ano de garantia que funciona',
+      garantiaTexto: 'Todo mundo no mercado fala em garantia. A diferença aparece na hora que você precisa acionar. Na Vibe o processo está escrito, o prazo está escrito e quem atende é o mesmo time que te vendeu.',
+      garantiaCta: 'Baixar o termo de garantia'
     },
 
     passos: {
@@ -290,7 +301,7 @@ const PERSONAS = {
     mapa: {
       kicker: 'Onde encontrar',
       titulo: 'Encontre uma distribuidora Vibe perto da sua bancada.',
-      texto: 'Consulte nossa rede de distribuição, encontre o ponto mais próximo e fale diretamente com quem pode atender sua região.'
+      texto: 'Veja no mapa o ponto mais próximo e fale direto com quem atende a sua região.'
     },
 
     gate: {
@@ -309,19 +320,19 @@ const PERSONAS = {
       kicker: 'Dúvidas frequentes',
       titulo: 'Antes de fechar o pedido',
       itens: [
-        { p: 'A Vibe vende diretamente para técnicos?', r: 'A Vibe trabalha com atendimento voltado ao mercado de assistência técnica, incluindo técnicos, lojistas e revendedores. Use o mapa para encontrar a distribuidora que atende sua região.' },
-        { p: 'Onde posso comprar produtos Vibe?', r: 'Você pode utilizar nosso mapa de distribuidores para encontrar o ponto mais próximo e acessar os canais de atendimento disponíveis.' },
-        { p: 'Qual a diferença entre a linha Comum e a Premium Vibe?', r: 'A linha Comum é direcionada a quem procura equilíbrio entre custo-benefício e funcionalidade. A Premium Vibe é indicada para clientes que valorizam uma experiência superior, com diferenciais como brilho mais intenso, toque responsivo e acabamento superior.' },
-        { p: 'Como saber quais modelos estão disponíveis?', r: 'A disponibilidade pode variar de acordo com o estoque e distribuidor. Encontre o atendimento da sua região pelo mapa e consulte os modelos disponíveis diretamente pelo WhatsApp.' },
-        { p: 'A Vibe atende todo o Brasil?', r: 'A Vibe trabalha com logística e distribuição para diferentes regiões do país. Utilize o mapa para verificar os pontos disponíveis e encontrar a melhor opção de atendimento para sua localização.' },
-        { p: 'Posso comprar para revender?', r: 'Sim. A Vibe possui uma proposta voltada para profissionais e empresas que atuam no mercado de peças e reparação mobile. Consulte um distribuidor para conhecer disponibilidade e condições comerciais.' },
-        { p: 'Como escolher qual linha usar em cada reparo?', r: 'Depende do perfil do cliente e do que ele espera do aparelho. O atendimento comercial pode ajudar a indicar a linha mais adequada para cada tipo de serviço.' }
+        { p: 'A Vibe vende diretamente para técnicos?', r: 'Sim. O atendimento da Vibe cobre técnicos, assistências técnicas, lojistas e revendedores. Use o mapa pra encontrar a distribuidora que atende a sua região.' },
+        { p: 'Onde posso comprar produtos Vibe?', r: 'Pelo mapa de distribuidores. Encontre o ponto mais próximo e fale direto pelos canais de atendimento disponíveis.' },
+        { p: 'Qual a diferença entre a linha Comum e a Premium Vibe?', r: 'A Tela Comum entrega equilíbrio entre custo-benefício e funcionalidade. A Premium Vibe é pra quando o cliente exige mais: brilho mais intenso, toque responsivo e acabamento superior.' },
+        { p: 'Como saber quais modelos estão disponíveis?', r: 'A disponibilidade varia por estoque e distribuidor. Encontre o atendimento da sua região pelo mapa e confirme os modelos direto pelo WhatsApp.' },
+        { p: 'A Vibe atende todo o Brasil?', r: 'Sim, a distribuição cobre diferentes regiões do país. Use o mapa pra ver os pontos disponíveis perto de você.' },
+        { p: 'Posso comprar para revender?', r: 'Sim. A Vibe atende profissionais e empresas do mercado de peças e reparação mobile. Fale com um distribuidor pra conhecer disponibilidade e condições.' },
+        { p: 'Como escolher qual linha usar em cada reparo?', r: 'Depende do que o cliente espera do aparelho. O atendimento comercial ajuda a indicar a linha certa pra cada tipo de serviço.' }
       ]
     },
 
     ctaFinal: {
       titulo: 'A próxima tela da sua bancada pode ser a que resolve de vez.',
-      texto: 'Encontre uma distribuidora Vibe, consulte as linhas disponíveis e escolha a opção adequada para cada reparo.',
+      texto: 'Encontre uma distribuidora Vibe perto de você e escolha a linha certa pra cada reparo.',
       linhas: ['Mais opções para cada serviço.', 'Mais segurança na entrega.', 'Mais motivos para o cliente voltar.'],
       botao: 'Encontrar distribuidor',
       botao2: 'Falar com a Vibe'

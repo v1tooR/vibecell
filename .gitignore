@@ -1,0 +1,4 @@
+# Dados pessoais de clientes gravados pelo assets/php/salvar-lead.php —
+# nunca versionar (LGPD). O .htaccess da pasta já bloqueia acesso via URL;
+# isso aqui garante que também não vão parar no histórico do git.
+assets/php/leads/*.csv

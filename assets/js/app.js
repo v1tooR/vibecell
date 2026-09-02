@@ -12,13 +12,18 @@
 
   var $  = function (s, ctx) { return (ctx || document).querySelector(s); };
   var $$ = function (s, ctx) { return Array.prototype.slice.call((ctx || document).querySelectorAll(s)); };
-  var LS_PERSONA = 'vibe:persona';
-  var LS_LEAD    = 'vibe:lead';
+  var LS_PERSONA  = 'vibe:persona';
+  var LS_LEAD     = 'vibe:lead';
+  var LS_LEAD_DIST = 'vibe:leadDistribuidor';
 
   /* Tiles do mapa por tema (CARTO sobre dados do OpenStreetMap) */
+  /* A CARTO passou a exigir uma chave (gratuita) nos tiles do mapa — sem
+     ela, o tile continua funcionando, só que com a marca d'água "API KEY
+     REQUIRED". Configure CONFIG.cartoApiKey em data.js pra tirar isso. */
+  var CARTO_KEY = CONFIG.cartoApiKey ? '?key=' + CONFIG.cartoApiKey : '';
   var TILES = {
-    claro:  'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
-    escuro: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
+    claro:  'https://{s}.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}{r}.png' + CARTO_KEY,
+    escuro: 'https://{s}.basemaps.cartocdn.com/rastertiles/dark_all/{z}/{x}/{y}{r}.png' + CARTO_KEY
   };
   var ATRIB = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>';
 
@@ -28,6 +33,7 @@
   var estado = {
     persona: lerPersonaInicial(),
     lead: lerJSON(LS_LEAD),
+    leadDistribuidor: lerJSON(LS_LEAD_DIST),
     mapa: null,
     camada: null,
     marcadores: {},
@@ -42,6 +48,10 @@
     try { localStorage.setItem(chave, typeof valor === 'string' ? valor : JSON.stringify(valor)); } catch (e) {}
   }
   function lerPersonaInicial() {
+    /* index.html e tecnico.html travam numa visão só (window.PAGINA_PERSONA,
+       definido inline em cada arquivo) — a pílula do topo, nesse caso, navega
+       pra outra página em vez de trocar o conteúdo aqui. */
+    if (window.PAGINA_PERSONA && PERSONAS[window.PAGINA_PERSONA.fixa]) return window.PAGINA_PERSONA.fixa;
     var url = new URLSearchParams(location.search).get('perfil');
     if (url && PERSONAS[url]) return url;
     var salva = null;
@@ -73,13 +83,15 @@
 
   /* Mini-animações da grade "bento" de benefícios — uma por posição,
      só CSS/keyframes (sem estado em JS, sem dependências externas). */
-  var BENEF_MOCKUPS = [
-    function () { // 1. Qualidade previsível — selo pulsando
+  /* Uma mini-animação por ícone (não por posição) — assim qualquer item
+     puxa a animação certa pro seu conteúdo, com 4 ou 6 cards no grid. */
+  var BENEF_MOCKUPS = {
+    check: function () { // selo pulsando — qualidade/confiança
       return '<div class="mock mock-ping">' +
         '<span class="mock-ring"></span><span class="mock-ring"></span><span class="mock-ring"></span>' +
         icone('check', 'mock-core') + '</div>';
     },
-    function () { // 2. Uma embalagem Vibe conectando dois perfis de usuário
+    camadas: function () { // embalagem Vibe conectando dois perfis de usuário
       return '<div class="mock mock-profiles" aria-hidden="true">' +
         '<span class="mock-vibe-box"><svg viewBox="0 0 164 100"><use href="#barras"/></svg></span>' +
         '<span class="mock-branch"><i></i><i></i><i></i><i></i><i></i></span>' +
@@ -87,26 +99,26 @@
         '<span class="mock-user mock-user-b"><i></i></span>' +
       '</div>';
     },
-    function () { // 3. Mais segurança no pós-venda — escudos em sequência
+    shield: function () { // escudos em sequência — garantia/segurança
       return '<div class="mock mock-shields">' +
         icone('shield', 'mock-shield') + icone('shield', 'mock-shield') + icone('shield', 'mock-shield') +
         '</div>';
     },
-    function () { // 4. Mix pensado para o mercado — grade de opções
+    box: function () { // grade de opções — variedade/mix
       return '<div class="mock mock-swatches">' +
         '<span></span><span></span><span></span><span></span><span></span><span></span></div>';
     },
-    function () { // 5. Atendimento especializado — chat digitando
+    chat: function () { // chat digitando — atendimento
       return '<div class="mock mock-chat"><span class="mock-bubble">' +
         icone('chat', 'mock-chat-ico') +
         '<span class="mock-dots"><i></i><i></i><i></i></span></span></div>';
     },
-    function () { // 6. Distribuição estratégica — foto + pino pulsando
+    pin: function () { // pino pulsando — distribuição/entrega
       return '<div class="mock mock-radar">' +
         '<span class="mock-ring"></span><span class="mock-ring"></span>' +
         icone('pin', 'mock-core') + '</div>';
     }
-  ];
+  };
 
   /* Estrutura interna usada pelo brilho dos CTAs principais. Mantém ícones,
      textos dinâmicos e links acessíveis sem exigir markup repetido no HTML. */
@@ -140,6 +152,14 @@
       else el.textContent = txt;
     });
 
+    /* distribuidores — lojista (Distribuidor) usa o popup "seja um
+       distribuidor"; técnico mantém o gate + mapa original. */
+    var usaFormDist = !!(p.mapa && p.mapa.formulario);
+    $('#gate').hidden = usaFormDist || !!estado.lead;
+    $('#mapzone').hidden = usaFormDist || !estado.lead;
+    $('#distGate').hidden = !usaFormDist || !!estado.leadDistribuidor;
+    $('#distribuidorOk').hidden = !usaFormDist || !estado.leadDistribuidor;
+
     /* selos do hero */
     $('#heroSelos').innerHTML = p.hero.selos.map(function (s) {
       return '<li>' + icone('check') + '<span>' + esc(s) + '</span></li>';
@@ -151,45 +171,84 @@
              '<h3>' + esc(a.t) + '</h3><p>' + esc(a.d) + '</p></li>';
     }).join('');
 
-    /* dores — cascata de consequências: a gravidade cresce a cada item, do
-       sintoma inicial ao desfecho, sem depender de nenhum número — só o
-       índice, o friso e a barra de peso ficam mais intensos a cada passo. */
-    var DOR_PESO = ['34%', '58%', '80%', '100%'];
-    $('#doresGrid').innerHTML = p.dores.itens.map(function (d, i) {
-      var ultimo = i === p.dores.itens.length - 1;
-      return '<article class="dor' + (ultimo ? ' dor-critico' : '') + '" style="--sev:' + (DOR_PESO[i] || '100%') + '">' +
-        '<span class="dor-idx">' + ('0' + (i + 1)).slice(-2) + '</span>' +
-        '<h3>' + esc(d.t) + '</h3><p>' + esc(d.d) + '</p>' +
-        '<span class="dor-peso" aria-hidden="true"><span class="dor-peso-fill"></span></span>' +
-        (ultimo ? '' : '<span class="dor-seta" aria-hidden="true">' + icone('seta') + '</span>') +
-      '</article>';
-    }).join('');
+    /* dores — a persona lojista (Distribuidor) não mostra essa seção por
+       enquanto (removida a pedido); a técnico removeu a seção inteira (a
+       página nem tem mais o #dores no HTML), então isso só roda se a
+       persona tiver dados de dores. */
+    var elDores = $('#dores');
+    if (elDores && p.dores) {
+      var temDores = p.dores.itens.length && !p.dores.itens[0].foto;
+      elDores.hidden = !temDores;
 
-    /* benefícios — grade "bento", cada posição tem sua própria mini-animação */
-    $('#benefGrid').innerHTML = p.beneficios.itens.map(function (b, idx) {
-      var mock = BENEF_MOCKUPS[idx] ? BENEF_MOCKUPS[idx]() : '';
-      var foto = idx === 5 ? ' card-photo' : '';
-      return '<article class="card' + foto + '">' + mock +
-             '<h3>' + esc(b.t) + '</h3><p>' + esc(b.d) + '</p></article>';
-    }).join('');
+      if (temDores) {
+        pararFeatureAuto();
+        var DOR_PESO = ['34%', '58%', '80%', '100%'];
+        $('#doresGrid').innerHTML = p.dores.itens.map(function (d, i) {
+          var ultimo = i === p.dores.itens.length - 1;
+          return '<article class="dor' + (ultimo ? ' dor-critico' : '') + '" style="--sev:' + (DOR_PESO[i] || '100%') + '">' +
+            '<span class="dor-idx">' + ('0' + (i + 1)).slice(-2) + '</span>' +
+            '<h3>' + esc(d.t) + '</h3><p>' + esc(d.d) + '</p>' +
+            '<span class="dor-peso" aria-hidden="true"><span class="dor-peso-fill"></span></span>' +
+            (ultimo ? '' : '<span class="dor-seta" aria-hidden="true">' + icone('seta') + '</span>') +
+          '</article>';
+        }).join('');
+      }
+    }
 
-    /* linhas de produto */
-    $('#linhas').innerHTML = p.portfolio.linhas.map(function (l) {
-      var msg = 'Olá! Quero saber mais sobre a linha ' + l.nome + ' da Vibe.';
-      return '<article class="linha' + (l.destaque ? ' linha-destaque' : '') + '">' +
-        (l.destaque ? '<span class="selo-linha">' + barras('selo-barras') + 'Premium</span>' : '') +
-        '<div class="linha-ico">' + icone(l.destaque ? 'brilho' : 'display') + '</div>' +
-        '<h3>' + esc(l.nome) + '</h3>' +
-        '<p class="linha-tag">' + esc(l.tagline) + '</p>' +
-        '<p class="linha-txt">' + esc(l.texto) + '</p>' +
-        '<p class="linha-rot">' + esc(l.rotuloLista) + '</p>' +
-        '<ul class="tick-list">' + l.itens.map(function (i) {
-          return '<li>' + icone('check', 'tick-ico') + '<span>' + esc(i) + '</span></li>';
-        }).join('') + '</ul>' +
-        '<a class="btn ' + (l.destaque ? 'btn-primary' : 'btn-ghost') + '" target="_blank" rel="noopener" href="' +
-          linkWhats(CONFIG.whatsappComercial, msg) + '">' + esc(l.cta) + '</a>' +
-      '</article>';
-    }).join('');
+    /* benefícios — grade "bento": 6 itens (técnico antigo) usa o recorte
+       original; 4 itens (lojista/Distribuidor) usa 1 card grande e 3
+       menores. Técnico agora usa bloco de texto + foto (sem #benefGrid no
+       HTML), então isso só roda quando a persona tiver itens de fato. */
+    var benefGrid = $('#benefGrid');
+    if (benefGrid && p.beneficios.itens) {
+      benefGrid.className = p.beneficios.itens.length === 4 ? 'cards-bento-4' : 'cards';
+      benefGrid.innerHTML = p.beneficios.itens.map(function (b, idx) {
+        var mock = b.mapa
+          ? '<div class="mock mock-mapa-brasil"><img src="assets/img/brasil-contorno.svg" alt="Mapa do Brasil"></div>'
+          : (BENEF_MOCKUPS[b.i] ? BENEF_MOCKUPS[b.i]() : '');
+        var foto = idx === 5 && p.beneficios.itens.length === 6 ? ' card-photo' : '';
+        return '<article class="card' + foto + '">' + mock +
+               '<h3>' + esc(b.t) + '</h3><p>' + esc(b.d) + '</p></article>';
+      }).join('');
+    }
+
+    /* linhas de produto — lojista (Distribuidor) usa o split Tela China x
+       Linha Vibe; técnico mantém os cards Tela Comum / Premium Vibe. */
+    var usaSplit = p.portfolio.linhas.length && p.portfolio.linhas[0].foto;
+    $('#linhas').hidden = !!usaSplit;
+    $('#splitChina').hidden = !usaSplit;
+    $('#splitFechamento').hidden = !usaSplit;
+
+    if (usaSplit) {
+      var cols = [$('#splitColA'), $('#splitColB')];
+      p.portfolio.linhas.forEach(function (l, i) {
+        var col = cols[i];
+        if (!col) return;
+        col.classList.toggle('split-col-vibe', !!l.destaque);
+        $('img', col).src = l.foto;
+        $('img', col).alt = l.nome;
+        $('h3', col).textContent = l.nome;
+        $('p', col).textContent = l.texto;
+      });
+      $('#splitFechamento').textContent = p.portfolio.fechamento || '';
+    } else {
+      $('#linhas').innerHTML = p.portfolio.linhas.map(function (l) {
+        var msg = 'Olá! Quero saber mais sobre a linha ' + l.nome + ' da Vibe.';
+        return '<article class="linha' + (l.destaque ? ' linha-destaque' : '') + '">' +
+          (l.destaque ? '<span class="selo-linha">' + barras('selo-barras') + 'Premium</span>' : '') +
+          '<div class="linha-ico">' + icone(l.destaque ? 'brilho' : 'display') + '</div>' +
+          '<h3>' + esc(l.nome) + '</h3>' +
+          '<p class="linha-tag">' + esc(l.tagline) + '</p>' +
+          '<p class="linha-txt">' + esc(l.texto) + '</p>' +
+          '<p class="linha-rot">' + esc(l.rotuloLista) + '</p>' +
+          '<ul class="tick-list">' + l.itens.map(function (i) {
+            return '<li>' + icone('check', 'tick-ico') + '<span>' + esc(i) + '</span></li>';
+          }).join('') + '</ul>' +
+          '<a class="btn ' + (l.destaque ? 'btn-primary' : 'btn-ghost') + '" target="_blank" rel="noopener" href="' +
+            linkWhats(CONFIG.whatsappComercial, msg) + '">' + esc(l.cta) + '</a>' +
+        '</article>';
+      }).join('');
+    }
 
     /* destaque premium */
     $('#progList').innerHTML = p.destaque.itens.map(function (i) {
@@ -211,6 +270,12 @@
 
     /* prova social — só aparece com depoimentos reais cadastrados */
     renderDepoimentos();
+
+    /* CTA final — lojista (Distribuidor) usa faixa de largura total na cor
+       da marca, com um botão só; técnico mantém o fundo original e os
+       dois botões (mapa + WhatsApp). */
+    $('#ctaFinal').classList.toggle('cta-final-marca', !!p.ctaFinal.faixaMarca);
+    $('#ctaBotao2').hidden = !p.ctaFinal.botao2;
 
     /* linhas do CTA final — cards flutuando ao redor do vídeo */
     var CTA_ICONES = ['camadas', 'shield', 'star'];
@@ -264,6 +329,77 @@
       trocarTiles();
       renderDistribuidoras();
     }
+  }
+
+  /* ============================================================
+     Painel interativo "Por que comprar" — lista de recursos que troca
+     de foto sozinha (e ao clicar), com barra de progresso no item ativo.
+     Usado pela persona lojista (Distribuidor) no lugar da cascata de dores.
+     ============================================================ */
+  var featureEstado = { idx: 0, timer: null, pronto: false };
+
+  function pararFeatureAuto() {
+    clearInterval(featureEstado.timer);
+    featureEstado.timer = null;
+  }
+
+  function iniciarFeatureAuto(total) {
+    pararFeatureAuto();
+    if (window.matchMedia && matchMedia('(prefers-reduced-motion:reduce)').matches) return;
+    featureEstado.timer = setInterval(function () {
+      selecionarFeature((featureEstado.idx + 1) % total, false);
+    }, 4800);
+  }
+
+  function selecionarFeature(i, manual) {
+    featureEstado.idx = i;
+    $$('.feature-tab').forEach(function (b, bi) {
+      var on = bi === i;
+      b.classList.toggle('is-on', on);
+      b.setAttribute('aria-selected', on ? 'true' : 'false');
+      var barra = $('.feature-tab-bar', b);
+      barra.classList.remove('anda');
+      if (on) {
+        void barra.offsetWidth; /* força reflow pra reiniciar a animação */
+        barra.classList.add('anda');
+      }
+    });
+    $$('.feature-preview-img').forEach(function (f, fi) { f.classList.toggle('is-on', fi === i); });
+    if (manual) iniciarFeatureAuto($$('.feature-tab').length);
+  }
+
+  function renderFeatureTabs(itens) {
+    var lista = $('#featureList');
+    var preview = $('#featurePreview');
+
+    lista.innerHTML = itens.map(function (it, i) {
+      return '<button type="button" class="feature-tab' + (i === 0 ? ' is-on' : '') + '" role="tab" aria-selected="' + (i === 0 ? 'true' : 'false') + '" data-idx="' + i + '">' +
+        '<span class="feature-tab-idx">' + ('0' + (i + 1)).slice(-2) + '</span>' +
+        '<span class="feature-tab-body"><strong>' + esc(it.t) + '</strong><span class="feature-tab-desc">' + esc(it.d) + '</span></span>' +
+        '<span class="feature-tab-bar' + (i === 0 ? ' anda' : '') + '" aria-hidden="true"></span>' +
+      '</button>';
+    }).join('');
+
+    preview.innerHTML = itens.map(function (it, i) {
+      return '<figure class="feature-preview-img' + (i === 0 ? ' is-on' : '') + '">' +
+        '<img src="' + esc(it.foto) + '" alt="" loading="' + (i === 0 ? 'eager' : 'lazy') + '"></figure>';
+    }).join('');
+
+    $$('.feature-tab', lista).forEach(function (b) {
+      b.addEventListener('click', function () { selecionarFeature(parseInt(b.getAttribute('data-idx'), 10), true); });
+    });
+
+    if (!featureEstado.pronto) {
+      featureEstado.pronto = true;
+      var painel = $('#featureTabs');
+      painel.addEventListener('mouseenter', pararFeatureAuto);
+      painel.addEventListener('mouseleave', function () { iniciarFeatureAuto(itens.length); });
+      painel.addEventListener('focusin', pararFeatureAuto);
+      painel.addEventListener('focusout', function () { iniciarFeatureAuto(itens.length); });
+    }
+
+    featureEstado.idx = 0;
+    iniciarFeatureAuto(itens.length);
   }
 
   function renderDepoimentos() {
@@ -322,12 +458,21 @@
 
     document.addEventListener('click', function (e) {
       var b = e.target.closest('[data-persona-btn]');
-      if (b) trocarPersona(b.getAttribute('data-persona-btn'));
+      if (!b) return;
+      var alvo = b.getAttribute('data-persona-btn');
+      /* só a pílula do header (.pill-btn) navega pra outra página quando a
+         visão está travada; o mini-pill "Você é:" dentro do popup do
+         técnico continua trocando o conteúdo aqui mesmo, como sempre foi. */
+      if (window.PAGINA_PERSONA && b.classList.contains('pill-btn') && alvo !== window.PAGINA_PERSONA.fixa) {
+        location.href = window.PAGINA_PERSONA.outraUrl;
+        return;
+      }
+      trocarPersona(alvo);
     });
   }
 
   function prepararReveal() {
-    var alvos = $$('.hero-copy > *, .sec-hd > *, .dor, .card, .linha, .step, .depo, .faq-item, .gate, .prog-copy > *, .prog-art, .brand-stream-content > *, .cta-in > *, .autoridade li');
+    var alvos = $$('.hero-copy > *, .sec-hd > *, .dor, .card, .linha, .step, .depo, .faq-item, .gate, .vibecast-card, .vibecast-ep, .prog-copy > *, .prog-art, .brand-stream-content > *, .cta-in > *, .autoridade li');
 
     /* rede de segurança: sem IntersectionObserver (ou se ele não disparar),
        o conteúdo aparece assim mesmo */
@@ -479,9 +624,12 @@
     var imagens = [
       ['assets/img/vibe-em-maos.webp', false],
       ['assets/img/vibe-unboxing.webp', false],
+      ['assets/img/vibe-evento-equipe.webp', false],
       ['assets/img/vibe-duas-linhas.webp', false],
       ['assets/img/vibe-brand-pose.webp', false],
+      ['assets/img/vibe-evento-kit.webp', false],
       ['assets/img/vibe-tela-detalhe.webp', false],
+      ['assets/img/vibe-evento-atendimento.webp', false],
       ['assets/img/vibe-packaging-grid.webp', true],
       ['assets/img/vibe-brand-proposal.webp', true],
       ['assets/img/vibe-packaging-line.webp', true]
@@ -498,12 +646,121 @@
     palco.innerHTML = trilha('left', 0) + trilha('right', 4);
   }
 
+  /* Leque de cards das linhas de tela — toque/clique traz o card pra frente
+     em telas sem hover (o CSS já cuida do :hover em telas com ponteiro fino). */
+  function ligarFanLinhas() {
+    var leque = $('#fanLinhas');
+    if (!leque) return;
+    $$('.fan-card', leque).forEach(function (card) {
+      card.addEventListener('click', function () {
+        var jaAberto = card.classList.contains('is-up');
+        $$('.fan-card.is-up', leque).forEach(function (c) { c.classList.remove('is-up'); });
+        if (!jaAberto) card.classList.add('is-up');
+      });
+    });
+  }
+
+  function mascaraCep(v) {
+    var d = v.replace(/\D/g, '').slice(0, 8);
+    return d.length <= 5 ? d : d.slice(0, 5) + '-' + d.slice(5);
+  }
+  function emailValido(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
+
+  /* Formulário "Seja um distribuidor" (persona lojista). O CEP é validado
+     na API pública do ViaCEP (sem chave) — assim que os 8 dígitos são
+     digitados, confirma cidade/UF ou avisa que o CEP não existe. */
+  function ligarFormDistribuidor() {
+    var form = $('#formDistribuidor');
+    if (!form) return;
+    var grupoFaixa = $('#faixaCompra');
+    var faixaValor = '';
+    var cepValido = null;
+
+    grupoFaixa.addEventListener('click', function (e) {
+      var b = e.target.closest('button');
+      if (!b) return;
+      $$('button', grupoFaixa).forEach(function (o) { o.classList.remove('is-on'); o.setAttribute('aria-pressed', 'false'); });
+      b.classList.add('is-on');
+      b.setAttribute('aria-pressed', 'true');
+      faixaValor = b.getAttribute('data-valor');
+      mostrarErro('faixa');
+    });
+
+    var telInput = $('#dtel');
+    telInput.addEventListener('input', function () { telInput.value = mascaraTel(telInput.value); });
+
+    var cepInput = $('#dcep'), cepInfo = $('#cepInfo');
+    cepInput.addEventListener('input', function () {
+      cepInput.value = mascaraCep(cepInput.value);
+      cepInfo.textContent = '';
+      cepValido = null;
+      mostrarErro('cep');
+    });
+    cepInput.addEventListener('blur', function () {
+      var digitos = cepInput.value.replace(/\D/g, '');
+      if (digitos.length !== 8) return;
+      cepInfo.textContent = 'Consultando...';
+      fetch('https://viacep.com.br/ws/' + digitos + '/json/')
+        .then(function (r) { return r.json(); })
+        .then(function (j) {
+          if (j.erro) { cepValido = false; cepInfo.textContent = ''; mostrarErro('cep', 'CEP não encontrado.'); return; }
+          cepValido = true;
+          cepInfo.textContent = j.localidade + '/' + j.uf;
+        })
+        .catch(function () { cepInfo.textContent = ''; /* API fora do ar: segue sem bloquear o cadastro */ });
+    });
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var nome = $('#dnome').value.trim();
+      var tel = $('#dtel').value.replace(/\D/g, '');
+      var email = $('#demail').value.trim();
+      var cep = cepInput.value.replace(/\D/g, '');
+      var ok = true;
+
+      ['nome', 'telefone', 'email', 'cep', 'faixa'].forEach(function (c) { mostrarErro(c); });
+      $$('.campo input', form).forEach(function (i) { i.classList.remove('inv'); });
+
+      if (nome.length < 3) { mostrarErro('nome', 'Informe seu nome completo.'); $('#dnome').classList.add('inv'); ok = false; }
+      if (tel.length < 10 || tel.length > 11) { mostrarErro('telefone', 'Informe um telefone com DDD.'); telInput.classList.add('inv'); ok = false; }
+      if (!emailValido(email)) { mostrarErro('email', 'Informe um e-mail válido.'); $('#demail').classList.add('inv'); ok = false; }
+      if (cep.length !== 8) { mostrarErro('cep', 'Informe um CEP válido.'); cepInput.classList.add('inv'); ok = false; }
+      else if (cepValido === false) { mostrarErro('cep', 'CEP não encontrado.'); cepInput.classList.add('inv'); ok = false; }
+      if (!faixaValor) { mostrarErro('faixa', 'Escolha sua média de compra por mês.'); ok = false; }
+      if (!ok) return;
+
+      var lead = {
+        nome: nome, telefone: tel, telefoneFmt: telInput.value,
+        email: email, cep: cepInput.value, cidadeUf: cepInfo.textContent || '',
+        faixaCompra: faixaValor, perfil: 'distribuidor',
+        origem: location.href, data: new Date().toISOString()
+      };
+      estado.leadDistribuidor = lead;
+      gravar(LS_LEAD_DIST, lead);
+      if (window.dataLayer) window.dataLayer.push({ event: 'lead_distribuidor_form', lead: lead });
+      console.info('[Vibe] Lead capturado (seja um distribuidor):', lead);
+      if (CONFIG.leadWebhookDistribuidor) {
+        /* text/plain evita o preflight de CORS que o Google Apps Script não
+           responde — o Apps Script lê o corpo como JSON normalmente. */
+        fetch(CONFIG.leadWebhookDistribuidor, {
+          method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(lead)
+        }).catch(function (err) { console.warn('[Vibe] Falha ao enviar lead:', err); });
+      }
+
+      fecharModalDist();
+      $('#distGate').hidden = true;
+      $('#distribuidorOk').hidden = false;
+      $('#distribuidorOk').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  }
+
   /* ============================================================
      4. POPUP DE CAPTURA (gate)
      ============================================================ */
   var modal = $('#modal'), form = $('#formLead'), ultimoFoco = null;
 
   function abrirModal() {
+    if (P().mapa && P().mapa.formulario) return; /* lojista usa o formulário, não o gate */
     if (estado.lead) { liberarMapa(false); return; }
     ultimoFoco = document.activeElement;
     modal.hidden = false;
@@ -525,6 +782,110 @@
     var pri = foco[0], ult = foco[foco.length - 1];
     if (e.shiftKey && document.activeElement === pri) { e.preventDefault(); ult.focus(); }
     else if (!e.shiftKey && document.activeElement === ult) { e.preventDefault(); pri.focus(); }
+  }
+
+  /* Popup "Seja um distribuidor" (persona lojista) — mesmo mecanismo do
+     gate técnico (abre sozinho ao rolar até a seção), só que com o
+     formulário de cadastro de distribuidor. */
+  var modalDist = $('#modalDist'), ultimoFocoDist = null;
+
+  function abrirModalDist() {
+    if (estado.leadDistribuidor) return;
+    ultimoFocoDist = document.activeElement;
+    modalDist.hidden = false;
+    document.body.style.overflow = 'hidden';
+    setTimeout(function () { $('#dnome').focus(); }, 60);
+    document.addEventListener('keydown', teclasModalDist);
+  }
+  function fecharModalDist() {
+    modalDist.hidden = true;
+    document.body.style.overflow = '';
+    document.removeEventListener('keydown', teclasModalDist);
+    if (ultimoFocoDist) ultimoFocoDist.focus();
+  }
+  function teclasModalDist(e) {
+    if (e.key === 'Escape') return fecharModalDist();
+    if (e.key !== 'Tab') return;
+    var foco = $$('button, input, a[href], select', modalDist).filter(function (el) { return !el.disabled && el.offsetParent !== null; });
+    if (!foco.length) return;
+    var pri = foco[0], ult = foco[foco.length - 1];
+    if (e.shiftKey && document.activeElement === pri) { e.preventDefault(); ult.focus(); }
+    else if (!e.shiftKey && document.activeElement === ult) { e.preventDefault(); pri.focus(); }
+  }
+
+  function ligarModalDist() {
+    var gateBtn = $('#distGateBtn');
+    if (!gateBtn) return;
+    gateBtn.addEventListener('click', abrirModalDist);
+    $$('[data-fechar-dist]').forEach(function (el) { el.addEventListener('click', fecharModalDist); });
+
+    /* CTAs que levam à seção de distribuidores também abrem o popup */
+    $$('a[href="#distribuidores"]').forEach(function (a) {
+      a.addEventListener('click', function () {
+        if (P().mapa && P().mapa.formulario && !estado.leadDistribuidor) setTimeout(abrirModalDist, 700);
+      });
+    });
+
+    /* abre sozinho quando o usuário chega na seção (uma vez por visita) */
+    var jaAbriuDist = sessionStorage.getItem('vibe:gateDist') === '1';
+    var checarGateDist = function () {
+      if (jaAbriuDist || estado.leadDistribuidor) { window.removeEventListener('scroll', checarGateDist); return; }
+      var gate = $('#distGate');
+      if (!gate || gate.hidden) return;
+      var r = gate.getBoundingClientRect();
+      if (r.top < window.innerHeight * 0.62 && r.bottom > 120) {
+        jaAbriuDist = true;
+        try { sessionStorage.setItem('vibe:gateDist', '1'); } catch (e) {}
+        window.removeEventListener('scroll', checarGateDist);
+        abrirModalDist();
+      }
+    };
+    window.addEventListener('scroll', checarGateDist, { passive: true });
+  }
+
+  /* Popup "Vibe Academy" (persona técnico) — abre só no clique do botão da
+     seção de marca, sem gatilho automático de rolagem. Ainda sem função de
+     verdade: o formulário só confirma visualmente, não grava em lugar
+     nenhum (a Academia em si ainda nem lançou). */
+  var modalAcademy = $('#modalAcademy'), formAcademy = $('#formAcademy'), ultimoFocoAcademy = null;
+
+  function abrirModalAcademy() {
+    ultimoFocoAcademy = document.activeElement;
+    modalAcademy.hidden = false;
+    document.body.style.overflow = 'hidden';
+    setTimeout(function () { $('#anome').focus(); }, 60);
+    document.addEventListener('keydown', teclasModalAcademy);
+  }
+  function fecharModalAcademy() {
+    modalAcademy.hidden = true;
+    document.body.style.overflow = '';
+    document.removeEventListener('keydown', teclasModalAcademy);
+    if (ultimoFocoAcademy) ultimoFocoAcademy.focus();
+  }
+  function teclasModalAcademy(e) {
+    if (e.key === 'Escape') return fecharModalAcademy();
+    if (e.key !== 'Tab') return;
+    var foco = $$('button, input, a[href]', modalAcademy).filter(function (el) { return !el.disabled && el.offsetParent !== null; });
+    if (!foco.length) return;
+    var pri = foco[0], ult = foco[foco.length - 1];
+    if (e.shiftKey && document.activeElement === pri) { e.preventDefault(); ult.focus(); }
+    else if (!e.shiftKey && document.activeElement === ult) { e.preventDefault(); pri.focus(); }
+  }
+
+  function ligarModalAcademy() {
+    var btn = $('#brandStreamAcademyBtn');
+    if (!btn || !modalAcademy) return;
+    btn.addEventListener('click', abrirModalAcademy);
+    $$('[data-fechar-academy]').forEach(function (el) { el.addEventListener('click', fecharModalAcademy); });
+
+    var campoWpp = $('#awpp');
+    if (campoWpp) campoWpp.addEventListener('input', function () { campoWpp.value = mascaraTel(campoWpp.value); });
+
+    formAcademy.addEventListener('submit', function (e) {
+      e.preventDefault();
+      formAcademy.hidden = true;
+      $('#academyOk').hidden = false;
+    });
   }
 
   function mascaraTel(v) {
@@ -605,9 +966,11 @@
   function enviarLead(lead) {
     if (window.dataLayer) window.dataLayer.push({ event: 'lead_distribuidor', perfil: lead.perfil });
     if (!CONFIG.leadWebhook) { console.info('[Vibe] Lead capturado:', lead); return; }
+    /* text/plain evita o preflight de CORS que o Google Apps Script não
+       responde — o Apps Script lê o corpo como JSON normalmente. */
     fetch(CONFIG.leadWebhook, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body: JSON.stringify(lead)
     }).catch(function (err) { console.warn('[Vibe] Falha ao enviar lead:', err); });
   }
@@ -616,6 +979,7 @@
      5. MAPA DE DISTRIBUIDORES
      ============================================================ */
   function liberarMapa(rolar) {
+    if (P().mapa && P().mapa.formulario) return; /* lojista usa o formulário, não o mapa técnico */
     $('#gate').hidden = true;
     $('#mapzone').hidden = false;
     $('#olaMsg').innerHTML = '<svg class="ico"><use href="#i-check"/></svg> Olá, ' +
@@ -814,6 +1178,61 @@
   }
 
   /* ============================================================
+     VIBECAST — episódio em destaque (thumb estática, sem player
+     embedado; o clique leva direto para o YouTube). O título real
+     do vídeo é buscado na API pública oEmbed do YouTube (sem
+     chave), pra não depender de copy digitada à mão. */
+  /* Busca a thumb estática (com fallback pra vídeo sem maxres) e o título
+     real via oEmbed do YouTube — sem chave, sem player embedado. Reusado
+     pelo card único (lojista) e pela grade de episódios (técnico). */
+  function carregarThumbETitulo(id, img, elTitulo) {
+    img.addEventListener('load', function () {
+      if (img.naturalWidth <= 120) img.src = 'https://img.youtube.com/vi/' + id + '/hqdefault.jpg';
+    });
+    img.src = 'https://img.youtube.com/vi/' + id + '/maxresdefault.jpg';
+
+    var watchUrl = 'https://www.youtube.com/watch?v=' + id;
+    fetch('https://www.youtube.com/oembed?url=' + encodeURIComponent(watchUrl) + '&format=json')
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (j) { if (j && j.title) elTitulo.textContent = j.title; })
+      .catch(function () { /* API fora do ar: mantém o texto padrão do HTML */ });
+  }
+
+  function ligarVibecast() {
+    /* Card único em destaque (persona lojista) */
+    var card = $('#vibecastCard');
+    if (card && CONFIG.vibecastVideoId) {
+      card.href = 'https://www.youtube.com/watch?v=' + CONFIG.vibecastVideoId;
+      carregarThumbETitulo(CONFIG.vibecastVideoId, $('#vibecastThumb'), $('#vibecastTitulo'));
+    }
+
+    /* Vitrine "Conheça o nosso canal" — 4 episódios lado a lado (persona
+       técnico); no mobile a grade vira carrossel (ver CSS). */
+    var grid = $('#vibecastGrid');
+    var ids = CONFIG.vibecastCanalIds;
+    if (grid && ids && ids.length) {
+      grid.innerHTML = ids.map(function (id) {
+        return '<a class="vibecast-ep" href="https://www.youtube.com/watch?v=' + id + '" target="_blank" rel="noopener" data-vc-id="' + id + '" aria-label="Assistir no YouTube (abre em nova aba)">' +
+          '<span class="vibecast-ep-thumb">' +
+            '<img alt="" loading="lazy">' +
+            '<span class="vibecast-ep-play" aria-hidden="true">' + icone('play') + '</span>' +
+          '</span>' +
+          '<span class="vibecast-ep-nome">Vibecast</span>' +
+          '<span class="vibecast-ep-cta">' + icone('youtube') + '<span>Ver no YouTube</span></span>' +
+        '</a>';
+      }).join('');
+
+      $$('.vibecast-ep', grid).forEach(function (a) {
+        carregarThumbETitulo(a.dataset.vcId, $('img', a), $('.vibecast-ep-nome', a));
+      });
+
+      /* os cards nasceram depois do primeiro prepararReveal() (renderTudo
+         já tinha rodado), então precisam entrar no radar do reveal agora */
+      prepararReveal();
+    }
+  }
+
+  /* ============================================================
      INICIALIZAÇÃO
      ============================================================ */
   function init() {
@@ -823,12 +1242,19 @@
     if (insta) insta.href = CONFIG.instagram;
     var site = $('[data-site]');
     if (site) site.href = CONFIG.siteOficial;
+    var garantiaBtn = $('#garantiaBtn');
+    if (garantiaBtn) garantiaBtn.href = CONFIG.garantiaPdf;
 
     renderTudo(false);
     ligarHeader();
     ligarModal();
+    ligarModalDist();
+    ligarModalAcademy();
     ligarFiltros();
     montarBrandStream();
+    ligarFanLinhas();
+    ligarFormDistribuidor();
+    ligarVibecast();
 
     /* visitante que já preencheu antes: mapa liberado direto */
     if (estado.lead) liberarMapa(false);
