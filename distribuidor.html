@@ -1,15 +1,15 @@
 <!DOCTYPE html>
-<html lang="pt-BR" data-persona="tecnico" data-tema="escuro">
+<html lang="pt-BR" data-persona="distribuidor">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Vibe Cell — Telas para Técnicos e Assistências Técnicas | Encontre um Distribuidor</title>
-<meta name="description" content="Telas e frontais Vibe selecionados para quem trabalha na bancada. Conheça nossas linhas, encontre distribuidores e escolha a opção certa para cada reparo.">
-<meta name="theme-color" content="#050609">
+<title>Vibe Cell — Telas no Atacado para Distribuidoras | Quero comprar Vibe</title>
+<meta name="description" content="Compre telas e frontais Vibe pra sua distribuidora. Todos os modelos, 1 ano de garantia e entrega personalizada pra todo o Brasil.">
+<meta name="theme-color" content="#ffffff">
 
 <meta property="og:type" content="website">
-<meta property="og:title" content="Vibe Cell — Telas para Técnicos e Assistências Técnicas">
-<meta property="og:description" content="Encontre a tela certa pro seu reparo e fale direto com um distribuidor Vibe pelo WhatsApp.">
+<meta property="og:title" content="Vibe Cell — Telas no Atacado para Distribuidoras">
+<meta property="og:description" content="Conheça as linhas Vibe e fale direto com o comercial pelo WhatsApp.">
 <meta property="og:locale" content="pt_BR">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -104,13 +104,13 @@
 
     <nav class="nav" id="nav" aria-label="Navegação principal">
       <a href="#solucao">Diferenciais</a>
-      <a href="#distribuidores">Distribuidores</a>
       <a href="#produtos">Produtos</a>
       <a href="#como">Como funciona</a>
+      <a href="#distribuidores">Quero comprar</a>
       <a href="#vibecast">Vibecast</a>
       <a href="#feedbacks">Feedbacks</a>
       <a href="#faq">Dúvidas</a>
-      <a href="#distribuidores" class="btn btn-sm btn-primary">Encontrar distribuidor</a>
+      <a href="#distribuidores" class="btn btn-sm btn-primary">Quero comprar Vibe</a>
     </nav>
 
     <button class="menu-btn" id="menuBtn" aria-label="Abrir menu" aria-expanded="false" aria-controls="nav">
@@ -137,25 +137,25 @@
         <ul class="selos" id="heroSelos"></ul>
       </div>
 
-      <div class="hero-art hero-art-tecnico" aria-hidden="true">
+      <div class="hero-art" aria-hidden="true">
         <span class="art-glow"></span>
         <span class="art-ring"></span>
         <span class="art-spark art-spark-1"></span>
         <span class="art-spark art-spark-2"></span>
         <div class="art-mascote-wrap">
-          <img class="art-mascote" src="assets/img/tecnico-hero-bancada.webp" alt="" width="2096" height="2546" loading="eager" fetchpriority="high">
+          <img class="art-mascote" src="assets/img/mascote-vibecell.png" alt="" width="1180" height="1333" loading="eager" fetchpriority="high">
         </div>
         <div class="art-card art-float art-f1">
           <span class="art-float-ico"><svg class="ico"><use href="#i-brilho"/></svg></span>
-          <span class="art-float-txt"><strong>Premium Vibe</strong><small>Sem susto no retorno</small></span>
+          <span class="art-float-txt"><strong>Premium Vibe</strong><small>Experiência superior</small></span>
         </div>
         <div class="art-card art-float art-f2">
           <span class="art-float-ico"><svg class="ico"><use href="#i-pin"/></svg></span>
-          <span class="art-float-txt"><strong>Distribuidor</strong><small>Perto de você</small></span>
+          <span class="art-float-txt"><strong>Distribuição nacional</strong><small>Chega até você</small></span>
         </div>
         <div class="art-card art-float art-f3">
           <span class="art-float-ico"><svg class="ico"><use href="#i-display"/></svg></span>
-          <span class="art-float-txt"><strong>Telas e frontais</strong><small>Pra cada reparo</small></span>
+          <span class="art-float-txt"><strong>Telas e frontais</strong><small>Reparo mobile</small></span>
         </div>
       </div>
     </div>
@@ -166,21 +166,157 @@
     <div class="wrap"><ul class="autoridade" id="autoridade"></ul></div>
   </section>
 
-  <!-- ============ POR QUE TROCAR ============ -->
-  <section class="sec" id="solucao">
-    <div class="wrap solucao-foto-in">
-      <div class="solucao-foto-copy">
-        <span class="kicker" data-c="beneficios.kicker"></span>
-        <h2 class="h2" data-c="beneficios.titulo"></h2>
-        <p class="sub" data-c="beneficios.texto"></p>
-        <p class="sub" data-c="beneficios.texto2"></p>
-      </div>
-      <div class="solucao-foto-art">
-        <img src="assets/img/tecnico-aparelho-bancada.webp" alt="" loading="lazy">
+  <!-- ============ O PROBLEMA ============ -->
+  <section class="sec" id="dores">
+    <div class="wrap">
+      <header class="sec-hd">
+        <span class="kicker" data-c="dores.kicker"></span>
+        <h2 class="h2" data-c="dores.titulo"></h2>
+        <p class="sub" data-c="dores.texto"></p>
+      </header>
+      <div class="dores-cascata" id="doresGrid"></div>
+      <div class="feature-tabs" id="featureTabs" hidden>
+        <div class="feature-list" id="featureList" role="tablist" aria-label="Por que comprar da Vibe"></div>
+        <div class="feature-preview" id="featurePreview" aria-hidden="true"></div>
       </div>
     </div>
   </section>
 
+  <!-- ============ A SOLUÇÃO ============ -->
+  <section class="sec sec-bento" id="solucao">
+    <div class="wrap">
+      <header class="sec-hd">
+        <span class="kicker" data-c="beneficios.kicker"></span>
+        <h2 class="h2" data-c="beneficios.titulo"></h2>
+        <p class="sub" data-c="beneficios.texto"></p>
+      </header>
+      <div class="cards" id="benefGrid"></div>
+    </div>
+  </section>
+
+  <!-- ============ EXPERIÊNCIA VISUAL DA MARCA ============ -->
+  <section class="brand-stream" aria-labelledby="brandStreamTitle">
+    <div class="brand-stream-stage" id="brandStream" aria-hidden="true"></div>
+    <div class="brand-stream-shade" aria-hidden="true"></div>
+    <div class="wrap brand-stream-content">
+      <span class="kicker">Mais que uma embalagem</span>
+      <h2 class="h2" id="brandStreamTitle">Uma experiência que chega antes da tela.</h2>
+      <p>Identidade, cuidado e produto se encontram em cada detalhe — da escolha da linha até a peça chegar à bancada.</p>
+      <div class="brand-stream-signature" aria-hidden="true">
+        <svg><use href="#barras"/></svg>
+        <span>produto • presença • confiança</span>
+      </div>
+    </div>
+    <p class="sr-only">Imagens da equipe apresentando telas e embalagens Vibe Cell.</p>
+  </section>
+
+  <!-- ============ PORTFÓLIO ============ -->
+  <section class="sec" id="produtos">
+    <div class="wrap">
+      <header class="sec-hd">
+        <span class="kicker" data-c="portfolio.kicker"></span>
+        <h2 class="h2" data-c="portfolio.titulo"></h2>
+        <p class="sub" data-c="portfolio.texto"></p>
+      </header>
+      <div class="linhas" id="linhas"></div>
+      <div class="split-china" id="splitChina" hidden>
+        <article class="split-col" id="splitColA">
+          <div class="split-foto"><img alt=""></div>
+          <h3></h3>
+          <p></p>
+        </article>
+        <article class="split-col split-col-vibe" id="splitColB">
+          <div class="split-foto"><img alt=""></div>
+          <h3></h3>
+          <p></p>
+        </article>
+      </div>
+      <p class="split-fechamento" id="splitFechamento" hidden></p>
+    </div>
+  </section>
+
+  <!-- ============ LINHAS DE TELA (leque de cards) ============ -->
+  <section class="sec sec-alt" id="linhas-tela">
+    <div class="wrap">
+      <header class="sec-hd">
+        <span class="kicker">Linhas de tela</span>
+        <h2 class="h2">Uma linha pra cada tipo de serviço.</h2>
+      </header>
+      <div class="fan-linhas" id="fanLinhas">
+        <article class="fan-card" tabindex="0">
+          <div class="fan-card-foto">
+            <img src="assets/img/dist-influencer.webp" alt="" loading="lazy">
+            <div class="fan-card-overlay">
+              <h3>Vibe HD</h3>
+              <p>A porta de entrada da linha Vibe, pro serviço que precisa caber no orçamento.</p>
+            </div>
+          </div>
+        </article>
+        <article class="fan-card" tabindex="0">
+          <div class="fan-card-foto">
+            <img src="assets/img/dist-ceo-cliente.webp" alt="" loading="lazy">
+            <div class="fan-card-overlay">
+              <h3>Vibe TLED</h3>
+              <p>Borda fina e brilho alto por um preço de meio de linha.</p>
+            </div>
+          </div>
+        </article>
+        <article class="fan-card" tabindex="0">
+          <div class="fan-card-foto">
+            <img src="assets/img/dist-equipe.webp" alt="" loading="lazy">
+            <div class="fan-card-overlay">
+              <h3>Vibe OLED</h3>
+              <p>Imagem de topo, pro cliente que percebe diferença de cor e de preto.</p>
+            </div>
+          </div>
+        </article>
+        <article class="fan-card" tabindex="0">
+          <div class="fan-card-foto">
+            <img src="assets/img/dist-estoque.webp" alt="" loading="lazy">
+            <div class="fan-card-overlay">
+              <h3>Vibe Soft OLED</h3>
+              <p>O melhor da linha, com o acabamento e o comportamento mais perto do painel de fábrica.</p>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ DESTAQUE / PREMIUM VIBE ============ -->
+  <section class="sec sec-alt" id="premium">
+    <div class="wrap prog-in">
+      <div class="prog-copy">
+        <span class="kicker" data-c="destaque.kicker"></span>
+        <h2 class="h2" data-c="destaque.titulo"></h2>
+        <p class="sub" data-c="destaque.texto"></p>
+        <ul class="tick-list" id="progList"></ul>
+        <a href="#" class="btn btn-primary" data-wa-marca data-c="destaque.cta"></a>
+
+        <div class="garantia-inline">
+          <span class="garantia-inline-ico"><svg class="ico"><use href="#i-shield"/></svg></span>
+          <div class="garantia-inline-body">
+            <h3 data-c="destaque.garantiaTitulo"></h3>
+            <p data-c="destaque.garantiaTexto"></p>
+            <a href="#" class="btn btn-ghost btn-sm" id="garantiaBtn" download>
+              <svg class="ico"><use href="#i-download"/></svg>
+              <span data-c="destaque.garantiaCta"></span>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="prog-art">
+        <div class="prog-image-wrap">
+          <img class="prog-image" src="assets/img/premium-vibe.webp"
+               alt="Apresentadora Vibe exibindo as linhas de telas ao lado do mascote da marca"
+               width="1436" height="1580" loading="lazy">
+        </div>
+        <div class="prog-ring" aria-hidden="true"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ COMO FUNCIONA ============ -->
   <!-- ============ DISTRIBUIDORES: mapa (técnico) / seja um distribuidor (distribuidor) ============ -->
   <section class="sec" id="distribuidores">
     <div class="wrap">
@@ -259,139 +395,6 @@
     </div>
   </section>
 
-  <!-- ============ EXPERIÊNCIA VISUAL DA MARCA ============ -->
-  <section class="brand-stream" aria-labelledby="brandStreamTitle">
-    <div class="brand-stream-stage" id="brandStream" aria-hidden="true"></div>
-    <div class="brand-stream-shade" aria-hidden="true"></div>
-    <div class="wrap brand-stream-content">
-      <span class="kicker">Vibe Academy</span>
-      <h2 class="h2" id="brandStreamTitle">A gente também quer o mercado mais preparado.</h2>
-      <p>O técnico que domina o serviço cobra melhor, erra menos e não depende de tentativa e erro na bancada.</p>
-      <p>Por isso a Vibe está montando a Academia de Treinamento, com conteúdo feito por quem trabalha na bancada todo dia.</p>
-      <button type="button" class="btn btn-primary btn-lg brand-stream-cta" id="brandStreamAcademyBtn">Conhecer a Vibe Academy</button>
-      <div class="brand-stream-signature" aria-hidden="true">
-        <svg><use href="#barras"/></svg>
-        <span>teoria • prática • bancada</span>
-      </div>
-    </div>
-    <p class="sr-only">Imagens da equipe apresentando telas e embalagens Vibe Cell.</p>
-  </section>
-
-  <!-- ============ LINHAS DE TELA (leque de cards) ============ -->
-  <section class="sec sec-alt" id="linhas-tela">
-    <div class="wrap">
-      <header class="sec-hd">
-        <span class="kicker">Linhas de tela</span>
-        <h2 class="h2">Uma linha pra cada tipo de serviço.</h2>
-      </header>
-      <div class="fan-linhas fan-linhas-5" id="fanLinhas">
-        <article class="fan-card" tabindex="0">
-          <div class="fan-card-foto">
-            <img src="assets/img/dist-tela-china.webp" alt="" loading="lazy">
-            <div class="fan-card-overlay">
-              <h3>Tela China (Incell)</h3>
-              <p>A opção de preço, pro cliente que decide pelo orçamento.</p>
-            </div>
-          </div>
-        </article>
-        <article class="fan-card" tabindex="0">
-          <div class="fan-card-foto">
-            <img src="assets/img/dist-influencer.webp" alt="" loading="lazy">
-            <div class="fan-card-overlay">
-              <h3>Vibe HD</h3>
-              <p>A porta de entrada da linha Vibe, pro serviço que precisa caber no bolso do cliente.</p>
-            </div>
-          </div>
-        </article>
-        <article class="fan-card" tabindex="0">
-          <div class="fan-card-foto">
-            <img src="assets/img/dist-ceo-cliente.webp" alt="" loading="lazy">
-            <div class="fan-card-overlay">
-              <h3>Vibe TLED</h3>
-              <p>Borda fina e brilho alto por um preço de meio de linha.</p>
-            </div>
-          </div>
-        </article>
-        <article class="fan-card" tabindex="0">
-          <div class="fan-card-foto">
-            <img src="assets/img/dist-equipe.webp" alt="" loading="lazy">
-            <div class="fan-card-overlay">
-              <h3>Vibe OLED</h3>
-              <p>Imagem de topo, pro cliente que percebe diferença de cor e de preto.</p>
-            </div>
-          </div>
-        </article>
-        <article class="fan-card" tabindex="0">
-          <div class="fan-card-foto">
-            <img src="assets/img/dist-estoque.webp" alt="" loading="lazy">
-            <div class="fan-card-overlay">
-              <h3>Vibe Soft OLED</h3>
-              <p>O melhor da linha, com o comportamento mais perto do painel de fábrica.</p>
-            </div>
-          </div>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ PORTFÓLIO ============ -->
-  <section class="sec" id="produtos">
-    <div class="wrap">
-      <header class="sec-hd">
-        <span class="kicker" data-c="portfolio.kicker"></span>
-        <h2 class="h2" data-c="portfolio.titulo"></h2>
-        <p class="sub" data-c="portfolio.texto"></p>
-      </header>
-      <div class="linhas" id="linhas"></div>
-      <div class="split-china" id="splitChina" hidden>
-        <article class="split-col" id="splitColA">
-          <div class="split-foto"><img alt=""></div>
-          <h3></h3>
-          <p></p>
-        </article>
-        <article class="split-col split-col-vibe" id="splitColB">
-          <div class="split-foto"><img alt=""></div>
-          <h3></h3>
-          <p></p>
-        </article>
-      </div>
-      <p class="split-fechamento" id="splitFechamento" hidden></p>
-    </div>
-  </section>
-
-  <!-- ============ DESTAQUE / PREMIUM VIBE ============ -->
-  <section class="sec sec-alt" id="premium">
-    <div class="wrap prog-in">
-      <div class="prog-copy">
-        <span class="kicker" data-c="destaque.kicker"></span>
-        <h2 class="h2" data-c="destaque.titulo"></h2>
-        <p class="sub" data-c="destaque.texto"></p>
-        <ul class="tick-list" id="progList"></ul>
-        <a href="#" class="btn btn-primary" data-wa-marca data-c="destaque.cta"></a>
-
-        <div class="garantia-inline">
-          <span class="garantia-inline-ico"><svg class="ico"><use href="#i-shield"/></svg></span>
-          <div class="garantia-inline-body">
-            <h3 data-c="destaque.garantiaTitulo"></h3>
-            <p data-c="destaque.garantiaTexto"></p>
-            <a href="#" class="btn btn-ghost btn-sm" id="garantiaBtn" download>
-              <svg class="ico"><use href="#i-download"/></svg>
-              <span data-c="destaque.garantiaCta"></span>
-            </a>
-          </div>
-        </div>
-      </div>
-      <div class="prog-art">
-        <div class="prog-image-wrap">
-          <img class="prog-image" src="assets/img/premium-vibe.webp"
-               alt="Apresentadora Vibe exibindo as linhas de telas ao lado do mascote da marca"
-               width="1436" height="1580" loading="lazy">
-        </div>
-        <div class="prog-ring" aria-hidden="true"></div>
-      </div>
-    </div>
-  </section>
-
   <!-- ============ PROVA SOCIAL (só aparece com depoimentos reais) ============ -->
   <section class="sec sec-alt" id="secProva" hidden>
     <div class="wrap">
@@ -440,11 +443,25 @@
     <div class="wrap">
       <header class="sec-hd">
         <span class="kicker">Vibecast</span>
-        <h2 class="h2">Conheça o nosso canal.</h2>
-        <p class="sub">Bancada, teste, comparativo e conversa com quem vive esse mercado. Tem episódio novo toda semana.</p>
+        <h2 class="h2">Conheça o Vibecast.</h2>
+        <p class="sub">Conversa com quem vive esse mercado todo dia: bancada, preço, venda e o que tá entrando de aparelho novo.</p>
       </header>
 
-      <div class="vibecast-grid" id="vibecastGrid"></div>
+      <a class="vibecast-card" id="vibecastCard" target="_blank" rel="noopener" aria-label="Assistir ao Vibecast no YouTube (abre em nova aba)">
+        <div class="vibecast-thumb">
+          <img id="vibecastThumb" alt="" loading="lazy">
+          <span class="vibecast-play" aria-hidden="true"><svg class="ico"><use href="#i-play"/></svg></span>
+        </div>
+        <div class="vibecast-info">
+          <div class="vibecast-info-txt">
+            <span class="vibecast-tag">Episódio em destaque</span>
+            <h3 class="vibecast-titulo" id="vibecastTitulo">Vibecast — com Ali</h3>
+          </div>
+          <span class="btn btn-primary btn-lg vibecast-cta" aria-hidden="true">
+            <svg class="ico"><use href="#i-youtube"/></svg> Ver no YouTube
+          </span>
+        </div>
+      </a>
     </div>
   </section>
 
@@ -496,9 +513,9 @@
       <div>
         <h4>Site</h4>
         <a href="#solucao">Diferenciais</a>
-        <a href="#distribuidores">Distribuidores</a>
         <a href="#produtos">Produtos</a>
         <a href="#como">Como funciona</a>
+        <a href="#distribuidores">Quero comprar</a>
         <a href="#vibecast">Vibecast</a>
         <a href="#feedbacks">Feedbacks</a>
         <a href="#faq">Dúvidas</a>
@@ -626,40 +643,6 @@
   </div>
 </div>
 
-<!-- Popup "Vibe Academy" — abre só no clique do botão da seção de marca.
-     Ainda sem função real (a Academia nem lançou); é a casca do popup pra
-     quando o formulário tiver pra onde mandar o interesse. -->
-<div class="modal" id="modalAcademy" hidden>
-  <div class="modal-bd" data-fechar-academy></div>
-  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalAcademyTit" aria-describedby="modalAcademyDesc">
-    <button type="button" class="modal-x" data-fechar-academy aria-label="Fechar">
-      <svg class="ico"><use href="#i-x"/></svg>
-    </button>
-
-    <span class="modal-ico"><svg class="ico"><use href="#i-brilho"/></svg></span>
-    <h3 id="modalAcademyTit">Vibe Academy</h3>
-    <p id="modalAcademyDesc" class="modal-sub">A Academia de Treinamento ainda está sendo montada. Deixe seu contato pra ser avisado assim que abrir.</p>
-
-    <form id="formAcademy" novalidate>
-      <div class="campo">
-        <label for="anome">Nome</label>
-        <input type="text" id="anome" name="nome" autocomplete="name" placeholder="Seu nome completo" required>
-      </div>
-      <div class="campo">
-        <label for="awpp">WhatsApp</label>
-        <input type="tel" id="awpp" name="whatsapp" inputmode="numeric" autocomplete="tel" placeholder="(11) 91234-5678" required>
-      </div>
-      <button type="submit" class="btn btn-primary btn-lg btn-full">Quero ser avisado</button>
-    </form>
-
-    <div class="form-ok" id="academyOk" hidden>
-      <span class="gate-ico"><svg class="ico"><use href="#i-check"/></svg></span>
-      <h3>Prontinho.</h3>
-      <p>Assim que a Vibe Academy abrir, você é um dos primeiros a saber.</p>
-    </div>
-  </div>
-</div>
-
 <!-- ============ LIGHTBOX DO FEEDBACK EM VÍDEO ============
      O iframe do Instagram é montado na hora de abrir e destruído ao
      fechar — assim nenhum player de terceiro roda em segundo plano. -->
@@ -684,9 +667,9 @@
   </p>
 </noscript>
 
-<!-- Esta página é travada na visão Técnico. A escolha de perfil mora em
-     index.html; outraUrl é o outro lado do site. -->
-<script>window.PAGINA_PERSONA = { fixa: 'tecnico', outraUrl: 'distribuidor.html' };</script>
+<!-- Esta página é travada na visão Distribuidor. A escolha de perfil mora
+     em index.html; outraUrl é o outro lado do site. -->
+<script>window.PAGINA_PERSONA = { fixa: 'distribuidor', outraUrl: 'tecnico.html' };</script>
 <script src="assets/js/shader-bg.js"></script>
 <script src="assets/js/data.js"></script>
 <script src="assets/js/app.js"></script>

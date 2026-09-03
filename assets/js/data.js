@@ -20,7 +20,7 @@ const CONFIG = {
   siteOficial: 'https://vibecell.com.br',
 
   /* Episódio em destaque do Vibecast (ID do vídeo no YouTube) — usado na
-     seção de card único (lojista). */
+     seção de card único (distribuidor). */
   vibecastVideoId: 'UTCaBXgikc4',
 
   /* Vitrine "Conheça o nosso canal" (técnico) — 4 episódios lado a lado,
@@ -43,12 +43,23 @@ const CONFIG = {
   leadWebhook: 'assets/php/salvar-lead.php',
   leadWebhookDistribuidor: 'assets/php/salvar-lead.php',
 
+  /* Opções de "média de compra de telas por mês" no formulário
+     "Quero comprar Vibe". `v` é o que vai pro CSV e pro WhatsApp
+     (curto, sem acento); `t` é o que o visitante lê na tela.
+     Pra mudar as faixas, é só editar esta lista.               */
+  faixasCompraTelas: [
+    { v: 'ate-100',   t: 'até 100 telas' },
+    { v: '100-300',   t: '100 a 300 telas' },
+    { v: '300-1000',  t: '300 a 1.000 telas' },
+    { v: 'mais-1000', t: 'mais de 1.000 telas' }
+  ],
+
   /* Termo de garantia (botão "Baixar o termo de garantia" na seção
      Premium). Link direto de download do Google Drive.             */
   garantiaPdf: 'https://drive.google.com/uc?export=download&id=1rjcVtme7MYZnHIisDwvJYg26h1f0iqND',
 
-  /* Visão que abre por padrão: 'lojista' (tema claro) ou 'tecnico' (escuro) */
-  personaPadrao: 'lojista'
+  /* Visão que abre por padrão: 'distribuidor' (tema claro) ou 'tecnico' (escuro) */
+  personaPadrao: 'distribuidor'
 };
 
 /* ============================================================
@@ -57,33 +68,33 @@ const CONFIG = {
 
 const PERSONAS = {
 
-  /* ---------------------------------------------------- LOJISTA */
-  lojista: {
-    id: 'lojista',
-    rotulo: 'Sou Lojista',
-    rotuloDesc: 'Quero abastecer minha loja, revender e encontrar distribuidores.',
+  /* ------------------------------------------------ DISTRIBUIDOR */
+  distribuidor: {
+    id: 'distribuidor',
+    rotulo: 'Sou Distribuidor',
+    rotuloDesc: 'Quero comprar Vibe pra minha distribuidora.',
     tema: 'claro',
 
     hero: {
       eyebrow: 'Fornecedor de tela para atacado',
-      titulo: 'Entre na Vibe e abasteça sua operação<br>com a tela que não volta.',
+      titulo: 'Entre na Vibe e abasteça sua distribuidora<br>com a tela que não volta.',
       texto: 'Todos os modelos, atendimento com gente de verdade do outro lado, 1 ano de garantia e entrega personalizada pra todo o Brasil.',
       texto2: 'A Vibe é a 01 do mercado.',
-      ctaPrimario: 'Encontrar distribuidor',
+      ctaPrimario: 'Quero comprar Vibe',
       ctaSecundario: 'Conhecer as linhas',
-      selos: ['Atendimento para lojistas', 'Distribuição nacional', 'Importação direta']
+      selos: ['Atendimento para distribuidoras', 'Distribuição nacional', 'Importação direta']
     },
 
     autoridade: [
       { i: 'box',   t: 'Atacado especializado', d: 'Produtos pensados para o mercado de reparação mobile.' },
       { i: 'globo', t: 'Importação direta',     d: 'Mais controle sobre seleção e fornecimento.' },
-      { i: 'rota',  t: 'Logística nacional',    d: 'Encontre a melhor forma de abastecer sua operação.' },
+      { i: 'rota',  t: 'Logística nacional',    d: 'Encontre a melhor forma de abastecer sua distribuidora.' },
       { i: 'chat',  t: 'Suporte comercial',     d: 'Atendimento para ajudar na escolha do seu mix.' }
     ],
 
     dores: {
       kicker: 'Por que comprar da Vibe',
-      titulo: 'Quem revende tela sabe onde dói.',
+      titulo: 'Quem distribui tela sabe onde dói.',
       itens: [
         { t: 'Você fala com gente', d: 'Pedido, prazo e problema resolvidos com quem atende de verdade. Você não fica esperando resposta pra saber se a carga saiu.', foto: 'assets/img/dist-ceo-cliente.webp' },
         { t: 'Garantia que chega na ponta', d: '1 ano de garantia, com processo que funciona quando você precisa acionar. Prometer garantia é fácil, difícil é honrar.', foto: 'assets/img/dist-equipe.webp' },
@@ -94,7 +105,7 @@ const PERSONAS = {
 
     beneficios: {
       kicker: 'Por que comprar da Vibe',
-      titulo: 'Quem revende tela sabe onde dói.',
+      titulo: 'Quem distribui tela sabe onde dói.',
       itens: [
         { i: 'chat',  t: 'Você fala com gente',                        d: 'Pedido, prazo e problema resolvidos com quem atende de verdade. Você não fica esperando resposta pra saber se a carga saiu.' },
         { i: 'shield', t: 'Garantia que chega na ponta',                d: '1 ano de garantia, com processo que funciona quando você precisa acionar. Prometer garantia é fácil, difícil é honrar.' },
@@ -106,7 +117,7 @@ const PERSONAS = {
     portfolio: {
       kicker: 'Tela China e tela Vibe',
       titulo: 'Tem cliente que compra por preço e tem cliente que compra por qualidade. A Vibe atende os dois.',
-      fechamento: 'Você monta a prateleira com as duas e atende o balcão inteiro sem mandar cliente pro concorrente.',
+      fechamento: 'Você monta o estoque com as duas e atende a sua carteira inteira sem mandar cliente pro concorrente.',
       linhas: [
         {
           nome: 'Tela China (Incell)',
@@ -116,7 +127,7 @@ const PERSONAS = {
         {
           nome: 'Linha Vibe',
           destaque: true,
-          texto: 'A opção de qualidade. Pro cliente que quer o aparelho igual ao que ele comprou, e pro lojista que quer parar de receber tela de volta.',
+          texto: 'A opção de qualidade. Pro cliente que quer o aparelho igual ao que ele comprou, e pra distribuidora que quer parar de receber tela de volta.',
           foto: 'assets/img/dist-tela-vibe.webp'
         }
       ]
@@ -124,7 +135,7 @@ const PERSONAS = {
 
     destaque: {
       kicker: 'Experiência Premium',
-      titulo: 'Sua loja não precisa competir apenas por preço.',
+      titulo: 'Sua distribuidora não precisa competir apenas por preço.',
       texto: 'Quando existem diferentes perfis de cliente, ter apenas uma opção limita sua venda. Com a Premium Vibe, sua equipe ganha uma alternativa para oferecer a quem procura mais qualidade, aumentando o valor percebido do produto e criando novas possibilidades de margem.',
       itens: [
         'Uma alternativa premium dentro do seu mix',
@@ -140,19 +151,26 @@ const PERSONAS = {
 
     passos: {
       kicker: 'Passo a passo',
-      titulo: 'Da Vibe para o seu estoque.',
-      texto: 'Encontrar os produtos certos para sua loja pode ser simples.',
+      titulo: 'Da Vibe para a sua distribuidora.',
+      texto: 'Começar a comprar Vibe pro seu estoque pode ser simples.',
       itens: [
-        { t: 'Encontre a Vibe mais próxima', d: 'Use nosso mapa para localizar uma distribuidora que atende sua região.' },
-        { t: 'Fale com o distribuidor', d: 'Consulte modelos, linhas, disponibilidade e condições comerciais.' },
-        { t: 'Monte seu mix', d: 'Escolha os produtos mais adequados ao perfil dos clientes da sua loja.' },
-        { t: 'Venda com mais confiança', d: 'Tenha opções para diferentes necessidades e mantenha seu estoque preparado para o próximo pedido.' }
+        { t: 'Deixe seus dados', d: 'Nome, endereço, telefone e a sua média de compra de telas por mês.' },
+        { t: 'Fale com o comercial da Vibe', d: 'A conversa cai direto no WhatsApp: linhas, disponibilidade e condição pro seu volume.' },
+        { t: 'Monte seu mix', d: 'Escolha as linhas mais adequadas ao perfil dos clientes que a sua distribuidora atende.' },
+        { t: 'Abasteça a sua região', d: 'Receba a carga com a logística ajustada ao seu volume e mantenha o estoque pronto pro próximo pedido.' }
       ]
     },
 
     prova: {
-      kicker: 'Quem já vende Vibe',
+      kicker: 'Quem já compra Vibe',
       titulo: 'Uma marca feita para quem movimenta esse mercado todos os dias.'
+    },
+
+    /* cabeçalho da seção de feedbacks em vídeo (os cards vêm de FEEDBACKS) */
+    feedbacks: {
+      kicker: 'Feedbacks',
+      titulo: 'Quem já compra Vibe fala por nós.',
+      texto: 'Distribuidores que trabalham com a marca contando, na frente da câmera, o que muda no dia a dia de quem revende tela.'
     },
 
     mapa: {
@@ -175,25 +193,25 @@ const PERSONAS = {
     },
 
     distGate: {
-      titulo: 'Seja um distribuidor Vibe',
+      titulo: 'Quero comprar Vibe pra minha distribuidora',
       texto: 'Preencha seus dados e o comercial retorna com a condição pro seu volume de compra.',
-      botao: 'Quero ser distribuidor',
+      botao: 'Quero comprar Vibe',
       micro: 'Leva poucos segundos · Sem compromisso · Seus dados são usados somente para atendimento comercial',
-      modalTitulo: 'Seja um distribuidor Vibe',
-      modalTexto: 'Preencha os dados abaixo para receber a condição comercial pro seu volume de compra.'
+      modalTitulo: 'Quero comprar Vibe pra minha distribuidora',
+      modalTexto: 'Preencha os dados abaixo. Ao enviar, a conversa abre direto no WhatsApp da Vibe com tudo preenchido.'
     },
 
     faq: {
       kicker: 'Dúvidas frequentes',
-      titulo: 'Antes de abastecer sua loja',
+      titulo: 'Antes de abastecer sua distribuidora',
       itens: [
-        { p: 'A Vibe vende diretamente para lojistas?', r: 'A Vibe trabalha com atendimento voltado ao mercado de assistência técnica, incluindo lojistas, revendedores e operações que comercializam telas e frontais. Use o mapa para encontrar a distribuidora que atende sua região.' },
-        { p: 'Onde posso comprar produtos Vibe?', r: 'Você pode utilizar nosso mapa de distribuidores para encontrar o ponto mais próximo e acessar os canais de atendimento disponíveis.' },
+        { p: 'A Vibe vende diretamente para distribuidoras?', r: 'Sim. A Vibe trabalha com atendimento voltado ao mercado de assistência técnica, incluindo distribuidoras, lojistas, revendedores e operações que comercializam telas e frontais. Preencha o formulário e o comercial fala com você pelo WhatsApp.' },
+        { p: 'Como começo a comprar Vibe?', r: 'Preencha nome, endereço, telefone e a sua média de compra de telas por mês. Ao enviar, a conversa abre direto no WhatsApp da Vibe com esses dados, e o comercial retorna com a condição pro seu volume.' },
         { p: 'Qual a diferença entre a linha Comum e a Premium Vibe?', r: 'A linha Comum é direcionada a quem procura equilíbrio entre custo-benefício e funcionalidade. A Premium Vibe é indicada para clientes que valorizam uma experiência superior, com diferenciais como brilho mais intenso, toque responsivo e acabamento superior.' },
-        { p: 'Posso comprar para revender?', r: 'Sim. A Vibe possui uma proposta voltada para profissionais e empresas que atuam no mercado de peças e reparação mobile. Consulte um distribuidor para conhecer disponibilidade e condições comerciais.' },
-        { p: 'Como saber quais modelos estão disponíveis?', r: 'A disponibilidade pode variar de acordo com o estoque e distribuidor. Encontre o atendimento da sua região pelo mapa e consulte os modelos disponíveis diretamente pelo WhatsApp.' },
-        { p: 'A Vibe atende todo o Brasil?', r: 'A Vibe trabalha com logística e distribuição para diferentes regiões do país. Utilize o mapa para verificar os pontos disponíveis e encontrar a melhor opção de atendimento para sua localização.' },
-        { p: 'Como escolher quais telas colocar no meu estoque?', r: 'Isso depende do perfil dos seus clientes, modelos com maior procura e posicionamento da sua loja. O atendimento comercial pode ajudar você a identificar opções adequadas ao seu mix.' }
+        { p: 'Posso comprar para revender?', r: 'Sim. A Vibe possui uma proposta voltada para profissionais e empresas que atuam no mercado de peças e reparação mobile. Fale com o comercial para conhecer disponibilidade e condições.' },
+        { p: 'Como saber quais modelos estão disponíveis?', r: 'A disponibilidade pode variar de acordo com o estoque. Fale com o comercial da Vibe pelo WhatsApp e consulte os modelos disponíveis pro seu pedido.' },
+        { p: 'A Vibe atende todo o Brasil?', r: 'A Vibe trabalha com logística e distribuição para diferentes regiões do país. Informe a sua região no formulário e o comercial retorna com a melhor opção de atendimento.' },
+        { p: 'Como escolher quais telas colocar no meu estoque?', r: 'Isso depende do perfil dos seus clientes, modelos com maior procura e posicionamento da sua distribuidora. O atendimento comercial pode ajudar você a identificar opções adequadas ao seu mix.' }
       ]
     },
 
@@ -201,12 +219,12 @@ const PERSONAS = {
       titulo: 'Entre na Vibe.',
       texto: 'A 01 do mercado em tela para assistência técnica.',
       linhas: ['Mais variedade para vender.', 'Mais segurança para o seu negócio.', 'Mais motivos para o cliente voltar.'],
-      botao: 'Quero ser distribuidor',
+      botao: 'Quero comprar Vibe',
       faixaMarca: true
     },
 
-    msgWhatsapp: 'Olá! Tenho uma loja e quero conhecer as linhas de tela da Vibe.',
-    msgWhatsappDist: 'Olá! Sou lojista e vim pelo site da Vibe. Gostaria de consultar disponibilidade e condições.'
+    msgWhatsapp: 'Olá! Tenho uma distribuidora e quero comprar Vibe pra ela.',
+    msgWhatsappDist: 'Olá! Sou distribuidor e vim pelo site da Vibe. Gostaria de consultar disponibilidade e condições.'
   },
 
   /* ---------------------------------------------------- TÉCNICO */
@@ -298,6 +316,13 @@ const PERSONAS = {
       titulo: 'Uma marca feita para quem movimenta esse mercado todos os dias.'
     },
 
+    /* cabeçalho da seção de feedbacks em vídeo (os cards vêm de FEEDBACKS) */
+    feedbacks: {
+      kicker: 'Feedbacks',
+      titulo: 'Quem já trabalha com Vibe fala por nós.',
+      texto: 'Distribuidores e parceiros contando, na frente da câmera, o que muda na bancada quando a tela é Vibe.'
+    },
+
     mapa: {
       kicker: 'Onde encontrar',
       titulo: 'Encontre uma distribuidora Vibe perto da sua bancada.',
@@ -355,10 +380,58 @@ const PERSONAS = {
            relacionamento com a Vibe.',
      nome: 'Nome do parceiro',
      local: 'Cidade — UF',
-     perfil: 'lojista' }   // 'lojista', 'tecnico' ou 'ambos'
+     perfil: 'distribuidor' }   // 'distribuidor', 'tecnico' ou 'ambos'
    ============================================================ */
 
 const DEPOIMENTOS = [];
+
+/* ============================================================
+   2b. FEEDBACKS EM VÍDEO (reels do @vibecell.oficial)
+   ------------------------------------------------------------
+   A seção "Feedbacks" das duas páginas. Cada item é um reel real
+   do Instagram da Vibe: o card mostra uma capa local (rápida, no
+   visual do site) e só carrega o player do Instagram quando o
+   visitante clica — nada de terceiro roda antes disso.
+
+   Como adicionar um feedback novo:
+   1. copie o código do reel (o trecho depois de /reel/ na URL);
+   2. salve um frame de capa em assets/img/ (proporção 9:16);
+   3. copie um bloco abaixo e troque os campos.
+
+   REGRA: `txt` descreve o que a pessoa realmente diz no vídeo —
+   nada de frase inventada. Se não souber o que ela fala, use uma
+   descrição neutra do vídeo.
+
+   `perfil` diz em qual visão o card aparece:
+   'distribuidor', 'tecnico' ou 'ambos'.
+   ============================================================ */
+
+const FEEDBACKS = [
+  {
+    code: 'DZVnF1dDzSK',
+    capa: 'assets/img/feedback-ivo.webp',
+    nome: 'Ivo',
+    local: 'Vibe Distribuidora FSA',
+    txt: 'Há cerca de 6 anos abastecendo com a Vibe. Fala da qualidade das telas, do brilho e da evolução da linha ao longo da parceria.',
+    perfil: 'ambos'
+  },
+  {
+    code: 'DZfX32fO_ve',
+    capa: 'assets/img/feedback-antonio.webp',
+    nome: 'Antônio',
+    local: 'Parceiro Vibe',
+    txt: 'Destaca a consistência: o mesmo padrão de qualidade lote após lote. Nas palavras dele, uma qualidade difícil de igualar.',
+    perfil: 'ambos'
+  },
+  {
+    code: 'DZ_AxbMJP0E',
+    capa: 'assets/img/feedback-ramon.webp',
+    nome: 'Ramon',
+    local: 'Distribuidor Vibe — Rio Grande do Norte',
+    txt: 'Distribuidor Vibe no Rio Grande do Norte, com duas distribuidoras, conta como é trabalhar com a marca.',
+    perfil: 'ambos'
+  }
+];
 
 /* ============================================================
    3. DISTRIBUIDORAS
@@ -370,20 +443,20 @@ const DEPOIMENTOS = [];
    ============================================================ */
 
 const DISTRIBUIDORAS = [
-  { id: 1,  nome: 'Vibe São Paulo — Matriz', cidade: 'São Paulo', uf: 'SP', regiao: 'Sudeste', endereco: 'Av. Paulista, 1000 — Bela Vista', cep: '01310-100', horario: 'Seg a Sex 8h–18h · Sáb 9h–13h', tel: '(11) 3000-1000', whatsapp: '5511999990001', lat: -23.5614, lng: -46.6559, atende: ['tecnico', 'lojista'], selos: ['Matriz', 'Atacado', 'Premium Vibe'] },
-  { id: 2,  nome: 'Vibe Campinas', cidade: 'Campinas', uf: 'SP', regiao: 'Sudeste', endereco: 'R. Barão de Jaguara, 1200 — Centro', cep: '13015-002', horario: 'Seg a Sex 8h–18h', tel: '(19) 3000-2000', whatsapp: '5519999990002', lat: -22.9056, lng: -47.0608, atende: ['tecnico', 'lojista'], selos: ['Atacado', 'Premium Vibe'] },
-  { id: 3,  nome: 'Vibe Vale do Paraíba', cidade: 'São José dos Campos', uf: 'SP', regiao: 'Sudeste', endereco: 'Av. São João, 2200 — Jardim Esplanada', cep: '12242-000', horario: 'Seg a Sex 8h30–18h', tel: '(12) 3000-3000', whatsapp: '5512999990003', lat: -23.2107, lng: -45.8958, atende: ['tecnico', 'lojista'], selos: ['Atacado'] },
-  { id: 4,  nome: 'Vibe Rio de Janeiro', cidade: 'Rio de Janeiro', uf: 'RJ', regiao: 'Sudeste', endereco: 'Av. Rio Branco, 156 — Centro', cep: '20040-901', horario: 'Seg a Sex 9h–18h', tel: '(21) 3000-4000', whatsapp: '5521999990004', lat: -22.9068, lng: -43.1789, atende: ['tecnico', 'lojista'], selos: ['Atacado', 'Premium Vibe'] },
-  { id: 5,  nome: 'Vibe Belo Horizonte', cidade: 'Belo Horizonte', uf: 'MG', regiao: 'Sudeste', endereco: 'Av. Afonso Pena, 3000 — Funcionários', cep: '30130-009', horario: 'Seg a Sex 8h–18h', tel: '(31) 3000-5000', whatsapp: '5531999990005', lat: -19.9320, lng: -43.9378, atende: ['tecnico', 'lojista'], selos: ['Atacado'] },
-  { id: 6,  nome: 'Vibe Vitória', cidade: 'Vitória', uf: 'ES', regiao: 'Sudeste', endereco: 'Av. N. Sra. dos Navegantes, 675 — Enseada do Suá', cep: '29050-335', horario: 'Seg a Sex 9h–18h', tel: '(27) 3000-6000', whatsapp: '5527999990006', lat: -20.3155, lng: -40.2925, atende: ['lojista'], selos: ['Foco em revenda'] },
-  { id: 7,  nome: 'Vibe Curitiba', cidade: 'Curitiba', uf: 'PR', regiao: 'Sul', endereco: 'R. XV de Novembro, 500 — Centro', cep: '80020-310', horario: 'Seg a Sex 8h30–18h', tel: '(41) 3000-7000', whatsapp: '5541999990007', lat: -25.4296, lng: -49.2713, atende: ['tecnico', 'lojista'], selos: ['Atacado', 'Premium Vibe'] },
-  { id: 8,  nome: 'Vibe Porto Alegre', cidade: 'Porto Alegre', uf: 'RS', regiao: 'Sul', endereco: 'Av. Borges de Medeiros, 800 — Centro Histórico', cep: '90020-025', horario: 'Seg a Sex 8h–17h30', tel: '(51) 3000-8000', whatsapp: '5551999990008', lat: -30.0346, lng: -51.2177, atende: ['tecnico', 'lojista'], selos: ['Atacado'] },
+  { id: 1,  nome: 'Vibe São Paulo — Matriz', cidade: 'São Paulo', uf: 'SP', regiao: 'Sudeste', endereco: 'Av. Paulista, 1000 — Bela Vista', cep: '01310-100', horario: 'Seg a Sex 8h–18h · Sáb 9h–13h', tel: '(11) 3000-1000', whatsapp: '5511999990001', lat: -23.5614, lng: -46.6559, atende: ['tecnico', 'distribuidor'], selos: ['Matriz', 'Atacado', 'Premium Vibe'] },
+  { id: 2,  nome: 'Vibe Campinas', cidade: 'Campinas', uf: 'SP', regiao: 'Sudeste', endereco: 'R. Barão de Jaguara, 1200 — Centro', cep: '13015-002', horario: 'Seg a Sex 8h–18h', tel: '(19) 3000-2000', whatsapp: '5519999990002', lat: -22.9056, lng: -47.0608, atende: ['tecnico', 'distribuidor'], selos: ['Atacado', 'Premium Vibe'] },
+  { id: 3,  nome: 'Vibe Vale do Paraíba', cidade: 'São José dos Campos', uf: 'SP', regiao: 'Sudeste', endereco: 'Av. São João, 2200 — Jardim Esplanada', cep: '12242-000', horario: 'Seg a Sex 8h30–18h', tel: '(12) 3000-3000', whatsapp: '5512999990003', lat: -23.2107, lng: -45.8958, atende: ['tecnico', 'distribuidor'], selos: ['Atacado'] },
+  { id: 4,  nome: 'Vibe Rio de Janeiro', cidade: 'Rio de Janeiro', uf: 'RJ', regiao: 'Sudeste', endereco: 'Av. Rio Branco, 156 — Centro', cep: '20040-901', horario: 'Seg a Sex 9h–18h', tel: '(21) 3000-4000', whatsapp: '5521999990004', lat: -22.9068, lng: -43.1789, atende: ['tecnico', 'distribuidor'], selos: ['Atacado', 'Premium Vibe'] },
+  { id: 5,  nome: 'Vibe Belo Horizonte', cidade: 'Belo Horizonte', uf: 'MG', regiao: 'Sudeste', endereco: 'Av. Afonso Pena, 3000 — Funcionários', cep: '30130-009', horario: 'Seg a Sex 8h–18h', tel: '(31) 3000-5000', whatsapp: '5531999990005', lat: -19.9320, lng: -43.9378, atende: ['tecnico', 'distribuidor'], selos: ['Atacado'] },
+  { id: 6,  nome: 'Vibe Vitória', cidade: 'Vitória', uf: 'ES', regiao: 'Sudeste', endereco: 'Av. N. Sra. dos Navegantes, 675 — Enseada do Suá', cep: '29050-335', horario: 'Seg a Sex 9h–18h', tel: '(27) 3000-6000', whatsapp: '5527999990006', lat: -20.3155, lng: -40.2925, atende: ['distribuidor'], selos: ['Foco em revenda'] },
+  { id: 7,  nome: 'Vibe Curitiba', cidade: 'Curitiba', uf: 'PR', regiao: 'Sul', endereco: 'R. XV de Novembro, 500 — Centro', cep: '80020-310', horario: 'Seg a Sex 8h30–18h', tel: '(41) 3000-7000', whatsapp: '5541999990007', lat: -25.4296, lng: -49.2713, atende: ['tecnico', 'distribuidor'], selos: ['Atacado', 'Premium Vibe'] },
+  { id: 8,  nome: 'Vibe Porto Alegre', cidade: 'Porto Alegre', uf: 'RS', regiao: 'Sul', endereco: 'Av. Borges de Medeiros, 800 — Centro Histórico', cep: '90020-025', horario: 'Seg a Sex 8h–17h30', tel: '(51) 3000-8000', whatsapp: '5551999990008', lat: -30.0346, lng: -51.2177, atende: ['tecnico', 'distribuidor'], selos: ['Atacado'] },
   { id: 9,  nome: 'Vibe Florianópolis', cidade: 'Florianópolis', uf: 'SC', regiao: 'Sul', endereco: 'R. Felipe Schmidt, 300 — Centro', cep: '88010-001', horario: 'Seg a Sex 9h–18h', tel: '(48) 3000-9000', whatsapp: '5548999990009', lat: -27.5954, lng: -48.5480, atende: ['tecnico'], selos: ['Foco técnico'] },
-  { id: 10, nome: 'Vibe Salvador', cidade: 'Salvador', uf: 'BA', regiao: 'Nordeste', endereco: 'Av. Tancredo Neves, 1200 — Caminho das Árvores', cep: '41820-021', horario: 'Seg a Sex 8h–17h', tel: '(71) 3000-1100', whatsapp: '5571999990010', lat: -12.9777, lng: -38.5016, atende: ['tecnico', 'lojista'], selos: ['Atacado'] },
-  { id: 11, nome: 'Vibe Recife', cidade: 'Recife', uf: 'PE', regiao: 'Nordeste', endereco: 'Av. Conde da Boa Vista, 900 — Boa Vista', cep: '50060-004', horario: 'Seg a Sex 8h–17h30', tel: '(81) 3000-1200', whatsapp: '5581999990011', lat: -8.0578, lng: -34.8829, atende: ['tecnico', 'lojista'], selos: ['Atacado', 'Premium Vibe'] },
-  { id: 12, nome: 'Vibe Fortaleza', cidade: 'Fortaleza', uf: 'CE', regiao: 'Nordeste', endereco: 'Av. Dom Luís, 500 — Meireles', cep: '60160-230', horario: 'Seg a Sex 8h–17h', tel: '(85) 3000-1300', whatsapp: '5585999990012', lat: -3.7327, lng: -38.5267, atende: ['lojista'], selos: ['Foco em revenda'] },
-  { id: 13, nome: 'Vibe Brasília', cidade: 'Brasília', uf: 'DF', regiao: 'Centro-Oeste', endereco: 'SCS Quadra 2, Bloco C — Asa Sul', cep: '70302-000', horario: 'Seg a Sex 9h–18h', tel: '(61) 3000-1400', whatsapp: '5561999990013', lat: -15.7975, lng: -47.8919, atende: ['tecnico', 'lojista'], selos: ['Atacado'] },
-  { id: 14, nome: 'Vibe Goiânia', cidade: 'Goiânia', uf: 'GO', regiao: 'Centro-Oeste', endereco: 'Av. T-63, 1500 — Setor Bueno', cep: '74230-100', horario: 'Seg a Sex 8h–18h', tel: '(62) 3000-1500', whatsapp: '5562999990014', lat: -16.7073, lng: -49.2648, atende: ['tecnico', 'lojista'], selos: ['Atacado'] },
-  { id: 15, nome: 'Vibe Manaus', cidade: 'Manaus', uf: 'AM', regiao: 'Norte', endereco: 'Av. Djalma Batista, 1800 — Chapada', cep: '69050-010', horario: 'Seg a Sex 8h–17h', tel: '(92) 3000-1600', whatsapp: '5592999990015', lat: -3.1019, lng: -60.0250, atende: ['tecnico', 'lojista'], selos: ['Atacado'] },
-  { id: 16, nome: 'Vibe Belém', cidade: 'Belém', uf: 'PA', regiao: 'Norte', endereco: 'Av. Almirante Barroso, 2000 — Marco', cep: '66093-020', horario: 'Seg a Sex 8h–17h', tel: '(91) 3000-1700', whatsapp: '5591999990016', lat: -1.4558, lng: -48.4902, atende: ['lojista'], selos: ['Foco em revenda'] }
+  { id: 10, nome: 'Vibe Salvador', cidade: 'Salvador', uf: 'BA', regiao: 'Nordeste', endereco: 'Av. Tancredo Neves, 1200 — Caminho das Árvores', cep: '41820-021', horario: 'Seg a Sex 8h–17h', tel: '(71) 3000-1100', whatsapp: '5571999990010', lat: -12.9777, lng: -38.5016, atende: ['tecnico', 'distribuidor'], selos: ['Atacado'] },
+  { id: 11, nome: 'Vibe Recife', cidade: 'Recife', uf: 'PE', regiao: 'Nordeste', endereco: 'Av. Conde da Boa Vista, 900 — Boa Vista', cep: '50060-004', horario: 'Seg a Sex 8h–17h30', tel: '(81) 3000-1200', whatsapp: '5581999990011', lat: -8.0578, lng: -34.8829, atende: ['tecnico', 'distribuidor'], selos: ['Atacado', 'Premium Vibe'] },
+  { id: 12, nome: 'Vibe Fortaleza', cidade: 'Fortaleza', uf: 'CE', regiao: 'Nordeste', endereco: 'Av. Dom Luís, 500 — Meireles', cep: '60160-230', horario: 'Seg a Sex 8h–17h', tel: '(85) 3000-1300', whatsapp: '5585999990012', lat: -3.7327, lng: -38.5267, atende: ['distribuidor'], selos: ['Foco em revenda'] },
+  { id: 13, nome: 'Vibe Brasília', cidade: 'Brasília', uf: 'DF', regiao: 'Centro-Oeste', endereco: 'SCS Quadra 2, Bloco C — Asa Sul', cep: '70302-000', horario: 'Seg a Sex 9h–18h', tel: '(61) 3000-1400', whatsapp: '5561999990013', lat: -15.7975, lng: -47.8919, atende: ['tecnico', 'distribuidor'], selos: ['Atacado'] },
+  { id: 14, nome: 'Vibe Goiânia', cidade: 'Goiânia', uf: 'GO', regiao: 'Centro-Oeste', endereco: 'Av. T-63, 1500 — Setor Bueno', cep: '74230-100', horario: 'Seg a Sex 8h–18h', tel: '(62) 3000-1500', whatsapp: '5562999990014', lat: -16.7073, lng: -49.2648, atende: ['tecnico', 'distribuidor'], selos: ['Atacado'] },
+  { id: 15, nome: 'Vibe Manaus', cidade: 'Manaus', uf: 'AM', regiao: 'Norte', endereco: 'Av. Djalma Batista, 1800 — Chapada', cep: '69050-010', horario: 'Seg a Sex 8h–17h', tel: '(92) 3000-1600', whatsapp: '5592999990015', lat: -3.1019, lng: -60.0250, atende: ['tecnico', 'distribuidor'], selos: ['Atacado'] },
+  { id: 16, nome: 'Vibe Belém', cidade: 'Belém', uf: 'PA', regiao: 'Norte', endereco: 'Av. Almirante Barroso, 2000 — Marco', cep: '66093-020', horario: 'Seg a Sex 8h–17h', tel: '(91) 3000-1700', whatsapp: '5591999990016', lat: -1.4558, lng: -48.4902, atende: ['distribuidor'], selos: ['Foco em revenda'] }
 ];

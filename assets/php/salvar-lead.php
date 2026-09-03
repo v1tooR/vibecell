@@ -1,10 +1,11 @@
 <?php
 /**
  * Recebe o POST JSON dos dois formulários do site (popup do Técnico e
- * "Seja um distribuidor" do Lojista) e grava cada envio como uma linha
- * num CSV local, em assets/php/leads/ — sem depender de nenhum serviço
- * externo. Essa pasta é protegida por .htaccess (ninguém baixa o CSV
- * pela URL), mas o PHP, rodando no servidor, lê e escreve nela normal.
+ * "Quero comprar Vibe" do Distribuidor) e grava cada envio como uma
+ * linha num CSV local, em assets/php/leads/ — sem depender de nenhum
+ * serviço externo. Essa pasta é protegida por .htaccess (ninguém baixa
+ * o CSV pela URL), mas o PHP, rodando no servidor, lê e escreve nela
+ * normal.
  */
 
 header('Content-Type: application/json; charset=utf-8');
@@ -44,23 +45,26 @@ function campo($valor) {
     return defang(limpar($valor));
 }
 
-$ehDistribuidor = isset($lead['email']);
+/* Só o formulário do distribuidor manda 'faixaCompra' — é o que separa
+   os dois destinos. (Antes era o e-mail, campo que o formulário não pede
+   mais desde que o envio passou a cair direto no WhatsApp.) */
+$ehDistribuidor = isset($lead['faixaCompra']);
 $pastaLeads = __DIR__ . '/leads';
 if (!is_dir($pastaLeads)) {
     mkdir($pastaLeads, 0755, true);
 }
 
 if ($ehDistribuidor) {
-    $arquivo = $pastaLeads . '/seja-distribuidor.csv';
-    $cabecalho = ['Data', 'Nome', 'Telefone', 'E-mail', 'CEP', 'Cidade/UF', 'Faixa de compra', 'Página'];
+    $arquivo = $pastaLeads . '/quero-comprar-vibe.csv';
+    $cabecalho = ['Data', 'Nome', 'Telefone', 'CEP', 'Cidade/UF', 'Endereço', 'Média de compra (telas/mês)', 'Página'];
     $linha = [
         campo($lead['data']),
         campo($lead['nome']),
         campo($lead['telefoneFmt'] ?? $lead['telefone'] ?? ''),
-        campo($lead['email'] ?? ''),
         campo($lead['cep'] ?? ''),
         campo($lead['cidadeUf'] ?? ''),
-        campo($lead['faixaCompra'] ?? ''),
+        campo($lead['endereco'] ?? ''),
+        campo($lead['faixaCompraRotulo'] ?? $lead['faixaCompra'] ?? ''),
         campo($lead['origem'] ?? ''),
     ];
 } else {
