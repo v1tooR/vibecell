@@ -202,9 +202,16 @@ estiver definido no arquivo — nas duas páginas internas, a visão vem travada
 
 São arquivos estáticos — sobem em qualquer hospedagem (Hostinger, Vercel, Netlify,
 GitHub Pages, cPanel). Basta enviar `index.html`, `distribuidor.html`, `tecnico.html` e a pasta
-`assets/` para a raiz do domínio. **O domínio raiz passa a abrir na escolha de perfil** — quem
-já divulgou o link antigo do Lojista (`/index.html`) precisa passar a divulgar
-`/distribuidor.html`.
+`assets/` para a raiz do domínio (**vibecelloficial.com.br**), ficando assim:
+
+```
+vibecelloficial.com.br                    escolha de perfil
+vibecelloficial.com.br/distribuidor.html  quero comprar Vibe
+vibecelloficial.com.br/tecnico.html       mapa de distribuidores
+```
+
+**O domínio raiz passa a abrir na escolha de perfil** — quem já divulgou o link antigo do
+Lojista (`/index.html`) precisa passar a divulgar `/distribuidor.html`.
 
 ## Detalhes técnicos
 

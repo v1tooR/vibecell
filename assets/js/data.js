@@ -17,7 +17,7 @@ const CONFIG = {
   /* WhatsApp comercial da marca (formato internacional, só números) */
   whatsappComercial: '5511999999999',
   instagram: 'https://instagram.com/vibecell.oficial',
-  siteOficial: 'https://vibecell.com.br',
+  siteOficial: 'https://vibecelloficial.com.br',
 
   /* Episódio em destaque do Vibecast (ID do vídeo no YouTube) — usado na
      seção de card único (distribuidor). */
