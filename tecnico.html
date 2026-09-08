@@ -93,14 +93,26 @@
 <!-- ============ HEADER ============ -->
 <header id="hdr">
   <div class="hdr-in">
-    <!-- A escolha de perfil acontece na porta de entrada (index.html); aqui
-         o logo é o caminho de volta pra ela, pra quem entrou no lado errado. -->
-    <a href="index.html" class="brand brand-voltar" aria-label="Vibe Cell — voltar para a escolha de perfil">
+    <!-- O logo volta pra porta de entrada (index.html); a pílula ao lado
+         troca de lado do site sem passar por ela. -->
+    <a href="index.html" class="brand" aria-label="Vibe Cell — escolha de perfil">
       <svg class="wm" aria-hidden="true"><use href="#logo-vibe"/></svg>
-      <span class="brand-voltar-dica">
-        <svg class="ico"><use href="#i-seta"/></svg>Trocar perfil
-      </span>
     </a>
+
+    <!-- SELETOR DE VISÃO — cada página é travada numa persona
+         (window.PAGINA_PERSONA, no fim do arquivo), então clicar no outro
+         lado navega pro HTML dele em vez de trocar o conteúdo aqui. -->
+    <div class="pill" role="group" aria-label="Escolha sua experiência">
+      <span class="pill-glider" aria-hidden="true"></span>
+      <button type="button" class="pill-btn" data-persona-btn="distribuidor" aria-pressed="false"
+              title="Quero comprar Vibe pra minha distribuidora.">
+        <svg class="ico"><use href="#i-box"/></svg><span>Sou Distribuidor</span>
+      </button>
+      <button type="button" class="pill-btn is-on" data-persona-btn="tecnico" aria-pressed="true"
+              title="Quero encontrar o distribuidor Vibe mais perto de mim.">
+        <svg class="ico"><use href="#i-ferramenta"/></svg><span>Sou Técnico</span>
+      </button>
+    </div>
 
     <nav class="nav" id="nav" aria-label="Navegação principal">
       <a href="#solucao">Diferenciais</a>

@@ -402,20 +402,6 @@ html[data-tema="escuro"] #hdr.menu-open .hdr-in{
    --wm-h é a altura de caixa alta; muda só ela para escalar.
    As letras herdam currentColor, então acompanham o tema.      */
 .brand{display:flex;align-items:center;flex:none}
-/* Nas páginas internas o logo é o caminho de volta pra escolha de perfil
-   (index.html). A dica só aparece no hover/foco, pra não competir com o
-   menu — mas o link em si funciona sempre. */
-.brand-voltar{gap:.6rem;margin-right:auto}
-.brand-voltar-dica{
-  display:inline-flex;align-items:center;gap:.3rem;
-  font-size:.72rem;font-weight:600;letter-spacing:.04em;
-  color:var(--muted);white-space:nowrap;
-  max-width:0;opacity:0;overflow:hidden;
-  transition:max-width .35s var(--ease), opacity .25s var(--ease);
-}
-.brand-voltar-dica .ico{width:.95em;height:.95em;transform:rotate(180deg)}
-.brand-voltar:hover .brand-voltar-dica,
-.brand-voltar:focus-visible .brand-voltar-dica{max-width:9rem;opacity:1}
 .wm{
   --wm-h: 19px;
   height:var(--wm-h);

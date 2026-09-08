@@ -52,7 +52,7 @@
     try { localStorage.setItem(chave, typeof valor === 'string' ? valor : JSON.stringify(valor)); } catch (e) {}
   }
   function lerPersonaInicial() {
-    /* index.html e tecnico.html travam numa visão só (window.PAGINA_PERSONA,
+    /* distribuidor.html e tecnico.html travam numa visão só (window.PAGINA_PERSONA,
        definido inline em cada arquivo) — a pílula do topo, nesse caso, navega
        pra outra página em vez de trocar o conteúdo aqui. */
     if (window.PAGINA_PERSONA && PERSONAS[window.PAGINA_PERSONA.fixa]) return window.PAGINA_PERSONA.fixa;
@@ -305,8 +305,8 @@
       a.rel = 'noopener';
     });
 
-    /* pílulas de troca de visão (só existem numa página que não esteja
-       travada por PAGINA_PERSONA — os dois HTMLs publicados estão) */
+    /* pílulas de troca de visão — nas duas páginas publicadas elas ficam
+       travadas na persona do arquivo e servem de atalho pro outro lado */
     $$('[data-persona-btn]').forEach(function (b) {
       var on = b.getAttribute('data-persona-btn') === p.id;
       b.classList.toggle('is-on', on);
@@ -520,10 +520,9 @@
       var b = e.target.closest('[data-persona-btn]');
       if (!b) return;
       var alvo = b.getAttribute('data-persona-btn');
-      /* Nos dois HTMLs publicados não existe mais pílula: a escolha de
-         perfil é a porta de entrada (index.html). Isto aqui só roda numa
-         variante que tenha uma pílula própria — travada, ela navega pra
-         outra página; solta, troca o conteúdo na hora. */
+      /* Página travada (distribuidor.html / tecnico.html): a pílula do topo
+         leva pro HTML do outro perfil. Numa página solta (sem
+         PAGINA_PERSONA), ela troca o conteúdo na hora. */
       if (window.PAGINA_PERSONA && b.classList.contains('pill-btn') && alvo !== window.PAGINA_PERSONA.fixa) {
         location.href = window.PAGINA_PERSONA.outraUrl;
         return;
