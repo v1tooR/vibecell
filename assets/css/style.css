@@ -424,22 +424,22 @@ html[data-tema="escuro"] #hdr.menu-open .hdr-in{
   background:var(--surface);border:1px solid var(--border);
   margin-right:auto;
 }
-.pill-glider{
-  position:absolute;top:.25rem;bottom:.25rem;left:.25rem;
-  width:calc(50% - .25rem);border-radius:100px;
-  background:var(--grad-cta);
-  box-shadow:0 4px 16px -6px var(--acc-glow);
-  transition:transform .38s var(--ease);
-}
-html[data-persona="tecnico"] .pill-glider{transform:translateX(100%)}
 .pill-btn{
-  position:relative;z-index:1;display:flex;align-items:center;gap:.45rem;
+  position:relative;display:flex;align-items:center;gap:.45rem;
   padding:.5rem .95rem;border-radius:100px;
   font-size:.85rem;font-weight:600;color:var(--text-2);
-  transition:color .25s;white-space:nowrap;
+  transition:color .25s, background .25s;white-space:nowrap;
 }
 .pill-btn .ico{width:1.05em;height:1.05em}
-.pill-btn.is-on{color:var(--acc-ink)}
+/* O destaque é o fundo do próprio botão, não uma peça deslizante separada:
+   os dois rótulos têm larguras diferentes ("Sou Distribuidor" x "Sou
+   Técnico"), e cada persona é um HTML próprio — clicar recarrega a página,
+   então nada chegaria a deslizar. Assim o realce acompanha o botão sempre. */
+.pill-btn.is-on{
+  color:var(--acc-ink);
+  background:var(--grad-cta);
+  box-shadow:0 4px 16px -6px var(--acc-glow);
+}
 
 .nav{display:flex;align-items:center;gap:1.35rem}
 .nav a{font-size:.86rem;font-weight:500;color:var(--text-2);white-space:nowrap}
