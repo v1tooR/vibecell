@@ -128,7 +128,7 @@ const PERSONAS = {
           nome: 'Linha Vibe',
           destaque: true,
           texto: 'A opção de qualidade. Pro cliente que quer o aparelho igual ao que ele comprou, e pra distribuidora que quer parar de receber tela de volta.',
-          foto: 'assets/img/dist-tela-vibe.webp'
+          foto: 'assets/img/vibe-selo-brilho.webp'
         }
       ]
     },

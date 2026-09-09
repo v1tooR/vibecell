@@ -681,17 +681,26 @@
     var palco = $('#brandStream');
     if (!palco || palco.dataset.pronto) return;
     palco.dataset.pronto = '1';
+    /* Marca e produto alternados: as fotos "vibe-selo-*" são o verso das
+       telas na bancada, onde aparece a identificação da Vibe — selo numerado,
+       etiqueta no flex, carimbo de teste. O segundo item de cada par diz se
+       o card é largo (foto em paisagem). */
     var imagens = [
       ['assets/img/vibe-em-maos.webp', false],
       ['assets/img/vibe-unboxing.webp', false],
+      ['assets/img/vibe-selo-frame.webp', false],
       ['assets/img/vibe-evento-equipe.webp', false],
       ['assets/img/vibe-duas-linhas.webp', false],
+      ['assets/img/vibe-selo-a54.webp', false],
       ['assets/img/vibe-brand-pose.webp', false],
       ['assets/img/vibe-evento-kit.webp', false],
       ['assets/img/vibe-tela-detalhe.webp', false],
+      ['assets/img/vibe-selo-flex.webp', false],
       ['assets/img/vibe-evento-atendimento.webp', false],
       ['assets/img/vibe-packaging-grid.webp', true],
+      ['assets/img/vibe-selo-testada.webp', true],
       ['assets/img/vibe-brand-proposal.webp', true],
+      ['assets/img/vibe-selo-a15.webp', true],
       ['assets/img/vibe-packaging-line.webp', true]
     ];
     function trilha(lado, deslocamento) {
