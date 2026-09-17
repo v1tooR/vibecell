@@ -85,6 +85,9 @@
   <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 3 2.6 5.6 6 .8-4.4 4.2 1.1 6L12 16.8 6.7 19.6l1.1-6L3.4 9.4l6-.8z"/></symbol>
   <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12m0 0 5-5m-5 5-5-5"/><path d="M4 19h16"/></symbol>
   <symbol id="i-play" viewBox="0 0 24 24"><path d="M6 4l14 8-14 8V4z"/></symbol>
+  <symbol id="i-pausa" viewBox="0 0 24 24"><path d="M6.5 4h3.5v16H6.5zM14 4h3.5v16H14z"/></symbol>
+  <symbol id="i-som" viewBox="0 0 24 24"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></symbol>
+  <symbol id="i-mudo" viewBox="0 0 24 24"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="m16 9 6 6M22 9l-6 6"/></symbol>
   <symbol id="i-youtube" viewBox="0 0 24 24"><path d="M21.6 7.2s-.2-1.5-.8-2.1c-.8-.8-1.7-.8-2.1-.9C15.9 4 12 4 12 4h0s-3.9 0-6.7.2c-.4 0-1.3.1-2.1.9-.6.6-.8 2.1-.8 2.1S2.2 9 2.2 10.7v1.4c0 1.7.2 3.5.2 3.5s.2 1.5.8 2.1c.8.8 1.8.8 2.3.9 1.6.1 6.9.2 6.9.2h0s3.9 0 6.7-.2c.4 0 1.3-.1 2.1-.9.6-.6.8-2.1.8-2.1s.2-1.8.2-3.5v-1.4c0-1.7-.2-3.5-.2-3.5z"/><path d="M9.9 14.7v-5.4l5.4 2.7-5.4 2.7z"/></symbol>
 </svg>
 
@@ -205,20 +208,34 @@
     </div>
   </section>
 
-  <!-- ============ EXPERIÊNCIA VISUAL DA MARCA ============ -->
+  <!-- ============ EXPERIÊNCIA VISUAL DA MARCA ============
+       Texto + vídeo "Importação direta" (reel do @vibecell.oficial). -->
   <section class="brand-stream" aria-labelledby="brandStreamTitle">
-    <div class="brand-stream-stage" id="brandStream" aria-hidden="true"></div>
-    <div class="brand-stream-shade" aria-hidden="true"></div>
-    <div class="wrap brand-stream-content">
-      <span class="kicker">Mais que uma embalagem</span>
-      <h2 class="h2" id="brandStreamTitle">Uma experiência que chega antes da tela.</h2>
-      <p>Identidade, cuidado e produto se encontram em cada detalhe — da escolha da linha até a peça chegar à bancada.</p>
-      <div class="brand-stream-signature" aria-hidden="true">
-        <svg><use href="#barras"/></svg>
-        <span>produto • presença • confiança</span>
+    <div class="wrap brand-stream-in">
+      <div class="brand-stream-content">
+        <span class="kicker">Mais que uma embalagem</span>
+        <h2 class="h2" id="brandStreamTitle">Uma experiência que chega antes da tela.</h2>
+        <p>Identidade, cuidado e produto se encontram em cada detalhe — da escolha da linha até a peça chegar à bancada.</p>
+        <div class="brand-stream-signature" aria-hidden="true">
+          <svg><use href="#barras"/></svg>
+          <span>produto • presença • confiança</span>
+        </div>
+      </div>
+      <div class="brand-stream-media midia-glow">
+        <div class="video-vertical">
+          <video src="assets/video/importacao-direta.mp4" poster="assets/img/capa-video-importacao-direta.webp"
+                 width="360" height="640" muted loop playsinline preload="none"
+                 aria-label="Vídeo da Vibe sobre importação direta"></video>
+          <button type="button" class="video-play" data-video-play aria-label="Reproduzir vídeo">
+            <svg class="ico ico-play"><use href="#i-play"/></svg><svg class="ico ico-pausa"><use href="#i-pausa"/></svg>
+          </button>
+          <button type="button" class="video-som" data-video-som>
+            <svg class="ico ico-mudo"><use href="#i-mudo"/></svg><svg class="ico ico-som"><use href="#i-som"/></svg>
+            <span>Ativar som</span>
+          </button>
+        </div>
       </div>
     </div>
-    <p class="sr-only">Imagens da equipe apresentando telas e embalagens Vibe Cell.</p>
   </section>
 
   <!-- ============ PORTFÓLIO ============ -->
@@ -246,51 +263,48 @@
     </div>
   </section>
 
-  <!-- ============ LINHAS DE TELA (leque de cards) ============ -->
+  <!-- ============ LINHAS DE TELA (vídeo + lista) ============
+       O vídeo mostra HD x OLED x Soft OLED na prática; a lista resume cada
+       linha. --nivel é a posição do item na escada, da entrada ao topo. -->
   <section class="sec sec-alt" id="linhas-tela">
-    <div class="wrap">
-      <header class="sec-hd">
+    <div class="wrap linhas-video-in">
+      <header class="linhas-video-hd">
         <span class="kicker">Linhas de tela</span>
         <h2 class="h2">Uma linha pra cada tipo de serviço.</h2>
+        <p class="sub">No vídeo, a diferença entre HD, OLED e Soft OLED na prática.</p>
       </header>
-      <div class="fan-linhas" id="fanLinhas">
-        <article class="fan-card" tabindex="0">
-          <div class="fan-card-foto">
-            <img src="assets/img/vibe-selo-a54.webp" alt="" loading="lazy">
-            <div class="fan-card-overlay">
-              <h3>Vibe HD</h3>
-              <p>A porta de entrada da linha Vibe, pro serviço que precisa caber no orçamento.</p>
-            </div>
-          </div>
-        </article>
-        <article class="fan-card" tabindex="0">
-          <div class="fan-card-foto">
-            <img src="assets/img/vibe-selo-flex.webp" alt="" loading="lazy">
-            <div class="fan-card-overlay">
-              <h3>Vibe TLED</h3>
-              <p>Borda fina e brilho alto por um preço de meio de linha.</p>
-            </div>
-          </div>
-        </article>
-        <article class="fan-card" tabindex="0">
-          <div class="fan-card-foto">
-            <img src="assets/img/vibe-selo-frame.webp" alt="" loading="lazy">
-            <div class="fan-card-overlay">
-              <h3>Vibe OLED</h3>
-              <p>Imagem de topo, pro cliente que percebe diferença de cor e de preto.</p>
-            </div>
-          </div>
-        </article>
-        <article class="fan-card" tabindex="0">
-          <div class="fan-card-foto">
-            <img src="assets/img/vibe-selo-etiqueta.webp" alt="" loading="lazy">
-            <div class="fan-card-overlay">
-              <h3>Vibe Soft OLED</h3>
-              <p>O melhor da linha, com o acabamento e o comportamento mais perto do painel de fábrica.</p>
-            </div>
-          </div>
-        </article>
+      <div class="linhas-video-media midia-glow">
+        <div class="video-vertical">
+          <video src="assets/video/diferenca-telas.mp4" poster="assets/img/capa-video-diferenca-telas.webp"
+                 width="720" height="1280" muted loop playsinline preload="none"
+                 aria-label="Vídeo da Vibe explicando a diferença entre as telas HD, OLED e Soft OLED"></video>
+          <button type="button" class="video-play" data-video-play aria-label="Reproduzir vídeo">
+            <svg class="ico ico-play"><use href="#i-play"/></svg><svg class="ico ico-pausa"><use href="#i-pausa"/></svg>
+          </button>
+          <button type="button" class="video-som" data-video-som>
+            <svg class="ico ico-mudo"><use href="#i-mudo"/></svg><svg class="ico ico-som"><use href="#i-som"/></svg>
+            <span>Ativar som</span>
+          </button>
+        </div>
       </div>
+      <ul class="linhas-lista">
+        <li class="linhas-item" style="--nivel:.25">
+          <div class="linhas-item-topo"><h3>Vibe HD</h3><span class="linhas-item-nivel" aria-hidden="true"></span></div>
+          <p>A porta de entrada da linha Vibe, pro serviço que precisa caber no orçamento.</p>
+        </li>
+        <li class="linhas-item" style="--nivel:.5">
+          <div class="linhas-item-topo"><h3>Vibe TLED</h3><span class="linhas-item-nivel" aria-hidden="true"></span></div>
+          <p>Borda fina e brilho alto por um preço de meio de linha.</p>
+        </li>
+        <li class="linhas-item" style="--nivel:.75">
+          <div class="linhas-item-topo"><h3>Vibe OLED</h3><span class="linhas-item-nivel" aria-hidden="true"></span></div>
+          <p>Imagem de topo, pro cliente que percebe diferença de cor e de preto.</p>
+        </li>
+        <li class="linhas-item" style="--nivel:1">
+          <div class="linhas-item-topo"><h3>Vibe Soft OLED</h3><span class="linhas-item-nivel" aria-hidden="true"></span></div>
+          <p>O melhor da linha, com o acabamento e o comportamento mais perto do painel de fábrica.</p>
+        </li>
+      </ul>
     </div>
   </section>
 

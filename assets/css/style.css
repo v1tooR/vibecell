@@ -76,11 +76,6 @@ html[data-tema="claro"] {
   --stream-text:#0b0f18;
   --stream-muted:rgba(11,15,24,.62);
   --stream-border:rgba(11,15,24,.10);
-  --stream-card-border:rgba(11,15,24,.18);
-  --stream-card-shadow:rgba(18,29,48,.24);
-  --stream-edge:rgba(255,255,255,.38);
-  --stream-core:rgba(255,255,255,.97);
-  --stream-core-soft:rgba(255,255,255,.82);
   --stream-sign-bg:rgba(255,255,255,.74);
   --stream-sign-text:rgba(11,15,24,.55);
 
@@ -123,11 +118,6 @@ html[data-tema="escuro"] {
   --stream-text:#ffffff;
   --stream-muted:rgba(255,255,255,.67);
   --stream-border:rgba(255,255,255,.08);
-  --stream-card-border:rgba(255,255,255,.20);
-  --stream-card-shadow:rgba(0,0,0,.55);
-  --stream-edge:rgba(5,6,9,.18);
-  --stream-core:rgba(5,6,9,.95);
-  --stream-core-soft:rgba(5,6,9,.76);
   --stream-sign-bg:rgba(5,6,9,.48);
   --stream-sign-text:rgba(255,255,255,.58);
 
@@ -774,63 +764,130 @@ html[data-tema="escuro"] #hdr.menu-open .hdr-in{
 }
 .sec-bento .wrap{position:relative;z-index:1}
 
-/* Corredor visual — transforma as fotos em narrativa, não em galeria avulsa.
-   As duas trilhas partem do centro e avançam em perspectiva ao redor da copy. */
 .sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+
+/* Seção de marca — texto de um lado, mídia do outro. Distribuidor mostra o
+   vídeo "Importação direta"; Técnico (Vibe Academy, .brand-stream-pc) mostra
+   o mockup de PC com a plataforma. */
 .brand-stream{
-  position:relative;min-height:clamp(34rem,58vw,46rem);display:grid;place-items:center;
-  overflow:hidden;isolation:isolate;background:var(--stream-bg);color:var(--stream-text);border-block:1px solid var(--stream-border);
-  container-type:inline-size;
+  position:relative;overflow:hidden;isolation:isolate;
+  background:var(--stream-bg);color:var(--stream-text);border-block:1px solid var(--stream-border);
 }
 .brand-stream::before{
-  content:"";position:absolute;inset:0;z-index:-2;
+  content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
   background:
-    radial-gradient(48% 58% at 50% 48%,rgba(91,128,217,.20),transparent 68%),
-    radial-gradient(42% 52% at 50% 58%,rgba(131,48,168,.14),transparent 72%),var(--stream-bg);
+    radial-gradient(40% 62% at 74% 48%,rgba(91,128,217,.18),transparent 70%),
+    radial-gradient(32% 50% at 86% 72%,rgba(131,48,168,.13),transparent 72%);
 }
-.brand-stream-stage{position:absolute;inset:0;perspective:30cqw;perspective-origin:50% 54%;pointer-events:none}
-.brand-stream-rail{position:absolute;inset:0;transform-style:preserve-3d}
-.brand-stream-card{
-  position:absolute;left:50%;top:54%;width:18cqw;height:25cqw;margin-left:-9cqw;margin-top:-12.5cqw;
-  overflow:hidden;border-radius:.8cqw;border:1px solid var(--stream-card-border);
-  box-shadow:0 22px 60px var(--stream-card-shadow);backface-visibility:hidden;will-change:transform,opacity;
-  animation-duration:18s;animation-timing-function:linear;animation-iteration-count:infinite;
-}
-.brand-stream-card img{width:100%;height:100%;display:block;object-fit:cover;filter:saturate(.9) contrast(1.04)}
-.brand-stream-card.is-wide img{object-position:center}
-.brand-stream-rail-left .brand-stream-card{animation-name:brandRailLeft}
-.brand-stream-rail-right .brand-stream-card{animation-name:brandRailRight}
-@keyframes brandRailLeft{
-  0%{opacity:0;transform:translate3d(8cqw,0,-28cqw) rotateY(6deg)}
-  8%{opacity:.8}
-  44%{opacity:1;transform:translate3d(-18cqw,0,-8cqw) rotateY(15deg)}
-  82%{opacity:1}
-  100%{opacity:0;transform:translate3d(-53cqw,0,8cqw) rotateY(28deg)}
-}
-@keyframes brandRailRight{
-  0%{opacity:0;transform:translate3d(-8cqw,0,-28cqw) rotateY(-6deg)}
-  8%{opacity:.8}
-  44%{opacity:1;transform:translate3d(18cqw,0,-8cqw) rotateY(-15deg)}
-  82%{opacity:1}
-  100%{opacity:0;transform:translate3d(53cqw,0,8cqw) rotateY(-28deg)}
-}
-.brand-stream-shade{
-  position:absolute;inset:0;z-index:1;pointer-events:none;
-  background:
-    linear-gradient(90deg,var(--stream-edge),transparent 24%,transparent 76%,var(--stream-edge)),
-    radial-gradient(ellipse 34% 48% at 50% 54%,var(--stream-core) 0%,var(--stream-core-soft) 42%,transparent 78%),
-    linear-gradient(180deg,var(--stream-bg) 0%,transparent 16%,transparent 82%,var(--stream-bg) 100%);
-}
-.brand-stream-content{position:relative;z-index:2;text-align:center;display:flex;flex-direction:column;align-items:center;padding-block:5rem;pointer-events:none}
+.brand-stream-in{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:4rem;align-items:center;padding-block:5.5rem}
+.brand-stream-pc .brand-stream-in{grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr)}
+.brand-stream-content{display:flex;flex-direction:column;align-items:flex-start}
 .brand-stream-content .kicker{color:var(--acc)}
-.brand-stream-content .h2{max-width:18ch;margin:.85rem auto 1.1rem;color:var(--stream-text);text-wrap:balance}
+.brand-stream-content .h2{max-width:18ch;margin:.85rem 0 1.1rem;color:var(--stream-text);text-wrap:balance}
 .brand-stream-content>p{max-width:46ch;color:var(--stream-muted);font-size:clamp(.95rem,1.5vw,1.08rem)}
 .brand-stream-content>p+p{margin-top:.6rem}
-.brand-stream-cta{margin-top:1.8rem;pointer-events:auto}
+.brand-stream-cta{margin-top:1.8rem}
 .brand-stream-signature{display:flex;align-items:center;gap:.8rem;margin-top:2rem;padding:.7rem 1rem;border:1px solid var(--stream-border);border-radius:100px;background:var(--stream-sign-bg);backdrop-filter:blur(10px)}
 .brand-stream-signature svg{width:2rem;height:1.2rem}
 .brand-stream-signature span{font-size:.62rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--stream-sign-text)}
-@media (prefers-reduced-motion:reduce){.brand-stream-card{animation-duration:18s!important;animation-play-state:paused!important}}
+.brand-stream-media{justify-self:center;width:min(21rem,100%)}
+.brand-stream-pc .brand-stream-media{width:100%}
+@media (max-width:900px){
+  .brand-stream-in,.brand-stream-pc .brand-stream-in{grid-template-columns:1fr;gap:3rem;padding-block:4.5rem}
+  .brand-stream-content{align-items:center;text-align:center}
+  .brand-stream-content .h2{margin-inline:auto}
+  .brand-stream-media{width:min(19rem,100%)}
+  .brand-stream-pc .brand-stream-media{width:min(38rem,100%)}
+}
+
+/* Brilho da marca atrás de vídeo/mockup — o ::before sai da moldura, então
+   fica no wrapper (a moldura do vídeo corta o que passa da borda). */
+.midia-glow{position:relative;isolation:isolate}
+.midia-glow::before{
+  content:"";position:absolute;inset:6% -12%;z-index:-1;border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle,var(--acc-glow),transparent 66%);filter:blur(36px);opacity:.85;
+}
+
+/* Vídeo vertical (reels do @vibecell.oficial) — começa mudo e só toca com a
+   moldura na tela; ver ligarVideos() no app.js. .pausado mostra o play;
+   .com-som troca o ícone do botão de som. */
+.video-vertical{
+  position:relative;width:100%;aspect-ratio:9/16;overflow:hidden;
+  border-radius:var(--r-xl);background:#050609;border:1px solid var(--border-2);box-shadow:var(--shadow);
+}
+.video-vertical video{width:100%;height:100%;object-fit:cover;display:block;cursor:pointer}
+.video-play{
+  position:absolute;left:50%;top:50%;width:4.25rem;height:4.25rem;margin:-2.125rem 0 0 -2.125rem;
+  display:grid;place-items:center;border-radius:50%;color:#fff;
+  background:rgba(5,6,9,.5);border:1px solid rgba(255,255,255,.28);backdrop-filter:blur(8px);
+  opacity:0;transform:scale(.85);pointer-events:none;transition:opacity .25s,transform .3s var(--ease),background .2s;
+}
+.video-play:hover{background:rgba(5,6,9,.72)}
+.video-vertical.pausado .video-play,.video-play:focus-visible{opacity:1;transform:none;pointer-events:auto}
+.video-play .ico{width:1.45rem;height:1.45rem;fill:currentColor;stroke:none}
+.video-play .ico-play{margin-left:.2rem}
+.video-play .ico-pausa,.video-vertical:not(.pausado) .video-play .ico-play{display:none}
+.video-vertical:not(.pausado) .video-play .ico-pausa{display:block}
+.video-som{
+  position:absolute;right:.85rem;bottom:.85rem;display:inline-flex;align-items:center;gap:.45rem;
+  padding:.5rem .85rem .5rem .7rem;border-radius:100px;color:#fff;font-size:.78rem;font-weight:600;line-height:1;
+  background:rgba(5,6,9,.58);border:1px solid rgba(255,255,255,.22);backdrop-filter:blur(8px);transition:background .2s;
+}
+.video-som:hover{background:rgba(5,6,9,.8)}
+.video-som .ico{width:1.05rem;height:1.05rem}
+.video-som .ico-som,.video-vertical.com-som .video-som .ico-mudo{display:none}
+.video-vertical.com-som .video-som .ico-som{display:block}
+
+/* Mockup de PC da Vibe Academy — monitor desenhado em CSS com a plataforma
+   na tela. .pc-mock é o container: tudo dentro mede em cqw, então o conjunto
+   escala como uma imagem. Decorativo (aria-hidden no HTML). */
+.pc-mock{container-type:inline-size;width:100%}
+.pc-monitor{
+  position:relative;padding:1.7cqw;border-radius:2.2cqw;
+  background:linear-gradient(160deg,#272c38 0%,#0d1016 52%,#181c25 100%);
+  border:1px solid rgba(255,255,255,.14);
+  box-shadow:0 7cqw 12cqw -5cqw rgba(0,0,0,.9),inset 0 1px 0 rgba(255,255,255,.08);
+}
+.pc-monitor::before{content:"";position:absolute;top:.55cqw;left:50%;width:.6cqw;height:.6cqw;margin-left:-.3cqw;border-radius:50%;background:#353b49}
+.pc-tela{
+  display:flex;flex-direction:column;aspect-ratio:16/9;overflow:hidden;border-radius:.9cqw;
+  background:radial-gradient(60% 70% at 85% 0%,rgba(91,128,217,.16),transparent 70%),#07080c;
+  color:#fff;font-family:var(--ff-txt);letter-spacing:0;line-height:1.25;
+}
+.pc-pescoco{width:12cqw;height:6.5cqw;margin:0 auto;background:linear-gradient(90deg,#0c0f15,#2a303c 50%,#0c0f15);clip-path:polygon(10% 0,90% 0,100% 100%,0 100%)}
+.pc-base{width:32cqw;height:1.5cqw;margin:0 auto;border-radius:1cqw 1cqw .4cqw .4cqw;background:linear-gradient(180deg,#303643,#11141b);box-shadow:0 2.6cqw 4cqw -1.4cqw rgba(0,0,0,.85)}
+
+.pc-ui-topo{display:flex;align-items:center;gap:1.8cqw;height:7cqw;padding:0 2.8cqw;border-bottom:1px solid rgba(255,255,255,.07);flex:none}
+.pc-ui-logo{width:9.6cqw;height:2cqw;color:#fff}
+.pc-ui-marca{padding-left:1.8cqw;border-left:1px solid rgba(255,255,255,.18);font-family:var(--ff-tit);font-size:1.25cqw;letter-spacing:.2em;text-transform:uppercase;color:var(--c-ciano)}
+.pc-ui-nav{display:flex;gap:2.4cqw;margin-left:auto;font-size:1.35cqw;color:rgba(255,255,255,.5)}
+.pc-ui-nav b{font-weight:600;color:#fff}
+.pc-ui-avatar{width:3.2cqw;height:3.2cqw;border-radius:50%;background:var(--grad)}
+.pc-ui-corpo{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 26cqw;gap:2.4cqw;padding:2.6cqw 2.8cqw}
+.pc-ui-player{position:relative;aspect-ratio:16/9;overflow:hidden;border-radius:1.1cqw;background:#111}
+.pc-ui-player img{width:100%;height:100%;object-fit:cover;object-position:50% 42%;display:block}
+.pc-ui-player::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,6,9,.1) 40%,rgba(5,6,9,.78))}
+.pc-ui-play{position:absolute;left:50%;top:46%;z-index:1;width:6.4cqw;height:6.4cqw;margin:-3.2cqw 0 0 -3.2cqw;display:grid;place-items:center;border-radius:50%;background:var(--grad-cta);box-shadow:0 0 4cqw rgba(91,128,217,.65)}
+.pc-ui-play svg{width:2.4cqw;height:2.4cqw;margin-left:.3cqw;fill:var(--acc-ink)}
+.pc-ui-progresso{position:absolute;left:2.2cqw;right:2.2cqw;bottom:2cqw;z-index:1}
+.pc-ui-barra{display:block;height:.55cqw;border-radius:1cqw;background:rgba(255,255,255,.22);overflow:hidden}
+.pc-ui-barra span{display:block;width:38%;height:100%;background:var(--grad)}
+.pc-ui-aula{margin-top:1.8cqw}
+.pc-ui-aula b{display:block;font-family:var(--ff-tit);font-size:1.7cqw;font-weight:400;letter-spacing:-.02em}
+.pc-ui-aula small{display:block;margin-top:.7cqw;font-size:1.3cqw;color:rgba(255,255,255,.5)}
+.pc-ui-lateral{display:flex;flex-direction:column;gap:1.3cqw;min-height:0}
+.pc-ui-rot{font-size:1.1cqw;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.45)}
+.pc-ui-mod{display:block;padding:1.5cqw 1.6cqw;border-radius:1cqw;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.07)}
+.pc-ui-mod b{display:flex;align-items:center;gap:1cqw;font-size:1.45cqw;font-weight:600}
+.pc-ui-mod b::before{content:"";width:1cqw;height:1cqw;border-radius:50%;background:rgba(255,255,255,.25)}
+.pc-ui-mod i{display:block;height:.45cqw;margin-top:1.1cqw;border-radius:1cqw;background:rgba(255,255,255,.1);overflow:hidden}
+.pc-ui-mod i::before{content:"";display:block;width:var(--p,0%);height:100%;background:var(--grad)}
+.pc-ui-mod.is-on{border-color:rgba(111,182,239,.45);background:rgba(91,128,217,.12)}
+.pc-ui-mod.is-on b::before{background:var(--c-ciano);box-shadow:0 0 1.2cqw var(--c-ciano)}
+.pc-ui-prox{display:flex;align-items:center;gap:1.2cqw;margin-top:auto;padding:1.1cqw;border-radius:1cqw;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.07)}
+.pc-ui-prox img{flex:none;width:7.2cqw;aspect-ratio:1;border-radius:.7cqw;object-fit:cover;display:block}
+.pc-ui-prox small{display:block;font-size:1.05cqw;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.45)}
+.pc-ui-prox b{display:block;margin-top:.4cqw;font-size:1.35cqw;font-weight:600}
 
 /* Dores — "cascata de consequências": nada de quatro cards iguais.
    A gravidade cresce a cada item (friso mais grosso, barra de peso maior),
@@ -1215,54 +1272,40 @@ html[data-tema="escuro"] #hdr.menu-open .hdr-in{
 .split-col-vibe .split-foto img{filter:none}
 .split-fechamento{text-align:center;color:var(--text-2);margin:1.75rem auto 0;max-width:58ch;font-size:.98rem}
 
-/* ================= LINHAS DE TELA (leque de cards) ================= */
-.fan-linhas{display:flex;justify-content:center;align-items:flex-end;padding:2.5rem 0 1rem}
-.fan-card{
-  position:relative;width:14rem;aspect-ratio:3/4;flex:none;
-  border-radius:var(--r-lg);overflow:hidden;cursor:pointer;
-  border:1px solid var(--border-2);box-shadow:var(--shadow-sm);background:var(--panel);
-  margin-left:-2.9rem;transition:transform .45s var(--ease),box-shadow .35s,z-index 0s .2s;
-  outline:none;
+/* ================= LINHAS DE TELA (vídeo + lista) =================
+   Vídeo à esquerda ocupando a altura toda; cabeçalho e lista à direita,
+   centralizados na altura do vídeo pelas linhas 1fr das pontas. No celular
+   vira cabeçalho → vídeo → lista. A barrinha de cada item (--nivel, de 0 a
+   1) sobe da opção de entrada até a de topo. */
+.linhas-video-in{
+  display:grid;column-gap:clamp(2.5rem,6vw,5.5rem);
+  grid-template-columns:minmax(0,20rem) minmax(0,1fr);
+  grid-template-rows:1fr auto auto 1fr;
+  grid-template-areas:"media ." "media hd" "media lista" "media .";
 }
-.fan-card:first-child{margin-left:0}
-.fan-card:nth-child(1){transform:rotate(-9deg) translateY(1.5rem);z-index:1}
-.fan-card:nth-child(2){transform:rotate(-3deg) translateY(.2rem);z-index:2}
-.fan-card:nth-child(3){transform:rotate(3deg) translateY(.2rem);z-index:3}
-.fan-card:nth-child(4){transform:rotate(9deg) translateY(1.5rem);z-index:4}
-
-/* Técnico tem 5 cards (entrou a Tela China) — leque próprio, simétrico em
-   torno do card do meio, sem mexer no leque de 4 do distribuidor acima. */
-.fan-linhas-5 .fan-card:nth-child(1){transform:rotate(-11deg) translateY(2.3rem);z-index:1}
-.fan-linhas-5 .fan-card:nth-child(2){transform:rotate(-5.5deg) translateY(.9rem);z-index:2}
-.fan-linhas-5 .fan-card:nth-child(3){transform:rotate(0deg) translateY(0);z-index:3}
-.fan-linhas-5 .fan-card:nth-child(4){transform:rotate(5.5deg) translateY(.9rem);z-index:4}
-.fan-linhas-5 .fan-card:nth-child(5){transform:rotate(11deg) translateY(2.3rem);z-index:5}
-.fan-card:hover,.fan-card:focus-visible,.fan-card.is-up{
-  transform:rotate(0deg) translateY(-1.75rem) scale(1.07)!important;
-  z-index:20!important;box-shadow:0 32px 60px -22px rgba(16,24,40,.4);transition-delay:0s;
+.linhas-video-hd{grid-area:hd}
+.linhas-video-hd .h2{margin-bottom:.7rem;text-wrap:balance}
+.linhas-video-hd .sub{margin-inline:0}
+.linhas-video-media{grid-area:media;align-self:center}
+.linhas-lista{grid-area:lista;display:grid;gap:.75rem;margin-top:1.8rem}
+.linhas-item{
+  padding:1rem 1.25rem;border-radius:var(--r-lg);background:var(--panel);border:1px solid var(--border);
+  transition:border-color .25s,transform .25s var(--ease),box-shadow .25s;
 }
-.fan-card-foto{position:relative;width:100%;height:100%;background:linear-gradient(155deg,var(--acc-soft),var(--surface-2));display:grid;place-items:center}
-.fan-card-foto img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(.75)}
-.fan-card-ph{width:2.6rem;height:2.6rem;color:var(--acc);opacity:.4}
-.fan-card-overlay{
-  position:absolute;left:0;right:0;bottom:0;padding:1.4rem 1.1rem 1.1rem;text-align:left;
-  background:linear-gradient(180deg,transparent,rgba(6,7,12,.82) 58%);color:#fff;
-}
-.fan-card-overlay h3{font-family:var(--ff-tit);font-weight:800;font-size:1rem;letter-spacing:-.02em}
-.fan-card-overlay p{
-  font-size:.79rem;line-height:1.4;color:rgba(255,255,255,.85);
-  max-height:0;opacity:0;margin-top:0;overflow:hidden;
-  transition:max-height .35s var(--ease),opacity .3s,margin-top .35s var(--ease);
-}
-.fan-card:hover .fan-card-overlay p,
-.fan-card:focus-visible .fan-card-overlay p,
-.fan-card.is-up .fan-card-overlay p{max-height:6rem;opacity:1;margin-top:.4rem}
-
-@media (max-width:760px){
-  .fan-linhas{flex-wrap:wrap;gap:1rem;padding:.5rem 0}
-  .fan-card{width:calc(50% - .5rem);margin-left:0!important;transform:none!important;z-index:1!important}
-  .fan-card:hover,.fan-card:focus-visible,.fan-card.is-up{transform:translateY(-.4rem) scale(1.02)!important}
-  .fan-card-overlay p{max-height:6rem;opacity:1;margin-top:.4rem}
+.linhas-item:hover{border-color:var(--acc-glow);transform:translateX(4px);box-shadow:var(--shadow-sm)}
+.linhas-item-topo{display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.linhas-item h3{font-family:var(--ff-tit);font-size:.98rem;font-weight:800;letter-spacing:-.02em}
+.linhas-item p{margin-top:.3rem;font-size:.9rem;line-height:1.5;color:var(--text-2)}
+.linhas-item-nivel{flex:none;width:4.5rem;height:.35rem;border-radius:100px;background:var(--surface-2);overflow:hidden}
+/* background-size estica o degradê pro trilho inteiro: a barra curta mostra
+   só o começo da rampa (ciano) e a cheia chega ao violeta */
+.linhas-item-nivel::before{content:"";display:block;width:calc(var(--nivel) * 100%);height:100%;border-radius:inherit;background:var(--grad);background-size:calc(100% / var(--nivel)) 100%}
+@media (max-width:900px){
+  .linhas-video-in{grid-template-columns:1fr;grid-template-rows:auto;grid-template-areas:"hd" "media" "lista";row-gap:2.2rem}
+  .linhas-video-hd{text-align:center}
+  .linhas-video-hd .sub{margin-inline:auto}
+  .linhas-video-media{justify-self:center;width:min(19rem,100%)}
+  .linhas-lista{margin-top:0}
 }
 
 /* ================= DESTAQUE / PREMIUM ================= */
@@ -1312,19 +1355,18 @@ html[data-tema="escuro"] .prog-image{filter:drop-shadow(0 30px 44px rgba(0,0,0,.
 .prog-ring::after{bottom:-5px;left:50%;margin-left:-5px;opacity:.4}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-/* "Por que trocar" do Técnico — coluna de texto estreita + foto grande,
-   sem card e sem ícone (troca a antiga grade de benefícios só nessa persona). */
-.solucao-foto-in{display:grid;grid-template-columns:1fr 1.1fr;gap:3.5rem;align-items:center}
-.solucao-foto-copy{max-width:34rem}
-.solucao-foto-copy .h2{margin-bottom:1.1rem}
-.solucao-foto-copy .sub{margin-inline:0;max-width:none}
-.solucao-foto-copy .sub + .sub{margin-top:1rem}
-.solucao-foto-art{border-radius:var(--r-xl);overflow:hidden;aspect-ratio:4/5;box-shadow:var(--shadow)}
-.solucao-foto-art img{width:100%;height:100%;object-fit:cover;display:block}
+/* "Por que trocar" do Técnico — coluna de texto + vídeo vertical, sem card e
+   sem ícone (troca a antiga grade de benefícios só nessa persona). */
+.solucao-midia-in{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:3.5rem;align-items:center}
+.solucao-midia-copy{max-width:34rem}
+.solucao-midia-copy .h2{margin-bottom:1.1rem}
+.solucao-midia-copy .sub{margin-inline:0;max-width:none}
+.solucao-midia-copy .sub + .sub{margin-top:1rem}
+.solucao-video{justify-self:center;width:min(21rem,100%)}
 @media (max-width:1024px){
-  .solucao-foto-in{grid-template-columns:1fr;gap:2rem}
-  .solucao-foto-copy{max-width:none}
-  .solucao-foto-art{order:-1;aspect-ratio:16/10}
+  .solucao-midia-in{grid-template-columns:1fr;gap:2.5rem}
+  .solucao-midia-copy{max-width:none}
+  .solucao-video{width:min(19rem,100%)}
 }
 
 /* ================= PASSOS — linha do tempo ================= */
@@ -1544,7 +1586,7 @@ html[data-tema="escuro"] .prog-image{filter:drop-shadow(0 30px 44px rgba(0,0,0,.
 @media (max-width:640px){
   /* Tela curta demais (16/9 a 375px = ~211px) pra caber tag+título+botão
      flutuando sobre a imagem sem colidir com o play centralizado — vira um
-     rodapé normal abaixo da thumb, como o fallback mobile dos fan-card. */
+     rodapé normal abaixo da thumb. */
   .vibecast-thumb::after{display:none}
   .vibecast-play{width:3.6rem;height:3.6rem}
   .vibecast-info{
@@ -1922,10 +1964,7 @@ html[data-tema="escuro"] .prog-image{filter:drop-shadow(0 30px 44px rgba(0,0,0,.
   .autoridade{grid-template-columns:1fr}
   .autoridade li{border-left:0;padding:1.6rem 0}
   .autoridade li:nth-child(n+2){border-top:1px solid var(--border)}
-  .brand-stream{min-height:38rem}
-  .brand-stream-card{width:34cqw;height:47cqw;margin-left:-17cqw;margin-top:-23.5cqw}
-  .brand-stream-shade{background:radial-gradient(ellipse 58% 48% at 50% 54%,var(--stream-core) 0%,var(--stream-core-soft) 48%,transparent 86%),linear-gradient(180deg,var(--stream-bg) 0%,transparent 18%,transparent 80%,var(--stream-bg) 100%)}
-  .brand-stream-content{padding-inline:1.5rem}
+  .brand-stream-in,.brand-stream-pc .brand-stream-in{padding-block:4rem}
   .brand-stream-signature span{font-size:.56rem;letter-spacing:.1em}
   .steps{grid-template-columns:1fr}
   .dores-cascata{grid-template-columns:1fr}

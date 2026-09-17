@@ -66,6 +66,12 @@ WhatsApp e Instagram) e **não** carrega `app.js` — não tem mapa, formulário
 Os textos da **porta de entrada** (`index.html`) são os únicos que ficam no HTML, não em
 `data.js` — a página é estática de propósito.
 
+Os **vídeos das seções** (importação direta, diferença entre as telas, tela de baixa qualidade)
+ficam em `assets/video/`, com a capa em `assets/img/capa-video-*.webp`, e são marcados direto no
+HTML dentro de um `.video-vertical`. Pra trocar um vídeo, é substituir o `src` e o `poster` da tag
+`<video>`. Eles começam mudos, só tocam com a moldura na tela e têm botão de som — ver
+`ligarVideos()` em `app.js`.
+
 ### Duas regras de conteúdo aplicadas no site
 
 - **Nenhum número inventado.** No lugar da faixa de métricas existe uma faixa de atributos

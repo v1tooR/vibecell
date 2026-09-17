@@ -532,7 +532,7 @@
   }
 
   function prepararReveal() {
-    var alvos = $$('.hero-copy > *, .sec-hd > *, .dor, .card, .linha, .step, .depo, .reel, .faq-item, .gate, .vibecast-card, .vibecast-ep, .prog-copy > *, .prog-art, .brand-stream-content > *, .cta-in > *, .autoridade li');
+    var alvos = $$('.hero-copy > *, .sec-hd > *, .dor, .card, .linha, .step, .depo, .reel, .faq-item, .gate, .vibecast-card, .vibecast-ep, .prog-copy > *, .prog-art, .brand-stream-content > *, .brand-stream-media, .linhas-video-hd > *, .linhas-video-media, .linhas-item, .cta-in > *, .autoridade li');
 
     /* rede de segurança: sem IntersectionObserver (ou se ele não disparar),
        o conteúdo aparece assim mesmo */
@@ -568,10 +568,10 @@
 
       var tipo = 'card';
       if (pai.classList.contains('hero-copy')) tipo = 'hero';
-      else if (pai.classList.contains('sec-hd')) tipo = 'heading';
-      else if (pai.classList.contains('prog-copy')) tipo = 'left';
-      else if (el.classList.contains('prog-art')) tipo = 'right';
-      else if (el.classList.contains('faq-item')) tipo = 'slide';
+      else if (pai.classList.contains('sec-hd') || pai.classList.contains('linhas-video-hd')) tipo = 'heading';
+      else if (pai.classList.contains('prog-copy') || el.classList.contains('linhas-video-media')) tipo = 'left';
+      else if (el.classList.contains('prog-art') || el.classList.contains('brand-stream-media')) tipo = 'right';
+      else if (el.classList.contains('faq-item') || el.classList.contains('linhas-item')) tipo = 'slide';
       else if (el.classList.contains('gate') || pai.classList.contains('cta-in')) tipo = 'zoom';
 
       el.setAttribute('data-reveal', tipo);
@@ -675,58 +675,75 @@
     io.observe(wrap);
   }
 
-  /* Corredor visual inspirado no componente anexado, reconstruído em HTML/CSS
-     nativo para preservar a arquitetura do site e evitar novas dependências. */
-  function montarBrandStream() {
-    var palco = $('#brandStream');
-    if (!palco || palco.dataset.pronto) return;
-    palco.dataset.pronto = '1';
-    /* Marca e produto alternados: as fotos "vibe-selo-*" são o verso das
-       telas na bancada, onde aparece a identificação da Vibe — selo numerado,
-       etiqueta no flex, carimbo de teste. O segundo item de cada par diz se
-       o card é largo (foto em paisagem). */
-    var imagens = [
-      ['assets/img/vibe-em-maos.webp', false],
-      ['assets/img/vibe-unboxing.webp', false],
-      ['assets/img/vibe-selo-frame.webp', false],
-      ['assets/img/vibe-evento-equipe.webp', false],
-      ['assets/img/vibe-duas-linhas.webp', false],
-      ['assets/img/vibe-selo-a54.webp', false],
-      ['assets/img/vibe-brand-pose.webp', false],
-      ['assets/img/vibe-evento-kit.webp', false],
-      ['assets/img/vibe-tela-detalhe.webp', false],
-      ['assets/img/vibe-selo-flex.webp', false],
-      ['assets/img/vibe-evento-atendimento.webp', false],
-      ['assets/img/vibe-packaging-grid.webp', true],
-      ['assets/img/vibe-selo-testada.webp', true],
-      ['assets/img/vibe-brand-proposal.webp', true],
-      ['assets/img/vibe-selo-a15.webp', true],
-      ['assets/img/vibe-packaging-line.webp', true]
-    ];
-    function trilha(lado, deslocamento) {
-      var cards = imagens.map(function (img, i) {
-        var atual = imagens[(i + deslocamento) % imagens.length];
-        var atraso = -((i * 18) / imagens.length).toFixed(2);
-        return '<figure class="brand-stream-card' + (atual[1] ? ' is-wide' : '') + '" style="animation-delay:' + atraso + 's">' +
-          '<img src="' + atual[0] + '" alt="" loading="lazy" decoding="async" draggable="false"></figure>';
-      }).join('');
-      return '<div class="brand-stream-rail brand-stream-rail-' + lado + '">' + cards + '</div>';
-    }
-    palco.innerHTML = trilha('left', 0) + trilha('right', 4);
-  }
+  /* Vídeos verticais (reels do @vibecell.oficial hospedados no site).
+     Começam mudos e só tocam enquanto a moldura está na tela — com
+     preload="none", nenhum arquivo é baixado antes disso. O botão de som
+     liga o áudio de um vídeo por vez. Com prefers-reduced-motion nada toca
+     sozinho: fica a capa com o botão de play. */
+  function ligarVideos() {
+    var caixas = $$('.video-vertical');
+    if (!caixas.length) return;
+    var reduz = window.matchMedia && matchMedia('(prefers-reduced-motion:reduce)').matches;
+    var autoplay = !reduz && 'IntersectionObserver' in window;
 
-  /* Leque de cards das linhas de tela — toque/clique traz o card pra frente
-     em telas sem hover (o CSS já cuida do :hover em telas com ponteiro fino). */
-  function ligarFanLinhas() {
-    var leque = $('#fanLinhas');
-    if (!leque) return;
-    $$('.fan-card', leque).forEach(function (card) {
-      card.addEventListener('click', function () {
-        var jaAberto = card.classList.contains('is-up');
-        $$('.fan-card.is-up', leque).forEach(function (c) { c.classList.remove('is-up'); });
-        if (!jaAberto) card.classList.add('is-up');
+    function tocar(caixa) {
+      var p = $('video', caixa).play();
+      /* navegador bloqueou (modo economia, por ex.): mostra o play */
+      if (p && p.catch) p.catch(function () { caixa.classList.add('pausado'); });
+    }
+    function marcarSom(caixa) {
+      var ligado = !$('video', caixa).muted;
+      caixa.classList.toggle('com-som', ligado);
+      $('[data-video-som] span', caixa).textContent = ligado ? 'Desativar som' : 'Ativar som';
+    }
+
+    caixas.forEach(function (caixa) {
+      var v = $('video', caixa), play = $('[data-video-play]', caixa);
+      if (!autoplay) caixa.classList.add('pausado');
+
+      v.addEventListener('play', function () {
+        caixa.classList.remove('pausado');
+        play.setAttribute('aria-label', 'Pausar vídeo');
+      });
+      v.addEventListener('pause', function () {
+        caixa.classList.add('pausado');
+        play.setAttribute('aria-label', 'Reproduzir vídeo');
+      });
+
+      /* pausa pedida pelo visitante: a rolagem não religa esse vídeo */
+      function alternar() {
+        if (v.paused) { delete caixa.dataset.pausaManual; tocar(caixa); }
+        else { caixa.dataset.pausaManual = '1'; v.pause(); }
+      }
+      v.addEventListener('click', alternar);
+      play.addEventListener('click', alternar);
+
+      $('[data-video-som]', caixa).addEventListener('click', function () {
+        var ligar = v.muted;
+        if (ligar) {
+          caixas.forEach(function (outra) {
+            if (outra === caixa) return;
+            $('video', outra).muted = true;
+            marcarSom(outra);
+          });
+          if (v.paused) { delete caixa.dataset.pausaManual; tocar(caixa); }
+        }
+        v.muted = !ligar;
+        marcarSom(caixa);
       });
     });
+
+    /* saiu da tela: pausa sempre (inclusive o que o visitante deu play com
+       reduced-motion); voltou: só religa sozinho quando há autoplay */
+    if (!('IntersectionObserver' in window)) return;
+    var io = new IntersectionObserver(function (entradas) {
+      entradas.forEach(function (en) {
+        var caixa = en.target, v = $('video', caixa);
+        if (!en.isIntersecting) { if (!v.paused) v.pause(); }
+        else if (autoplay && !caixa.dataset.pausaManual) tocar(caixa);
+      });
+    }, { threshold: .35 });
+    caixas.forEach(function (c) { io.observe(c); });
   }
 
   function mascaraCep(v) {
@@ -1402,8 +1419,7 @@
     ligarModalAcademy();
     ligarModalReel();
     ligarFiltros();
-    montarBrandStream();
-    ligarFanLinhas();
+    ligarVideos();
     ligarFormDistribuidor();
     ligarVibecast();
 
