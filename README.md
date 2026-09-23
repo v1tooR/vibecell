@@ -18,11 +18,11 @@ mapa é liberado** — nenhuma chave de API, nenhum custo recorrente.
 3. O visitante percorre a estrutura comercial: problema → solução → linhas de produto →
    Premium Vibe → como funciona → **feedbacks em vídeo** → Vibecast → dúvidas.
 4. **Técnico:** ao chegar em "Onde encontrar", o mapa aparece bloqueado e um **mini popup** pede
-   nome e WhatsApp. Depois de preencher, o mapa é liberado com todos os pontos, busca por
+   nome, WhatsApp e endereço. Depois de preencher, o mapa é liberado com todos os pontos, busca por
    cidade/estado, filtro por região, ordenação por distância e **botão de WhatsApp + rota**.
-5. **Distribuidor:** no lugar do mapa, o formulário **"Quero comprar Vibe"** — nome, telefone,
-   CEP, endereço e média de compra de telas por mês. Ao enviar, o lead é gravado **e** a conversa
-   abre no **WhatsApp da Vibe** já preenchida com esses dados.
+5. **Distribuidor:** antes do mapa, o formulário **"Quero comprar Vibe"** — nome, telefone,
+   cidade e média de compra de telas por mês. Ao enviar, o lead é gravado e o **mapa é
+   liberado** (igual ao Técnico): o contato é feito pelo botão de WhatsApp de cada unidade.
 
 O lead fica salvo no navegador: quem já preencheu não vê o popup de novo.
 
@@ -133,7 +133,13 @@ Copie um bloco de `DISTRIBUIDORAS` e ajuste. As coordenadas saem do Google Maps
 
 ### Receber os leads
 
-Por padrão (`leadWebhook` / `leadWebhookDistribuidor` apontando para
+**Hoje** `leadWebhook` e `leadWebhookDistribuidor` apontam para um Google Apps
+Script (`/exec`) ligado à planilha de leads no Google Sheets: cada envio vira
+uma linha na aba "Distribuidor" ou "Técnico". O script separa os dois pela
+presença de `faixaCompra`, igual ao PHP. Depois de editar o script, publique
+como **nova versão** da mesma implantação pra URL não mudar.
+
+Alternativa sem Google (`leadWebhook` / `leadWebhookDistribuidor` apontando para
 `assets/php/salvar-lead.php`), cada envio dos dois formulários — o popup do
 Técnico e o "Quero comprar Vibe" do Distribuidor — vira uma linha num CSV
 local, gravado em `assets/php/leads/` (uma pasta bloqueada por `.htaccess`,
@@ -142,18 +148,13 @@ ninguém baixa o arquivo pela URL): `libera-mapa.csv` e
 cPanel...). Rodando localmente com `npx serve` o PHP não executa — pra testar
 de verdade é preciso subir os arquivos pra hospedagem real.
 
-O formulário do distribuidor **não depende do PHP pra converter**: ao enviar,
-ele abre o WhatsApp da Vibe com nome, telefone, endereço, cidade/UF, CEP e
-média de compra já escritos na mensagem. O CSV é o registro; o WhatsApp é a
-conversa.
-
 Se o site for publicado num host só de arquivo estático (GitHub Pages, Vercel,
 Netlify), troque `leadWebhook`/`leadWebhookDistribuidor` por uma URL de
 webhook (Zapier, Make, n8n, Google Apps Script, CRM...) ou deixe em branco
 pra gravar só no navegador de quem preencheu.
 
-O envio é um `POST` com corpo JSON — `{ nome, whatsapp, whatsappFmt, perfil, origem, data }`
-no popup do Técnico, `{ nome, telefone, telefoneFmt, cep, cidadeUf, endereco, faixaCompra, faixaCompraRotulo, perfil, origem, data }`
+O envio é um `POST` com corpo JSON — `{ nome, whatsapp, whatsappFmt, endereco, perfil, origem, data }`
+no popup do Técnico, `{ nome, telefone, telefoneFmt, cidade, faixaCompra, faixaCompraRotulo, perfil, origem, data }`
 no "Quero comprar Vibe". O PHP separa os dois pela presença de `faixaCompra`.
 Se existir `window.dataLayer` (GTM), também é disparado o evento
 `lead_distribuidor` (Técnico) ou `lead_distribuidor_form` (Distribuidor).
@@ -215,6 +216,12 @@ vibecelloficial.com.br                    escolha de perfil
 vibecelloficial.com.br/distribuidor.html  quero comprar Vibe
 vibecelloficial.com.br/tecnico.html       mapa de distribuidores
 ```
+
+**Cache:** a Hostinger manda o navegador guardar JS e CSS por 7 dias. Por isso os
+links nos três HTML levam `?v=AAAAMMDD` (ex.: `assets/js/app.js?v=20260923`). **Sempre
+que mudar algum arquivo de `assets/js/` ou `assets/css/`, troque esse número nos três
+HTML** — senão quem já visitou o site continua com a versão antiga (e HTML novo com JS
+velho quebra os formulários).
 
 **O domínio raiz passa a abrir na escolha de perfil** — quem já divulgou o link antigo do
 Lojista (`/index.html`) precisa passar a divulgar `/distribuidor.html`.

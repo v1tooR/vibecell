@@ -32,10 +32,6 @@
      ============================================================ */
   var estado = {
     persona: lerPersonaInicial(),
-    /* o que o visitante marcou em "Você é:" no popup do mapa. É só um
-       campo do lead — não troca a visão da página (isso agora só acontece
-       na porta de entrada, index.html). Começa igual à visão da página. */
-    perfilLead: null,
     lead: lerJSON(LS_LEAD),
     leadDistribuidor: lerJSON(LS_LEAD_DIST),
     mapa: null,
@@ -157,12 +153,12 @@
     });
 
     /* distribuidores — distribuidor usa o popup "seja um
-       distribuidor"; técnico mantém o gate + mapa original. */
+       distribuidor"; técnico mantém o gate original. Nos dois, o mapa
+       só aparece depois que o formulário da página foi enviado. */
     var usaFormDist = !!(p.mapa && p.mapa.formulario);
     $('#gate').hidden = usaFormDist || !!estado.lead;
-    $('#mapzone').hidden = usaFormDist || !estado.lead;
     $('#distGate').hidden = !usaFormDist || !!estado.leadDistribuidor;
-    $('#distribuidorOk').hidden = !usaFormDist || !estado.leadDistribuidor;
+    $('#mapzone').hidden = !leadDaPagina();
 
     /* selos do hero */
     $('#heroSelos').innerHTML = p.hero.selos.map(function (s) {
@@ -313,9 +309,6 @@
       b.setAttribute('aria-pressed', on ? 'true' : 'false');
     });
 
-    /* campo "Você é:" do popup do mapa — começa marcado na visão da página */
-    marcarPerfilLead(estado.perfilLead || p.id);
-
     aprimorarCtas();
 
     ligarFaq();
@@ -463,19 +456,6 @@
     }).join('');
   }
 
-  /* "Você é:" no popup do mapa: marca o botão e guarda o valor pro lead.
-     Não chama renderTudo — a visão da página não muda mais aqui. */
-  function marcarPerfilLead(valor) {
-    var btns = $$('[data-perfil-lead]');
-    if (!btns.length) return;
-    estado.perfilLead = valor;
-    btns.forEach(function (b) {
-      var on = b.getAttribute('data-perfil-lead') === valor;
-      b.classList.toggle('is-on', on);
-      b.setAttribute('aria-pressed', on ? 'true' : 'false');
-    });
-  }
-
   function trocarPersona(nova) {
     if (!PERSONAS[nova] || nova === estado.persona) return;
     estado.persona = nova;
@@ -514,9 +494,6 @@
     });
 
     document.addEventListener('click', function (e) {
-      var perfil = e.target.closest('[data-perfil-lead]');
-      if (perfil) { marcarPerfilLead(perfil.getAttribute('data-perfil-lead')); return; }
-
       var b = e.target.closest('[data-persona-btn]');
       if (!b) return;
       var alvo = b.getAttribute('data-persona-btn');
@@ -746,23 +723,16 @@
     caixas.forEach(function (c) { io.observe(c); });
   }
 
-  function mascaraCep(v) {
-    var d = v.replace(/\D/g, '').slice(0, 8);
-    return d.length <= 5 ? d : d.slice(0, 5) + '-' + d.slice(5);
-  }
   /* Formulário "Quero comprar Vibe pra minha distribuidora".
-     Coleta nome, telefone, endereço (CEP + rua) e a média de compra de
-     TELAS por mês. No envio, além de gravar o lead como sempre, abre o
-     WhatsApp da Vibe com tudo preenchido — é lá que a conversa continua.
-     O CEP é conferido na API pública do ViaCEP (sem chave): confirma
-     cidade/UF e já sugere o endereço. */
+     Coleta nome, telefone, cidade e a média de compra de TELAS por mês.
+     No envio, além de gravar o lead como sempre, abre o WhatsApp da Vibe
+     com tudo preenchido — é lá que a conversa continua. */
   function ligarFormDistribuidor() {
     var form = $('#formDistribuidor');
     if (!form) return;
     var grupoFaixa = $('#faixaCompra');
     var faixaValor = '';
     var faixaRotulo = '';
-    var cepValido = null;
 
     /* as faixas vêm de CONFIG pra ficarem editáveis num lugar só */
     var faixas = CONFIG.faixasCompraTelas || [];
@@ -785,88 +755,49 @@
     var telInput = $('#dtel');
     telInput.addEventListener('input', function () { telInput.value = mascaraTel(telInput.value); });
 
-    var cepInput = $('#dcep'), cepInfo = $('#cepInfo');
-    cepInput.addEventListener('input', function () {
-      cepInput.value = mascaraCep(cepInput.value);
-      cepInfo.textContent = '';
-      cepValido = null;
-      mostrarErro('cep');
-    });
-    cepInput.addEventListener('blur', function () {
-      var digitos = cepInput.value.replace(/\D/g, '');
-      if (digitos.length !== 8) return;
-      cepInfo.textContent = 'Consultando...';
-      fetch('https://viacep.com.br/ws/' + digitos + '/json/')
-        .then(function (r) { return r.json(); })
-        .then(function (j) {
-          if (j.erro) { cepValido = false; cepInfo.textContent = ''; mostrarErro('cep', 'CEP não encontrado.'); return; }
-          cepValido = true;
-          cepInfo.textContent = j.localidade + '/' + j.uf;
-          /* adianta a rua e o bairro — quem preenche só completa o número */
-          var end = $('#dend');
-          if (end && !end.value.trim() && j.logradouro) {
-            end.value = j.logradouro + (j.bairro ? ', ' + j.bairro : '');
-          }
-        })
-        .catch(function () { cepInfo.textContent = ''; /* API fora do ar: segue sem bloquear o cadastro */ });
-    });
-
     form.addEventListener('submit', function (e) {
       e.preventDefault();
       var nome = $('#dnome').value.trim();
       var tel = $('#dtel').value.replace(/\D/g, '');
-      var endereco = $('#dend').value.trim();
-      var cep = cepInput.value.replace(/\D/g, '');
+      var cidade = $('#dcid').value.trim();
       var ok = true;
 
-      ['nome', 'telefone', 'endereco', 'cep', 'faixa'].forEach(function (c) { mostrarErro(c); });
+      ['dnome', 'telefone', 'cidade', 'faixa'].forEach(function (c) { mostrarErro(c); });
       $$('.campo input', form).forEach(function (i) { i.classList.remove('inv'); });
 
-      if (nome.length < 3) { mostrarErro('nome', 'Informe seu nome completo.'); $('#dnome').classList.add('inv'); ok = false; }
+      if (nome.length < 3) { mostrarErro('dnome', 'Informe seu nome completo.'); $('#dnome').classList.add('inv'); ok = false; }
       if (tel.length < 10 || tel.length > 11) { mostrarErro('telefone', 'Informe um telefone com DDD.'); telInput.classList.add('inv'); ok = false; }
-      if (cep.length !== 8) { mostrarErro('cep', 'Informe um CEP válido.'); cepInput.classList.add('inv'); ok = false; }
-      else if (cepValido === false) { mostrarErro('cep', 'CEP não encontrado.'); cepInput.classList.add('inv'); ok = false; }
-      if (endereco.length < 5) { mostrarErro('endereco', 'Informe rua, número e bairro.'); $('#dend').classList.add('inv'); ok = false; }
+      if (cidade.length < 3) { mostrarErro('cidade', 'Informe sua cidade.'); $('#dcid').classList.add('inv'); ok = false; }
       if (!faixaValor) { mostrarErro('faixa', 'Escolha sua média de compra de telas por mês.'); ok = false; }
       if (!ok) return;
 
-      var cidadeUf = cepInfo.textContent || '';
       var lead = {
         nome: nome, telefone: tel, telefoneFmt: telInput.value,
-        endereco: endereco, cep: cepInput.value, cidadeUf: cidadeUf,
+        cidade: cidade,
         faixaCompra: faixaValor, faixaCompraRotulo: faixaRotulo,
         perfil: 'distribuidor',
         origem: location.href, data: new Date().toISOString()
       };
 
-      /* O WhatsApp abre PRIMEIRO, ainda dentro do clique do visitante —
-         se ficasse depois do fetch, o navegador trataria como popup e
-         bloquearia a aba. */
-      var msg = 'Olá! Quero comprar Vibe pra minha distribuidora.\n\n' +
-        'Nome: ' + nome + '\n' +
-        'Telefone: ' + telInput.value + '\n' +
-        'Endereço: ' + endereco + '\n' +
-        (cidadeUf ? 'Cidade/UF: ' + cidadeUf + '\n' : '') +
-        'CEP: ' + cepInput.value + '\n' +
-        'Média de compra: ' + faixaRotulo + ' por mês';
-      window.open(linkWhats(CONFIG.whatsappComercial, msg), '_blank', 'noopener');
-
       estado.leadDistribuidor = lead;
       gravar(LS_LEAD_DIST, lead);
       if (window.dataLayer) window.dataLayer.push({ event: 'lead_distribuidor_form', lead: lead });
       console.info('[Vibe] Lead capturado (quero comprar Vibe):', lead);
+
+      /* `keepalive` deixa o envio terminar mesmo se o visitante sair da
+         página logo em seguida (ex.: tocando no WhatsApp de uma unidade). */
       if (CONFIG.leadWebhookDistribuidor) {
         /* text/plain evita o preflight de CORS que o Google Apps Script não
            responde — o Apps Script lê o corpo como JSON normalmente. */
         fetch(CONFIG.leadWebhookDistribuidor, {
-          method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(lead)
+          method: 'POST', keepalive: true,
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(lead)
         }).catch(function (err) { console.warn('[Vibe] Falha ao enviar lead:', err); });
       }
 
       fecharModalDist();
       $('#distGate').hidden = true;
-      $('#distribuidorOk').hidden = false;
-      $('#distribuidorOk').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      liberarMapa(true);
     });
   }
 
@@ -1102,13 +1033,15 @@
       e.preventDefault();
       var nome = $('#ln').value.trim();
       var fone = $('#lw').value.replace(/\D/g, '');
+      var endereco = $('#lend').value.trim();
       var ok = true;
 
-      mostrarErro('nome'); mostrarErro('whatsapp'); mostrarErro('consent');
-      $('#ln').classList.remove('inv'); $('#lw').classList.remove('inv');
+      mostrarErro('nome'); mostrarErro('whatsapp'); mostrarErro('endereco'); mostrarErro('consent');
+      $('#ln').classList.remove('inv'); $('#lw').classList.remove('inv'); $('#lend').classList.remove('inv');
 
       if (nome.length < 3) { mostrarErro('nome', 'Informe seu nome completo.'); $('#ln').classList.add('inv'); ok = false; }
       if (fone.length < 10 || fone.length > 11) { mostrarErro('whatsapp', 'Informe um WhatsApp com DDD.'); $('#lw').classList.add('inv'); ok = false; }
+      if (endereco.length < 5) { mostrarErro('endereco', 'Informe seu endereço.'); $('#lend').classList.add('inv'); ok = false; }
       if (!$('#lc').checked) { mostrarErro('consent', 'É preciso autorizar o contato.'); ok = false; }
       if (!ok) return;
 
@@ -1116,7 +1049,8 @@
         nome: nome,
         whatsapp: fone,
         whatsappFmt: $('#lw').value,
-        perfil: estado.perfilLead || estado.persona,
+        endereco: endereco,
+        perfil: estado.persona,
         origem: location.href,
         data: new Date().toISOString()
       };
@@ -1145,12 +1079,19 @@
   /* ============================================================
      5. MAPA DE DISTRIBUIDORES
      ============================================================ */
+  /* O lead que libera o mapa nesta página: o popup do técnico ou o
+     "Quero comprar Vibe" do distribuidor. */
+  function leadDaPagina() {
+    return P().mapa && P().mapa.formulario ? estado.leadDistribuidor : estado.lead;
+  }
+
   function liberarMapa(rolar) {
-    if (P().mapa && P().mapa.formulario) return; /* distribuidor usa o formulário, não o mapa técnico */
+    var lead = leadDaPagina();
+    if (!lead) return;
     $('#gate').hidden = true;
     $('#mapzone').hidden = false;
     $('#olaMsg').innerHTML = '<svg class="ico"><use href="#i-check"/></svg> Olá, ' +
-      esc(estado.lead.nome.split(' ')[0]) + '. Encontre abaixo a Vibe mais próxima de você.';
+      esc(lead.nome.split(' ')[0]) + '. Encontre abaixo a Vibe mais próxima de você.';
 
     carregarLeaflet(function () {
       iniciarMapa();
@@ -1221,7 +1162,8 @@
   }
 
   function msgDistribuidor(d) {
-    var nome = estado.lead ? estado.lead.nome.split(' ')[0] : '';
+    var lead = leadDaPagina();
+    var nome = lead ? lead.nome.split(' ')[0] : '';
     return P().msgWhatsappDist + (nome ? ' Meu nome é ' + nome + '.' : '') + ' (Unidade ' + d.cidade + '/' + d.uf + ')';
   }
   function linkRota(d) {
@@ -1424,7 +1366,7 @@
     ligarVibecast();
 
     /* visitante que já preencheu antes: mapa liberado direto */
-    if (estado.lead) liberarMapa(false);
+    if (leadDaPagina()) liberarMapa(false);
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);

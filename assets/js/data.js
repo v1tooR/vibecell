@@ -15,7 +15,7 @@ const CONFIG = {
   slogan: 'Telas e frontais para smartphones',
 
   /* WhatsApp comercial da marca (formato internacional, só números) */
-  whatsappComercial: '5511999999999',
+  whatsappComercial: '5511958712669',
   instagram: 'https://instagram.com/vibecell.oficial',
   siteOficial: 'https://vibecelloficial.com.br',
 
@@ -34,14 +34,13 @@ const CONFIG = {
      (com o domínio onde o site vai rodar) e cole a chave aqui. */
   cartoApiKey: 'cb1_2t4i_1_e17f495072781ec031d0316a',
 
-  /* Endpoint que grava cada envio dos formulários numa linha de CSV, no
-     próprio servidor (assets/php/salvar-lead.php + assets/php/leads/) —
-     precisa de hospedagem com PHP (Hostinger, cPanel...). Se o site estiver
-     numa hospedagem só de arquivo estático (GitHub Pages, Vercel, Netlify),
-     troque essa URL por outro destino (ex.: Google Apps Script) ou deixe em
-     branco pra gravar só no navegador de quem preencheu.               */
-  leadWebhook: 'assets/php/salvar-lead.php',
-  leadWebhookDistribuidor: 'assets/php/salvar-lead.php',
+  /* Endpoint que grava cada envio dos formulários: um Google Apps Script
+     ligado à planilha de leads no Google Sheets (aba "Distribuidor" e aba
+     "Técnico"). Pra voltar a gravar em CSV no próprio servidor, troque as
+     duas por 'assets/php/salvar-lead.php'; deixe em branco pra gravar só no
+     navegador de quem preencheu.                                         */
+  leadWebhook: 'https://script.google.com/macros/s/AKfycbyf_Yfn8q-XZO8IRsejysMPrVNv5-Juhq6zHXREMeQrRSWXwMhtR9k5D9guaqdmxjCc/exec',
+  leadWebhookDistribuidor: 'https://script.google.com/macros/s/AKfycbyf_Yfn8q-XZO8IRsejysMPrVNv5-Juhq6zHXREMeQrRSWXwMhtR9k5D9guaqdmxjCc/exec',
 
   /* Opções de "média de compra de telas por mês" no formulário
      "Quero comprar Vibe". `v` é o que vai pro CSV e pro WhatsApp
@@ -154,8 +153,8 @@ const PERSONAS = {
       titulo: 'Da Vibe para a sua distribuidora.',
       texto: 'Começar a comprar Vibe pro seu estoque pode ser simples.',
       itens: [
-        { t: 'Deixe seus dados', d: 'Nome, endereço, telefone e a sua média de compra de telas por mês.' },
-        { t: 'Fale com o comercial da Vibe', d: 'A conversa cai direto no WhatsApp: linhas, disponibilidade e condição pro seu volume.' },
+        { t: 'Deixe seus dados', d: 'Nome, telefone, cidade e a sua média de compra de telas por mês.' },
+        { t: 'Encontre a unidade Vibe', d: 'O mapa abre na hora: veja as unidades perto de você e fale direto pelo WhatsApp de cada uma.' },
         { t: 'Monte seu mix', d: 'Escolha as linhas mais adequadas ao perfil dos clientes que a sua distribuidora atende.' },
         { t: 'Abasteça a sua região', d: 'Receba a carga com a logística ajustada ao seu volume e mantenha o estoque pronto pro próximo pedido.' }
       ]
@@ -176,7 +175,7 @@ const PERSONAS = {
     mapa: {
       kicker: 'Seja um distribuidor',
       titulo: 'Vibe é a 01 do mercado. Seja o distribuidor na sua região',
-      texto: 'Preencha os dados e o comercial retorna com a condição pro seu volume de compra.',
+      texto: 'Preencha os dados e encontre no mapa a unidade Vibe que atende a sua região.',
       formulario: true
     },
 
@@ -194,23 +193,23 @@ const PERSONAS = {
 
     distGate: {
       titulo: 'Quero comprar Vibe pra minha distribuidora',
-      texto: 'Preencha seus dados e o comercial retorna com a condição pro seu volume de compra.',
+      texto: 'Preencha seus dados e veja no mapa as unidades Vibe perto de você.',
       botao: 'Quero comprar Vibe',
       micro: 'Leva poucos segundos · Sem compromisso · Seus dados são usados somente para atendimento comercial',
       modalTitulo: 'Quero comprar Vibe pra minha distribuidora',
-      modalTexto: 'Preencha os dados abaixo. Ao enviar, a conversa abre direto no WhatsApp da Vibe com tudo preenchido.'
+      modalTexto: 'Preencha os dados abaixo. Ao enviar, o mapa com as unidades Vibe é liberado na hora.'
     },
 
     faq: {
       kicker: 'Dúvidas frequentes',
       titulo: 'Antes de abastecer sua distribuidora',
       itens: [
-        { p: 'A Vibe vende diretamente para distribuidoras?', r: 'Sim. A Vibe trabalha com atendimento voltado ao mercado de assistência técnica, incluindo distribuidoras, lojistas, revendedores e operações que comercializam telas e frontais. Preencha o formulário e o comercial fala com você pelo WhatsApp.' },
-        { p: 'Como começo a comprar Vibe?', r: 'Preencha nome, endereço, telefone e a sua média de compra de telas por mês. Ao enviar, a conversa abre direto no WhatsApp da Vibe com esses dados, e o comercial retorna com a condição pro seu volume.' },
+        { p: 'A Vibe vende diretamente para distribuidoras?', r: 'Sim. A Vibe trabalha com atendimento voltado ao mercado de assistência técnica, incluindo distribuidoras, lojistas, revendedores e operações que comercializam telas e frontais. Preencha o formulário e encontre no mapa a unidade que atende a sua região.' },
+        { p: 'Como começo a comprar Vibe?', r: 'Preencha nome, telefone, cidade e a sua média de compra de telas por mês. Ao enviar, o mapa é liberado e você fala direto com a unidade Vibe mais próxima pelo WhatsApp.' },
         { p: 'Qual a diferença entre a linha Comum e a Premium Vibe?', r: 'A linha Comum é direcionada a quem procura equilíbrio entre custo-benefício e funcionalidade. A Premium Vibe é indicada para clientes que valorizam uma experiência superior, com diferenciais como brilho mais intenso, toque responsivo e acabamento superior.' },
         { p: 'Posso comprar para revender?', r: 'Sim. A Vibe possui uma proposta voltada para profissionais e empresas que atuam no mercado de peças e reparação mobile. Fale com o comercial para conhecer disponibilidade e condições.' },
         { p: 'Como saber quais modelos estão disponíveis?', r: 'A disponibilidade pode variar de acordo com o estoque. Fale com o comercial da Vibe pelo WhatsApp e consulte os modelos disponíveis pro seu pedido.' },
-        { p: 'A Vibe atende todo o Brasil?', r: 'A Vibe trabalha com logística e distribuição para diferentes regiões do país. Informe a sua região no formulário e o comercial retorna com a melhor opção de atendimento.' },
+        { p: 'A Vibe atende todo o Brasil?', r: 'A Vibe trabalha com logística e distribuição para diferentes regiões do país. Preencha o formulário e veja no mapa as unidades que atendem a sua região.' },
         { p: 'Como escolher quais telas colocar no meu estoque?', r: 'Isso depende do perfil dos seus clientes, modelos com maior procura e posicionamento da sua distribuidora. O atendimento comercial pode ajudar você a identificar opções adequadas ao seu mix.' }
       ]
     },
@@ -331,7 +330,7 @@ const PERSONAS = {
 
     gate: {
       titulo: 'A Vibe mais perto do seu trabalho.',
-      texto: 'Informe seu nome e WhatsApp para acessar o mapa, visualizar os distribuidores disponíveis e encontrar o melhor atendimento para sua região.',
+      texto: 'Informe seu nome, WhatsApp e endereço para acessar o mapa, visualizar os distribuidores disponíveis e encontrar o melhor atendimento para sua região.',
       botao: 'Ver distribuidores no mapa',
       micro: 'Leva poucos segundos · Sem criação de senha · Seus dados são usados somente para atendimento comercial'
     },

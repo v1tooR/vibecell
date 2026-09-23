@@ -56,25 +56,23 @@ if (!is_dir($pastaLeads)) {
 
 if ($ehDistribuidor) {
     $arquivo = $pastaLeads . '/quero-comprar-vibe.csv';
-    $cabecalho = ['Data', 'Nome', 'Telefone', 'CEP', 'Cidade/UF', 'Endereço', 'Média de compra (telas/mês)', 'Página'];
+    $cabecalho = ['Data', 'Nome', 'Telefone', 'Cidade', 'Média de compra (telas/mês)', 'Página'];
     $linha = [
         campo($lead['data']),
         campo($lead['nome']),
         campo($lead['telefoneFmt'] ?? $lead['telefone'] ?? ''),
-        campo($lead['cep'] ?? ''),
-        campo($lead['cidadeUf'] ?? ''),
-        campo($lead['endereco'] ?? ''),
+        campo($lead['cidade'] ?? ''),
         campo($lead['faixaCompraRotulo'] ?? $lead['faixaCompra'] ?? ''),
         campo($lead['origem'] ?? ''),
     ];
 } else {
     $arquivo = $pastaLeads . '/libera-mapa.csv';
-    $cabecalho = ['Data', 'Nome', 'WhatsApp', 'Perfil', 'Página'];
+    $cabecalho = ['Data', 'Nome', 'WhatsApp', 'Endereço', 'Página'];
     $linha = [
         campo($lead['data']),
         campo($lead['nome']),
         campo($lead['whatsappFmt'] ?? $lead['whatsapp'] ?? ''),
-        campo($lead['perfil'] ?? ''),
+        campo($lead['endereco'] ?? ''),
         campo($lead['origem'] ?? ''),
     ];
 }

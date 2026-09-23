@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Michroma&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/style.css">
+<link rel="stylesheet" href="assets/css/style.css?v=20260923d">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='0'><stop offset='0' stop-color='%2359A6E7'/><stop offset='.45' stop-color='%235B80D9'/><stop offset='1' stop-color='%238330A8'/></linearGradient></defs><rect width='100' height='100' rx='22' fill='%23050609'/><g fill='url(%23g)'><rect x='18' y='24' width='64' height='14' rx='1.5'/><rect x='18' y='43' width='64' height='14' rx='1.5'/><rect x='18' y='62' width='64' height='14' rx='1.5'/></g></svg>">
 </head>
 <body>
@@ -276,12 +276,6 @@
           </button>
           <small class="gate-note" data-c="distGate.micro"></small>
         </div>
-      </div>
-
-      <div class="form-ok" id="distribuidorOk" hidden>
-        <span class="gate-ico"><svg class="ico"><use href="#i-check"/></svg></span>
-        <h3>Recebemos seus dados.</h3>
-        <p>Abrimos a conversa no WhatsApp da Vibe com tudo preenchido — é só enviar. Se a aba não abriu, o comercial retorna por aqui mesmo.</p>
       </div>
     </div>
   </section>
@@ -576,12 +570,6 @@
   </div>
 </footer>
 
-<!-- ============ BOTÃO FLUTUANTE WHATSAPP ============ -->
-<a href="#" class="fab" data-wa-marca aria-label="Falar no WhatsApp">
-  <svg class="ico"><use href="#i-whats"/></svg>
-  <span>Fale com a Vibe</span>
-</a>
-
 <!-- ============ MINI POPUP DE CAPTURA ============ -->
 <div class="modal" id="modal" hidden>
   <div class="modal-bd" data-fechar></div>
@@ -605,16 +593,10 @@
         <input type="tel" id="lw" name="whatsapp" inputmode="numeric" autocomplete="tel" placeholder="(11) 91234-5678" required>
         <span class="erro" data-erro="whatsapp"></span>
       </div>
-
-      <div class="campo-perfil">
-        <span class="campo-perfil-lbl">Você é:</span>
-        <!-- Campo do lead, não seletor de visão: a escolha de perfil mora
-             na porta de entrada (index.html). Aqui só marca quem está
-             preenchendo, sem trocar o conteúdo da página. -->
-        <div class="mini-pill" role="group" aria-label="Você é distribuidor ou técnico?">
-          <button type="button" class="mini-btn" data-perfil-lead="distribuidor" aria-pressed="false">Distribuidor</button>
-          <button type="button" class="mini-btn" data-perfil-lead="tecnico" aria-pressed="false">Técnico</button>
-        </div>
+      <div class="campo">
+        <label for="lend">Endereço</label>
+        <input type="text" id="lend" name="endereco" autocomplete="street-address" placeholder="Rua, número, bairro e cidade" required>
+        <span class="erro" data-erro="endereco"></span>
       </div>
 
       <label class="check">
@@ -650,7 +632,7 @@
       <div class="campo">
         <label for="dnome">Nome</label>
         <input type="text" id="dnome" name="nome" autocomplete="name" placeholder="Seu nome completo" required>
-        <span class="erro" data-erro="nome"></span>
+        <span class="erro" data-erro="dnome"></span>
       </div>
       <div class="campo">
         <label for="dtel">Telefone</label>
@@ -658,15 +640,9 @@
         <span class="erro" data-erro="telefone"></span>
       </div>
       <div class="campo">
-        <label for="dcep">CEP</label>
-        <input type="text" id="dcep" name="cep" inputmode="numeric" autocomplete="postal-code" placeholder="00000-000" required>
-        <span class="cep-info" id="cepInfo"></span>
-        <span class="erro" data-erro="cep"></span>
-      </div>
-      <div class="campo">
-        <label for="dend">Endereço</label>
-        <input type="text" id="dend" name="endereco" autocomplete="street-address" placeholder="Rua, número e bairro" required>
-        <span class="erro" data-erro="endereco"></span>
+        <label for="dcid">Cidade</label>
+        <input type="text" id="dcid" name="cidade" autocomplete="address-level2" placeholder="Ex.: Campinas - SP" required>
+        <span class="erro" data-erro="cidade"></span>
       </div>
       <!-- As opções saem de CONFIG.faixasCompraTelas (data.js) -->
       <div class="campo campo-faixa">
@@ -675,11 +651,11 @@
         <span class="erro" data-erro="faixa"></span>
       </div>
       <button type="submit" class="btn btn-primary btn-lg btn-full">
-        <svg class="ico"><use href="#i-whats"/></svg> Enviar e falar no WhatsApp
+        <svg class="ico"><use href="#i-pin"/></svg> Enviar e ver as unidades
       </button>
       <small class="modal-note">
         <svg class="ico"><use href="#i-lock"/></svg>
-        Ao enviar, a conversa abre no WhatsApp da Vibe com esses dados preenchidos.
+        Ao enviar, o mapa com as unidades Vibe é liberado na hora.
       </small>
     </form>
   </div>
@@ -746,8 +722,8 @@
 <!-- Esta página é travada na visão Técnico. A escolha de perfil mora em
      index.html; outraUrl é o outro lado do site. -->
 <script>window.PAGINA_PERSONA = { fixa: 'tecnico', outraUrl: 'distribuidor.html' };</script>
-<script src="assets/js/shader-bg.js"></script>
-<script src="assets/js/data.js"></script>
-<script src="assets/js/app.js"></script>
+<script src="assets/js/shader-bg.js?v=20260923d"></script>
+<script src="assets/js/data.js?v=20260923d"></script>
+<script src="assets/js/app.js?v=20260923d"></script>
 </body>
 </html>
