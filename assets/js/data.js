@@ -15,7 +15,7 @@ const CONFIG = {
   slogan: 'Telas e frontais para smartphones',
 
   /* WhatsApp comercial da marca (formato internacional, só números) */
-  whatsappComercial: '5511958712669',
+  whatsappComercial: '5511978771222',
   instagram: 'https://instagram.com/vibecell.oficial',
   siteOficial: 'https://vibecelloficial.com.br',
 
